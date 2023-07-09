@@ -17,8 +17,8 @@ class giveRole(commands.Cog):
         #guild를 얻고 그 안에서 channel을 얻고 그 채널에서 메세지와 멤버를
         #검색해야 한다
         #이건 반응을 남긴 사람이 아닌 원본 메세지를 보낸 사람!
-        guild = bot.get_guild(payload.guild_id)
-        channel = bot.get_channel(payload.channel_id)
+        guild = self.bot.get_guild(payload.guild_id)
+        channel = self.bot.get_channel(payload.channel_id)
         message = await channel.fetch_message(payload.message_id)
         member = await guild.fetch_member(message.author.id)
         # message를 봇이 보낸 게 아님 && 원 채널 아이디가 인증방인가?
@@ -40,17 +40,20 @@ class giveRole(commands.Cog):
                     except Exception as e :
                         embed = discord.Embed(title=f'{member}님께 역할을 부여하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=0xccffff)
                         embed.add_field(name='역할을 부여한 관리자',value=payload.member,inline=False)
-                        embed.set_footer(text=f'하늘봇 버전 {hanul_ver}')
+                        embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
                         await message.channel.send(embed=embed)
                         raise e
                     else:
                         embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 다시 한 번 환영합니다!',description='\'즐거운 게이머\' 역할을 부여해드렸어요!\n활발한 활동 부탁드려요!\n친밀도, 출석 등의 집계를 위해 하늘봇에도 회원가입 부탁드릴게요! -★\n/회원가입',color=0xccffff)
                         embed.add_field(name='역할을 부여한 관리자',value=payload.member,inline=False)
-                        embed.set_footer(text=f'하늘봇 버전 {hanul_ver}')
+                        embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
                         await message.channel.send(f'<@{member.id}>',embed=embed)
+            elif payload.channel_id == 1126877960574619648:
+                pass
+    
     @commands.Cog.listener()
-    async def on_member_join(member):
-        channel = bot.get_channel(1126871862287274145)
+    async def on_member_join(self, member):
+        channel = self.bot.get_channel(1126871862287274145)
         embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 환영합니다!',description='인증방에 간단한 자기소개를 남겨주세요!',color=0xccffff)
         await channel.send(f'<@{member.id}>',embed=embed)
 
