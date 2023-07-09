@@ -82,9 +82,11 @@ class giveRole(commands.Cog):
     
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        channel = self.bot.get_channel(1126871862287274145)
-        embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 환영합니다!',description='인증방에 간단한 자기소개를 남겨주세요!',color=0xccffff)
-        await channel.send(f'<@{member.id}>',embed=embed)
+        if not member.bot:
+            channel = self.bot.get_channel(1126871862287274145)
+            embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 환영합니다!',description='인증방에 간단한 자기소개를 남겨주세요!',color=0xccffff)
+            embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
+            await channel.send(f'<@{member.id}>',embed=embed)
 
 def setup(bot):
     bot.add_cog(giveRole(bot))
