@@ -36,7 +36,7 @@ class giveRole(commands.Cog):
                     #권한 부족이나 api 문제 등으로 인한 오류를 감지하기 위해
                     #try except 사용
                     try:
-                        await member.add_roles(discord.utils.get(guild.roles, id=1126793565612281926), reason='하늘봇 테스트')
+                        await member.add_roles(discord.utils.get(guild.roles, id=1126793565612281926), reason='하늘봇 즐거운 게이머 자동부여')
                     except Exception as e :
                         embed = discord.Embed(title=f'{member}님께 역할을 부여하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=0xccffff)
                         embed.add_field(name='역할을 부여한 관리자',value=payload.member,inline=False)
@@ -48,8 +48,37 @@ class giveRole(commands.Cog):
                         embed.add_field(name='역할을 부여한 관리자',value=payload.member,inline=False)
                         embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
                         await message.channel.send(f'<@{member.id}>',embed=embed)
-            elif payload.channel_id == 1126877960574619648:
-                pass
+            #1127588554780987453> 레식     1127593201885261966
+            #1127588815679279154> 글옵발로 1127590110372827196
+            #1127588341152485407> 미호요   1127589522763423805
+            #1127588698062585917> 리듬게임 1127593088177668206
+            elif payload.channel_id == 1126791814804942949:
+                match payload.emoji.id:
+                    case 1127593201885261966:
+                        role_name = '레식'
+                        role_id = 1127588554780987453
+                    case 1127590110372827196:
+                        role_name = '글옵발로'
+                        role_id = 1127588815679279154
+                    case 1127589522763423805:
+                        role_name = '미호요'
+                        role_id = 1127588341152485407
+                    case 1127593088177668206:
+                        role_name = '리듬게임'
+                        role_id = 1127588698062585917
+                    case 1126803165765963846:
+                        role_name = '오류헨들링테스트(실제로부여하는게아님테스트임)'
+                        role_id = 1100000000000000000
+                    case _:
+                        return
+                try:
+                    await payload.member.add_roles(discord.utils.get(guild.roles, id=role_id), reason=f'하늘봇 {role_name} 자동부여')
+                except Exception as e:
+                    channel = self.bot.get_channel(1126877960574619648)
+                    embed = discord.Embed(title=f'{payload.member}님께 {role_name} 역할을 부여하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=0xccffff)
+                    embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
+                    await channel.send(embed=embed)
+                    raise e
     
     @commands.Cog.listener()
     async def on_member_join(self, member):
