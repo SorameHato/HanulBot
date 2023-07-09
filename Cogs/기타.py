@@ -48,6 +48,18 @@ class errorHandling(commands.Cog):
         # role = discord.utils.get(ctx.guild.roles, id=role_id)
         # await role.edit(permissions=discord.Permissions(permissions=111022861306433))
         # await ctx.respond(role.permissions)
+        
+    # @commands.slash_command(name='변경',guild_ids=guild_ids)
+    # async def test4(self,ctx):
+        # role_id =  1126790936723210290
+        # role = discord.utils.get(ctx.guild.roles, id=role_id)
+        # channel = self.bot.get_channel(1126790937448820878)
+        # overwrite = discord.PermissionOverwrite()
+        # overwrite.read_messages = True
+        # overwrite.send_messages = False
+        # await channel.set_permissions(role, overwrite=overwrite)
+        # await ctx.respond(channel.overwrites[0][1].pair())
+        
 
 def setup(bot):
     bot.add_cog(errorHandling(bot))
