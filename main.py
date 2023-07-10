@@ -27,6 +27,25 @@ async def on_ready():
     print('└──────────────────────────────────────────────────────────────────────┘')
     await bot.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.listening, name='코코아와 리제의 노래를'))
 
+@bot.slash_command(name="리로드",guild_ids=guild_ids,description = '봇의 모든 기능을 재시작하는 기능이에요!')
+async def reload_extension(ctx):
+    for filename in os.listdir("Cogs"):
+        if filename.endswith(".py"):
+            try:
+                await bot.unload_extension(f"Cogs.{filename[:-3]}")
+            except (commands.ExtensionNotLoaded, commands.ExtensionNotFound):
+                pass
+            try:
+                await bot.load_extension(f"Cogs.{filename[:-3]}")
+            except commands.ExtensionNotFound:
+                channel = self.bot.get_channel(1126877960574619648)
+                await channel.send(f":x: '{filename[:-3]}'을(를) 파일을 찾을 수 없습니다!")
+            except (commands.NoEntryPointError, commands.ExtensionFailed):
+                channel = self.bot.get_channel(1126877960574619648)
+                await channel.send(f":x: '{filename[:-3]}'을(를) 불러오는 도중 에러가 발생했습니다!")
+    await ctx.respond(f"하늘봇의 리로드가 완료되었습니다.")
+        
+
 def load_extensions():
     for filename in os.listdir('Cogs'):
         if filename.endswith('.py'):
