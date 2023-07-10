@@ -1,10 +1,11 @@
 # coding: utf-8
 import discord
-from discord.ext import commands
-import asyncio
-from datetime import datetime as dt
 import os
-import sys
+import asyncio
+from discord.ext import commands
+from datetime import datetime as dt
+from datetime import timezone as tz
+from datetime import timedelta as td
 from SkyLib import tui
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
@@ -18,7 +19,7 @@ bot.hanul_ver = hanul_ver
 @bot.event
 async def on_ready():
     global LoadedTime
-    LoadedTime = str(dt.now().strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f"))[:-3]+"초"
+    LoadedTime = str(dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f"))[:-3]+"초"
     bot.LoadedTime = LoadedTime
     print('┌──────────────────────────────────────────────────────────────────────┐')
     print('│'+tui.fixedWidth(f'{bot.user.name}(#{bot.user.id})으로 로그인되었습니다.',70,1)+'│')
