@@ -32,22 +32,25 @@ class giveRole(commands.Cog):
                 # 1126793565612281926 : 즐거운 게이머
                 # 1126878856582807592 : 서버 가이드 & 개발자
                 if 1126793481151598663 in roles or 1126793415728824372 in roles:
-                    #즐거운 게이머 역할 추가
-                    #권한 부족이나 api 문제 등으로 인한 오류를 감지하기 위해
-                    #try except 사용
-                    try:
-                        await member.add_roles(discord.utils.get(guild.roles, id=1126793565612281926), reason='하늘봇 즐거운 게이머 자동부여')
-                    except Exception as e :
-                        embed = discord.Embed(title=f'{member}님께 역할을 부여하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=0xccffff)
-                        embed.add_field(name='역할을 부여한 관리자',value=payload.member,inline=False)
-                        embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
-                        await message.channel.send(embed=embed)
-                        raise e
-                    else:
-                        embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 다시 한 번 환영합니다!',description='\'즐거운 게이머\' 역할을 부여해드렸어요!\n활발한 활동 부탁드려요!\n친밀도, 출석 등의 집계를 위해 하늘봇에도 회원가입 부탁드릴게요! -★\n/회원가입',color=0xccffff)
-                        embed.add_field(name='역할을 부여한 관리자',value=payload.member,inline=False)
-                        embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
-                        await message.channel.send(f'<@{member.id}>',embed=embed)
+                    # 즐거운 게이머 역할이 없는가?
+                    roles2 = [i.id for i in member.roles]
+                    if 1126793565612281926 not in roles:
+                        # 즐거운 게이머 역할 추가
+                        # 권한 부족이나 api 문제 등으로 인한 오류를 감지하기 위해
+                        # try except 사용
+                        try:
+                            await member.add_roles(discord.utils.get(guild.roles, id=1126793565612281926), reason='하늘봇 즐거운 게이머 자동부여')
+                        except Exception as e :
+                            embed = discord.Embed(title=f'{member}님께 역할을 부여하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=0xccffff)
+                            embed.add_field(name='역할을 부여한 관리자',value=payload.member,inline=False)
+                            embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
+                            await message.channel.send(embed=embed)
+                            raise e
+                        else:
+                            embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 다시 한 번 환영합니다!',description='\'즐거운 게이머\' 역할을 부여해드렸어요! 활발한 활동 부탁드려요!\n친밀도, 출석 등의 집계를 위해 하늘봇에도 회원가입 부탁드릴게요! -★ /회원가입 명령어로 가입할 수 있어요!',color=0xccffff)
+                            embed.add_field(name='역할을 부여한 관리자',value=payload.member,inline=False)
+                            embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
+                            await message.channel.send(f'<@{member.id}>',embed=embed)
             #1127588554780987453> 레식     1127593201885261966
             #1127588815679279154> 글옵발로 1127590110372827196
             #1127588341152485407> 미호요   1127589522763423805
@@ -66,9 +69,6 @@ class giveRole(commands.Cog):
                     case 1127593088177668206:
                         role_name = '리듬게임'
                         role_id = 1127588698062585917
-                    case 1126803165765963846:
-                        role_name = '오류헨들링테스트(실제로부여하는게아님테스트임)'
-                        role_id = 1100000000000000000
                     case _:
                         return
                 try:
