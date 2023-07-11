@@ -41,13 +41,13 @@ class giveRole(commands.Cog):
                         try:
                             await member.add_roles(discord.utils.get(guild.roles, id=1126793565612281926), reason='하늘봇 즐거운 게이머 자동부여')
                         except Exception as e :
-                            embed = discord.Embed(title=f'{member}님께 역할을 부여하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=0xccffff)
+                            embed = discord.Embed(title=f'{member}님께 역할을 부여하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=bot.hanul_color)
                             embed.add_field(name='역할을 부여한 관리자',value=payload.member,inline=False)
                             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
                             await message.channel.send(embed=embed)
                             raise e
                         else:
-                            embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 다시 한 번 환영합니다!',description='\'즐거운 게이머\' 역할을 부여해드렸어요! 활발한 활동 부탁드려요!\n친밀도, 출석 등의 집계를 위해 하늘봇에도 회원가입 부탁드릴게요! -★ /회원가입 명령어로 가입할 수 있어요!',color=0xccffff)
+                            embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 다시 한 번 환영합니다!',description='\'즐거운 게이머\' 역할을 부여해드렸어요! 활발한 활동 부탁드려요!\n친밀도, 출석 등의 집계를 위해 하늘봇에도 회원가입 부탁드릴게요! -★ /회원가입 명령어로 가입할 수 있어요!',color=bot.hanul_color)
                             embed.add_field(name='역할을 부여한 관리자',value=payload.member,inline=False)
                             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
                             await message.channel.send(f'<@{member.id}>',embed=embed)
@@ -75,7 +75,7 @@ class giveRole(commands.Cog):
                     await payload.member.add_roles(discord.utils.get(guild.roles, id=role_id), reason=f'하늘봇 {role_name} 자동부여')
                 except Exception as e:
                     channel = self.bot.get_channel(1126877960574619648)
-                    embed = discord.Embed(title=f'{payload.member}님께 {role_name} 역할을 부여하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=0xccffff)
+                    embed = discord.Embed(title=f'{payload.member}님께 {role_name} 역할을 부여하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=bot.hanul_color)
                     embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
                     await channel.send(embed=embed)
                     raise e
@@ -84,7 +84,7 @@ class giveRole(commands.Cog):
     async def on_member_join(self, member):
         if not member.bot:
             channel = self.bot.get_channel(1126871862287274145)
-            embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 환영합니다!',description='인증방에 간단한 자기소개를 남겨주세요!',color=0xccffff)
+            embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 환영합니다!',description='인증방에 간단한 자기소개를 남겨주세요!',color=bot.hanul_color)
             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
             await channel.send(f'<@{member.id}>',embed=embed)
 
@@ -92,7 +92,7 @@ class giveRole(commands.Cog):
     async def on_member_remove(self, member):
         if not member.bot:
             channel = self.bot.get_channel(1126790937448820878)
-            embed = discord.Embed(title=f'{member}, 스카이방 지하에 묻히다.',description=f'{member}님께서 떠나셨어요.',color=0xccffff)
+            embed = discord.Embed(title=f'{member}, 스카이방 지하에 묻히다.',description=f'{member}님께서 떠나셨어요.',color=bot.hanul_color)
             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
             await channel.send(embed=embed)
     
@@ -113,7 +113,7 @@ class giveRole(commands.Cog):
             await ctx.author.remove_roles(discord.utils.get(ctx.guild.roles, id=role_id), reason=f'하늘봇 {role_name} 자동제거')
         except Exception as e:
             channel = self.bot.get_channel(1126877960574619648)
-            embed = discord.Embed(title=f'{ctx.author}님께 {role_name} 역할을 제거하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=0xccffff)
+            embed = discord.Embed(title=f'{ctx.author}님께 {role_name} 역할을 제거하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=bot.hanul_color)
             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
             await channel.send(embed=embed)
             raise e
