@@ -8,7 +8,7 @@ global guild_ids
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
-from Exp import getChatCount, getDayCount, getRegisterDate, getExp, chatCallCalc
+from Exp import getChatCount, getDayCount, getRegisterDate, getExp, chatCallCalc, unRegisterInform
 
 class expFrontEnd(commands.Cog):
     def __init__(self, bot):
@@ -21,8 +21,9 @@ class expFrontEnd(commands.Cog):
             try:
                 f_arg, d_arg = chatCallCalc(message.author.id, dt.now(tz(td(hours=9))))
             except Exception as e:
-                channel = self.bot.get_channel(1126790937448820879)
-                await channel.send(f'<@{message.author.id}> {message.author}님은 하늘봇에 회원가입이 되어있지 않으신 것 같아요! 원활한 레벨 집계를 위해 에루봇의 /회원가입 명령어를 입력해 회원가입을 부탁드릴게요!')
+                if unRegisterInform(message.author.id):
+                    channel = self.bot.get_channel(1126790937448820879)
+                    await channel.send(f'<@{message.author.id}> {message.author}님은 하늘봇에 회원가입이 되어있지 않으신 것 같아요! 원활한 레벨 집계를 위해 에루봇의 /회원가입 명령어를 입력해 회원가입을 부탁드릴게요!')
                 raise e
             else:
                 match d_arg:

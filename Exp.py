@@ -78,6 +78,32 @@ def __createDB__(sql_con,sql_cur):
     __logWrite__('-','생성','테이블 생성 완료')
     __commit__(sql_con,True)
 
+def __createUnRegisterDB__(sql_con,sql_cur):
+    sql_cur.execute('''CREATE TABLE IF NOT EXISTS hanul_unregister (
+    uid INTEGER UNIQUE PRIMARY KEY,
+    last_call TEXT);''')
+    __commit__(sql_con,True)
+
+def unRegisterInform(uid:int):
+    sql_con, sql_cur = __connectDB__()
+    now = dt.now(tz(td(hours=9)))
+    try:
+        sql_cur.execute('SELECT last_call FROM hanul_unregister WHERE uid=:uid;',{'uid':uid})
+        sql_data = sql_cur.fetchall()
+        last_call = dt.strptime(sql_data[0][0],'%Y-%m-%d %H:%M:%S.%f%z')
+    except IndexError as e:
+        sql_cur.execute('INSERT INTO hanul_unregister(uid, last_call) VALUES(:uid, :dt);', {'uid':uid,'dt':now})
+        return True
+    except Exception as e:
+        raise e
+        return False
+    else:
+        if now - last_call >= td(seconds=14400):
+            sql_cur.execute('UPDATE hanul_unregister SET last_call=:dt WHERE uid=:uid;',{'uid':uid,'dt':now})
+            return True
+        else:
+            return False
+
 
 def __getData__(sql_cur, uid:int, data_name:str, outside=False):
     '''
