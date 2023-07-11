@@ -68,7 +68,7 @@ def __createDB__(sql_con,sql_cur):
     현재 시간으로 기록되기 때문에 따로 처리를 안 해주면 day_count가
     0부터 시작하기 때문! 첫째 날도 빼먹으면 안 되니까
     '''
-    sql_cur.execute('''CREATE TABLE IF NOT EXISTS hanul_lv (
+    sql_cur.execute('''CREATE TABLE IF NOT EXISTS hanul_exp (
     uid INTEGER UNIQUE PRIMARY KEY,
     first_call TEXT,
     last_call TEXT,
@@ -84,7 +84,7 @@ def __getData__(sql_cur, uid:int, data_name:str, outside=False):
     friendly_rate 테이블에서 uid에 대한 data_name의 값을 가지고 오는 함수
     '''
     if data_name in ['first_call', 'last_call', 'chat_count', 'day_count', 'exp'] and type(uid) is int:
-        sql_cur.execute(f'SELECT {data_name} FROM hanul_lv WHERE uid=:uid;',{'uid':uid})
+        sql_cur.execute(f'SELECT {data_name} FROM hanul_exp WHERE uid=:uid;',{'uid':uid})
         sql_data = sql_cur.fetchall()
         result = sql_data[0][0]
         if outside:
@@ -143,7 +143,7 @@ def __setData__(sql_con, sql_cur, uid:int, data_name:str, amount, sep=False):
     amount로 설정하는 함수
     '''
     if __dataCheck__(uid, data_name, amount, 'set'):
-        sql_cur.execute(f'UPDATE hanul_lv SET {data_name}=:amount WHERE uid=:uid;',{'uid':uid,'amount':amount})
+        sql_cur.execute(f'UPDATE hanul_exp SET {data_name}=:amount WHERE uid=:uid;',{'uid':uid,'amount':amount})
         if sep:
             func = 'Set(내부 수동)'
         else:
@@ -162,7 +162,7 @@ def __addData__(sql_con, sql_cur, uid:int, data_name:str, amount, sep=False):
     기존 add~ 함수 어짜피 내부에서만 쓰이니까 전부 합쳐버림
     '''
     if __dataCheck__(uid, data_name, amount, 'add'):
-        sql_cur.execute(f'UPDATE hanul_lv SET {data_name}=(SELECT {data_name} FROM hanul_lv WHERE uid=:uid)+:amount WHERE uid=:uid;',{'uid':uid,'amount':amount})
+        sql_cur.execute(f'UPDATE hanul_exp SET {data_name}=(SELECT {data_name} FROM hanul_exp WHERE uid=:uid)+:amount WHERE uid=:uid;',{'uid':uid,'amount':amount})
         if sep:
             func = 'Add(내부 수동)'
         else:
@@ -292,9 +292,9 @@ if __name__ == '__main__':
         try:
             uid = int(uid)
         except:
-            sql_cur.execute('SELECT * FROM friendly_rate;')
+            sql_cur.execute('SELECT * FROM hanul_exp;')
         else:
-            sql_cur.execute('SELECT * FROM friendly_rate where uid=:uid;',{'uid':uid})
+            sql_cur.execute('SELECT * FROM hanul_exp where uid=:uid;',{'uid':uid})
         finally:
             sql_data = sql_cur.fetchall()
             print(f'데이터 개수 : {len(sql_data)}')
