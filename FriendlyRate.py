@@ -102,8 +102,8 @@ def __dataCheck__(uid, data_name, amount, funcInfo):
     잘못된 부분이 있으면 Exception을 raise하고 False를 반환
     잘못된 부분이 없으면 True를 반환
     dataList
-    add : ['command_count', 'day_count', 'total_penalty', 'friendly_rate']
-    set : ['last_call', 'gunba', 'command_count', 'day_count', 'total_penalty', 'friendly_rate']
+    add : ['chat_count', 'day_count', 'exp']
+    set : ['last_call', 'chat_count', 'day_count', 'exp']
     
     '''
     if funcInfo == 'add':
@@ -212,6 +212,8 @@ def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
     last_call = dt.strptime(__getData__(sql_cur, uid, 'last_call'),'%Y-%m-%d %H:%M:%S.%f')
     now = dt.now(tz(td(hours=9)))
     __setData__(sql_con, sql_cur,uid,'last_call',now)
+    if now - last_call >= td(seconds=60):
+        __addData__(sql_con, sql_cur, uid, 'chat_count', 1)
     if now.time() >= time(5,15):
         todayStart = dt(now.year, now.month, now.day, 5, 15)
     else:
@@ -223,14 +225,6 @@ def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
         #Out[65]: datetime.timedelta(days=-1, seconds=86399)
         __addData__(sql_con, sql_cur, uid, 'day_count', 1)
         restDay = abs((last_call - todayStart).days)
-        if restDay > 2 and restDay <= 7:
-            gunba = __getData__(sql_cur,uid,'gunba')
-            if not gunba:
-                __addData__(sql_con, sql_cur,uid,'total_penalty',3)
-            else:
-                __logWrite__(uid,'commandCallCalc',f'해당 유저는 gunba가 True이므로 패널티를 부여하지 않았음')
-        else:
-            __addData__(sql_con, sql_cur,uid,'total_penalty',14+2*(restDay-8))
         __logWrite__(uid,'날짜 계산',f'오늘 첫 사용, 미접속일 : {restDay}일')
         returnArg = restDay
     else:
@@ -245,15 +239,14 @@ def __calcFriendlyRate__(sql_con, sql_cur, uid:int):
     현재 기록된 command_count, day_count, total_penalty의 값을 기준으로 friendly_rate를 계산하고 올바른 값으로 갱신하는 함수
     return값은 변경된 friendly_rate
     '''
-    command_count = __getData__(sql_cur, uid, 'command_count')
+    chat_count = __getData__(sql_cur, uid, 'chat_count')
     day_count = __getData__(sql_cur, uid, 'day_count')
-    total_penalty = Decimal(str(__getData__(sql_cur, uid, 'total_penalty')))
-    friendly_rate = command_count * commandPoint + day_count * dayPoint - total_penalty
+    friendly_rate = chat_count * chatPoint + day_count * dayPoint
     __logWrite__(uid, '친밀도 계산', f'friendly_rate = {friendly_rate}')
-    __setData__(sql_con, sql_cur, uid, 'friendly_rate', float(friendly_rate))
+    __setData__(sql_con, sql_cur, uid, 'friendly_rate', friendly_rate)
     return friendly_rate
 
-def commandCallCalc(uid:int, date:dt):
+def chatCallCalc(uid:int, date:dt):
     '''
     먼저 sql_con과 sql_cur을 얻고
     command_count를 1 올리고
