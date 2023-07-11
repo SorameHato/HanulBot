@@ -1,15 +1,25 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from datetime import datetime as dt
+from datetime import timedelta as td
+from datetime import timezone as tz
+from datetime import time
 global guild_ids
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
 
-class errorHandling(commands.Cog):
+class info(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
         self.bot.repack_no = '0.0 rev 0 pack 2 @ 20230710'
+        self.morning_greeting.start()
+    
+    @tasks.loop(time=time(hour=9,tzinfo=tz(td(hours=9))))
+    async def morning_greeting(self):
+        channel = self.bot.get_channel(1126792316003307670)
+        await channel.send('오전 9시! 좋은 아침이에요! 모두 즐거운 하루 보내시고 힘내시는거에요-!')
+    
     
     @commands.Cog.listener()
     async def on_application_command_error(self, ctx, error):
@@ -61,4 +71,4 @@ class errorHandling(commands.Cog):
         
 
 def setup(bot):
-    bot.add_cog(errorHandling(bot))
+    bot.add_cog(info(bot))
