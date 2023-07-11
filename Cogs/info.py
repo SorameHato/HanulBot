@@ -9,6 +9,7 @@ from main import guild_ids
 class errorHandling(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
+        self.bot.repack_no = '0.0 rev 0 pack 2 @ 20230710'
     
     @commands.Cog.listener()
     async def on_application_command_error(self, ctx, error):
@@ -47,6 +48,10 @@ class errorHandling(commands.Cog):
             raise e
         else:
             await ctx.respond(f'{role_name} 역할을 성공적으로 제거했어요!')
+    
+    @commands.slash_command(name='버전확인',guild_ids=guild_ids,description='리로드 확인용 임시 명령어')
+    async def checkVer(self, ctx):
+        await ctx.respond(f'package version : {self.bot.repack_no}, version no : 2')
     
     # @commands.slash_command(name='역할목록',guild_ids=guild_ids)
     # async def test1(self, ctx):
