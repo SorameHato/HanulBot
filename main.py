@@ -6,6 +6,7 @@ from discord.ext import commands
 from datetime import datetime as dt
 from datetime import timezone as tz
 from datetime import timedelta as td
+import pathlib
 from SkyLib import tui
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
@@ -33,7 +34,7 @@ async def on_ready():
 async def reload_extension(ctx):
     isowner = await bot.is_owner(ctx.author)
     if isowner:
-        for filename in os.listdir("Cogs"):
+        for filename in os.listdir(pathlib.PurePath(__file__).parent.joinpath('Cogs')):
             if filename.endswith(".py"):
                 try:
                     bot.reload_extension(f"Cogs.{filename[:-3]}")
@@ -54,11 +55,11 @@ async def reload_extension(ctx):
         
 
 def load_extensions():
-    for filename in os.listdir('Cogs'):
+    for filename in os.listdir(pathlib.PurePath(__file__).parent.joinpath('Cogs')):
         if filename.endswith('.py'):
             bot.load_extension('Cogs.{}'.format(filename[:-3]))
 
 load_extensions()
 
-with open('token.txt','r') as token:
+with open(pathlib.PurePath(__file__).with_name('token.txt'),'r') as token:
     bot.run(token.readline())
