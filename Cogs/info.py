@@ -20,17 +20,29 @@ class errorHandling(commands.Cog):
         await ctx.respond('아무래도 바보토끼가 또 바보토끼 한 것 같아요. 하토를 불러주세요!',embed=embed)
         raise error
     
-    # @commands.slash_command(name='역할빼기',guild_ids = guild_ids, description="디코 수준 왜이럼")
-    # async def prob(self, ctx,role_id:discord.Option(str,'역할번호',name='역할번호')):
-        # role_id = int(role_id)
-        # try:
-            # await ctx.author.remove_roles(discord.utils.get(ctx.guild.roles, id=role_id), reason=f'하늘봇 {role_id} 자동제거')
-        # except Exception as e:
-            # channel = self.bot.get_channel(1126877960574619648)
-            # embed = discord.Embed(title=f'{ctx.author}님께 {role_id} 역할을 제거하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=0xccffff)
-            # embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
-            # await channel.send(embed=embed)
-            # raise e
+    @commands.slash_command(name='역할제거',guild_ids = guild_ids, description="역할을 제거하는 명령어에요!")
+    async def prob(self, ctx, role_name:discord.Option(str,'어떤 역할을 제거할 지 선택해주세요!', name='역할명', choices=['레식','글옵발로','미호요','리듬게임'])):
+        match role_name:
+            case '레식':
+                role_id = 1127588554780987453
+            case '글옵발로':
+                role_id = 1127588815679279154
+            case '미호요':
+                role_id = 1127588341152485407
+            case '리듬게임':
+                role_id = 1127588698062585917
+            case _:
+                return
+        try:
+            await ctx.author.remove_roles(discord.utils.get(ctx.guild.roles, id=role_id), reason=f'하늘봇 {role_name} 자동제거')
+        except Exception as e:
+            channel = self.bot.get_channel(1126877960574619648)
+            embed = discord.Embed(title=f'{ctx.author}님께 {role_name} 역할을 제거하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=0xccffff)
+            embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
+            await channel.send(embed=embed)
+            raise e
+        else:
+            await ctx.respond(f'{role_name} 역할을 성공적으로 제거했어요!')
     
     # @commands.slash_command(name='역할목록',guild_ids=guild_ids)
     # async def test1(self, ctx):
