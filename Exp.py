@@ -242,28 +242,27 @@ def __calcFriendlyRate__(sql_con, sql_cur, uid:int):
     chat_count = __getData__(sql_cur, uid, 'chat_count')
     day_count = __getData__(sql_cur, uid, 'day_count')
     friendly_rate = chat_count * chatPoint + day_count * dayPoint
-    __logWrite__(uid, '친밀도 계산', f'friendly_rate = {friendly_rate}')
+    __logWrite__(uid, '경험치 계산', f'friendly_rate = {friendly_rate}')
     __setData__(sql_con, sql_cur, uid, 'friendly_rate', friendly_rate)
     return friendly_rate
 
 def chatCallCalc(uid:int, date:dt):
     '''
     먼저 sql_con과 sql_cur을 얻고
-    command_count를 1 올리고
     __updateLastCallDate__을 호출해서 날짜 관련 계산을 하고
     __calcFriendlyRate__를 호출해서 친밀도를 계산한 다음
     모든 것을 커밋하고 sql 연결을 닫고
     친밀도와 lastCallArg을 리턴하는 함수
-    return값은 두 개! friendlyRateArg, lastCallArg = commandCallCalc(uid, dt) 이런 식으로 적어야 함
-    friendlyRateArg : 변경된 친밀도
+    return값은 두 개! friendlyRateArg, lastCallArg = chatCallCalc(uid, dt) 이런 식으로 적어야 함
+    friendlyRateArg : 변경된 경험치
     lastCallArg : __updateLastCallDate__의 주석 참고
     '''
-    __logWrite__(uid,'commandCallCalc','해당 유저의 commandCallCalc 요청 접수')
+    __logWrite__(uid,'chatCallCalc','해당 유저의 chatCallCalc 요청 접수')
     sql_con, sql_cur = __connectDB__()
     lastCallArg = __updateLastCallDate__(sql_con, sql_cur, uid, date)
     friendlyRateArg = __calcFriendlyRate__(sql_con, sql_cur, uid)
     __commit__(sql_con,True)
-    __logWrite__(uid,'commandCallCalc',f'해당 유저의 commandCallCalc 요청 처리 완료 | lastCallArg는 {lastCallArg}')
+    __logWrite__(uid,'chatCallCalc',f'해당 유저의 chatCallCalc 요청 처리 완료 | lastCallArg는 {lastCallArg}')
     return friendlyRateArg, lastCallArg
 
 if __name__ == '__main__':
@@ -301,7 +300,6 @@ if __name__ == '__main__':
             print(tui.fixedWidth('uid',20,1)+tui.fixedWidth('최초 등록 시간',27,1)+tui.fixedWidth('마지막 호출 시간',27,1)+tui.fixedWidth('chat',9,2),tui.fixedWidth('day',9,2),tui.fixedWidth('exp',9,2))
             for row in sql_data:
                 print(tui.fixedWidth(row[0],20)+tui.fixedWidth(row[1],27)+tui.fixedWidth(row[2],27)+tui.fixedWidth(row[3],9,2),tui.fixedWidth(row[4],9,2),tui.fixedWidth(row[5],9,2))
-            
     elif arg == 2:
         uid = int(input('설정할 유저의 uid를 입력해주세요. : '))
         data_name = input('설정할 attribute를 입력해주세요. : ')
