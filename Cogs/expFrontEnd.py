@@ -48,8 +48,8 @@ class expFrontEnd(commands.Cog):
     
     @commands.slash_command(name='경험치',guild_ids=guild_ids,description='자신의 경험치 현황을 볼 수 있어요!')
     async def exp_FrontEnd(self, ctx):
-        embed = discord.Embed(title=f'현재 {ctx.author}님의 경험치는 {getExp(ctx.author.id)}에요!',color=self.bot.hanul_color)
-        embed.add_field(name='하늘봇 레벨 시스템에 가입한 날짜',value=getRegisterDate(ctx.author.id),inline=False)
+        embed = discord.Embed(title=f'현재 {ctx.author}님의 경험치는 {getExp(ctx.author.id)}(이)에요!',color=self.bot.hanul_color)
+        embed.add_field(name='하늘봇과 함께 하기 시작한 날짜',value=getRegisterDate(ctx.author.id),inline=False)
         embed.add_field(name='스카이방과 함께한 날',value=f'{getDayCount(ctx.author.id)}일',inline=True)
         embed.add_field(name='채팅 집계 횟수',value=f'{getChatCount(ctx.author.id)}회',inline=True)
         await ctx.respond(embed=embed)
