@@ -20,6 +20,10 @@ class errorHandling(commands.Cog):
         await ctx.respond('아무래도 바보토끼가 또 바보토끼 한 것 같아요. 하토를 불러주세요!',embed=embed)
         raise error
     
+    @commands.slash_command(name='상태확인',guild_ids=guild_ids,description='수면 모드가 작동하는 동안 하늘봇이 제대로 작동하는 지 알기 위한 명령어에요!')
+    async def checkIfRun(self, ctx):
+        await ctx.respond(f'정상적으로 작동 중이에요! 마지막으로 다시 시작된 시간 : {self.bot.LoadedTime}')
+    
     @commands.slash_command(name='역할제거',guild_ids = guild_ids, description="역할을 제거하는 명령어에요!")
     async def prob(self, ctx, role_name:discord.Option(str,'어떤 역할을 제거할 지 선택해주세요!', name='역할명', choices=['레식','글옵발로','미호요','리듬게임'])):
         match role_name:
