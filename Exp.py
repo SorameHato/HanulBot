@@ -241,9 +241,9 @@ def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
     if now - last_call >= td(seconds=60):
         __addData__(sql_con, sql_cur, uid, 'chat_count', 1)
     if now.time() >= time(5,15):
-        todayStart = dt(now.year, now.month, now.day, 5, 15)
+        todayStart = dt(now.year, now.month, now.day, 5, 15, tzinfo=tz(td(hours=9)))
     else:
-        todayStart = dt(now.year, now.month, now.day, 5, 15)-td(days=1)
+        todayStart = dt(now.year, now.month, now.day, 5, 15, tzinfo=tz(td(hours=9)))-td(days=1)
     if last_call < todayStart:
         #왜 abs냐면 음수로 나와서
         #In [64]: last_call = dt.strptime('2023-07-08 05:14:59.000','%Y-%m-%d %H:%M:%S.%f')
