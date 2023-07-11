@@ -272,7 +272,7 @@ if __name__ == '__main__':
     print('├───────────────┬──────────┤')
     print('│ 봇 이름       │ 데이터명 │')
     print('├───────────────┼──────────┤')
-    print('│ 에루봇        │  친밀도  │')
+    print('│ 하늘봇        │  경험치  │')
     print('├───────────────┴──────────┤')
     print('│ 번호                메뉴 │')
     print('│ 1.           데이터 조회 │')
@@ -280,7 +280,7 @@ if __name__ == '__main__':
     print('│ 3.           데이터 수정 │')
     print('│ 4.           테이블 생성 │')
     print('│ 5.             유저 등록 │')
-    print('│ 6.      호감도 수동 계산 │')
+    print('│ 6.      경험치 수동 계산 │')
     print('│ (9).        치르노(바보) │')
     print('└──────────────────────────┘')
     arg = int(input('번호 입력 : '))
@@ -307,9 +307,7 @@ if __name__ == '__main__':
         data_name = input('설정할 attribute를 입력해주세요. : ')
         amount = input('설정할 값을 입력해주세요. : ')
         sql_con, sql_cur = __connectDB__()
-        if data_name in ['total_penalty','friendly_rate']:
-            amount = float(amount)
-        elif data_name == 'last_call':
+        if data_name == 'last_call':
             pass
         else:
             amount = int(amount)
@@ -320,9 +318,7 @@ if __name__ == '__main__':
         uid = int(input('변경할 유저의 uid를 입력해주세요. : '))
         data_name = input('변경할 attribute를 입력해주세요. : ')
         amount = input('얼만큼 변경할 지 값을 입력해주세요. (값을 늘리려면 양수, 값을 줄이려면 음수) : ')
-        if data_name in ['total_penalty','friendly_rate']:
-            amount = float(amount)
-        elif data_name == 'last_call':
+        if data_name == 'last_call':
             pass
         else:
             amount = int(amount)
