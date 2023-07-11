@@ -24,7 +24,7 @@ def __connectDB__():
     이 함수를 쓸 때에는 sql_con, sql_cur = __connectDB__() 처럼
     앞에 변수를 2개 줘서 써야 한다!
     '''
-    sql_con = sqlite3.connect(pathlib.PurePath(__file__).parent.parent.joinpath('EluBot').joinpath('FriendlyRate.db'))
+    sql_con = sqlite3.connect(pathlib.PurePath(__file__).with_name('Exp.db'))
     sql_cur = sql_con.cursor()
     return sql_con, sql_cur
 

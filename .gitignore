@@ -152,3 +152,4 @@ cython_debug/
 #.idea/
 token.txt
 log.csv
+Exp.db
