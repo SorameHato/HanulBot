@@ -78,32 +78,6 @@ def __createDB__(sql_con,sql_cur):
     __logWrite__('-','생성','테이블 생성 완료')
     __commit__(sql_con,True)
 
-def __createUnRegisterDB__(sql_con,sql_cur):
-    sql_cur.execute('''CREATE TABLE IF NOT EXISTS hanul_unregister (
-    uid INTEGER UNIQUE PRIMARY KEY,
-    last_call TEXT);''')
-    __commit__(sql_con,True)
-
-def unRegisterInform(uid:int):
-    sql_con, sql_cur = __connectDB__()
-    now = dt.now(tz(td(hours=9)))
-    try:
-        sql_cur.execute('SELECT last_call FROM hanul_unregister WHERE uid=:uid;',{'uid':uid})
-        sql_data = sql_cur.fetchall()
-        last_call = dt.strptime(sql_data[0][0],'%Y-%m-%d %H:%M:%S.%f%z')
-    except IndexError as e:
-        sql_cur.execute('INSERT INTO hanul_unregister(uid, last_call) VALUES(:uid, :dt);', {'uid':uid,'dt':now})
-        return True
-    except Exception as e:
-        raise e
-        return False
-    else:
-        if now - last_call >= td(seconds=14400):
-            sql_cur.execute('UPDATE hanul_unregister SET last_call=:dt WHERE uid=:uid;',{'uid':uid,'dt':now})
-            return True
-        else:
-            return False
-
 
 def __getData__(sql_cur, uid:int, data_name:str, outside=False):
     '''
@@ -235,29 +209,37 @@ def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
     #In [46]: dt.strptime('2023-05-01 12:34:56.789','%Y-%m-%d %H:%M:%S.%f')
     #Out[46]: datetime.datetime(2023, 5, 1, 12, 34, 56, 789000)
     __logWrite__(uid,'날짜 계산','해당 유저의 날짜계산 요청 접수')
-    last_call = dt.strptime(__getData__(sql_cur, uid, 'last_call'),'%Y-%m-%d %H:%M:%S.%f%z')
     now = dt.now(tz(td(hours=9)))
-    __setData__(sql_con, sql_cur,uid,'last_call',now)
-    if now - last_call >= td(seconds=60):
-        __addData__(sql_con, sql_cur, uid, 'chat_count', 1)
-    if now.time() >= time(5,15):
-        todayStart = dt(now.year, now.month, now.day, 5, 15, tzinfo=tz(td(hours=9)))
+    try:
+        last_call = dt.strptime(__getData__(sql_cur, uid, 'last_call'),'%Y-%m-%d %H:%M:%S.%f%z')
+    except IndexError as e:
+        sql_cur.execute('INSERT INTO hanul_lv(uid, first_call, last_call) VALUES(:uid, :dt, :dt);',{'uid':uid,'dt':now})
+    except Exception as e:
+        raise e
+        return -1
     else:
-        todayStart = dt(now.year, now.month, now.day, 5, 15, tzinfo=tz(td(hours=9)))-td(days=1)
-    if last_call < todayStart:
-        #왜 abs냐면 음수로 나와서
-        #In [64]: last_call = dt.strptime('2023-07-08 05:14:59.000','%Y-%m-%d %H:%M:%S.%f')
-        #In [65]: last_call - todayStart
-        #Out[65]: datetime.timedelta(days=-1, seconds=86399)
-        __addData__(sql_con, sql_cur, uid, 'day_count', 1)
-        restDay = abs((last_call - todayStart).days)
-        __logWrite__(uid,'날짜 계산',f'오늘 첫 사용, 미접속일 : {restDay}일')
-        returnArg = restDay
-    else:
-        returnArg = 0
-    if sep:
-        __calcFriendlyRate__(sql_con, sql_cur, uid)
-    return returnArg
+        __setData__(sql_con, sql_cur,uid,'last_call',now)
+    finally:
+        if now - last_call >= td(seconds=60):
+            __addData__(sql_con, sql_cur, uid, 'chat_count', 1)
+        if now.time() >= time(5,15):
+            todayStart = dt(now.year, now.month, now.day, 5, 15, tzinfo=tz(td(hours=9)))
+        else:
+            todayStart = dt(now.year, now.month, now.day, 5, 15, tzinfo=tz(td(hours=9)))-td(days=1)
+        if last_call < todayStart:
+            #왜 abs냐면 음수로 나와서
+            #In [64]: last_call = dt.strptime('2023-07-08 05:14:59.000','%Y-%m-%d %H:%M:%S.%f')
+            #In [65]: last_call - todayStart
+            #Out[65]: datetime.timedelta(days=-1, seconds=86399)
+            __addData__(sql_con, sql_cur, uid, 'day_count', 1)
+            restDay = abs((last_call - todayStart).days)
+            __logWrite__(uid,'날짜 계산',f'오늘 첫 사용, 미접속일 : {restDay}일')
+            returnArg = restDay
+        else:
+            returnArg = 0
+        if sep:
+            __calcFriendlyRate__(sql_con, sql_cur, uid)
+        return returnArg
         
 
 def __calcFriendlyRate__(sql_con, sql_cur, uid:int):
@@ -286,6 +268,8 @@ def chatCallCalc(uid:int, date:dt):
     __logWrite__(uid,'chatCallCalc','해당 유저의 chatCallCalc 요청 접수')
     sql_con, sql_cur = __connectDB__()
     lastCallArg = __updateLastCallDate__(sql_con, sql_cur, uid, date)
+    if lastCallArg = -1:
+        return '처리 중 오류 발생', lastCallArg
     friendlyRateArg = __calcFriendlyRate__(sql_con, sql_cur, uid)
     __commit__(sql_con,True)
     __logWrite__(uid,'chatCallCalc',f'해당 유저의 chatCallCalc 요청 처리 완료 | lastCallArg는 {lastCallArg}')
