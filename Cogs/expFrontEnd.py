@@ -8,7 +8,7 @@ global guild_ids
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
-from Exp import getChatCount, getDayCount, getRegisterDate, getExp, chatCallCalc, unRegisterInform
+from Exp import getChatCount, getDayCount, getRegisterDate, getExp, chatCallCalc
 
 class expFrontEnd(commands.Cog):
     def __init__(self, bot):
