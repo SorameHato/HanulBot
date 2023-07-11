@@ -16,18 +16,20 @@ guild_ids = [
     ]
 bot.hanul_ver = hanul_ver
 
+
 @bot.event
 async def on_ready():
     global LoadedTime
     LoadedTime = str(dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f"))[:-3]+"초"
     bot.LoadedTime = LoadedTime
     print('┌──────────────────────────────────────────────────────────────────────┐')
-    print('│'+tui.fixedWidth(f'{bot.user.name}(#{bot.user.id})으로 로그인되었습니다.',70,1)+'│')
-    print('│'+tui.fixedWidth(f'봇이 시작된 시각 : {LoadedTime}',70,1)+'│')
+    print('│'+tui.fixedWidth(f'{bot.user.name}(#{bot.user.id})으로 로그인되었습니다.', 70, 1)+'│')
+    print('│'+tui.fixedWidth(f'봇이 시작된 시각 : {LoadedTime}', 70, 1)+'│')
     print('└──────────────────────────────────────────────────────────────────────┘')
-    await bot.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.listening, name='코코아와 리제의 노래를'))
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game(name='구름IDE에서 동작'))
 
-@bot.slash_command(name="리로드",guild_ids=guild_ids,description = '봇의 모든 기능을 재시작하는 기능이에요!')
+
+@bot.slash_command(name="리로드", guild_ids=guild_ids, description='봇의 모든 기능을 재시작하는 기능이에요!')
 async def reload_extension(ctx):
     for filename in os.listdir("Cogs"):
         if filename.endswith(".py"):
