@@ -304,7 +304,7 @@ if __name__ == '__main__':
     print('│ 2.           데이터 설정 │')
     print('│ 3.           데이터 수정 │')
     print('│ 4.           테이블 생성 │')
-    print('│ 5.             유저 등록 │')
+    print('│ 5.미가입자용 테이블 생성 │')
     print('│ 6.      경험치 수동 계산 │')
     print('│ (9).        치르노(바보) │')
     print('└──────────────────────────┘')
@@ -355,14 +355,9 @@ if __name__ == '__main__':
         __createDB__(sql_con,sql_cur)
         print('테이블 생성이 완료되었습니다.')
     elif arg == 5:
-        uid = int(input('등록할 유저의 uid를 입력해주세요. : '))
-        ret = register(uid)
-        if ret == 1:
-            print(f'{uid} 유저의 데이터가 등록되었습니다.')
-        elif ret == -1:
-            print(f'{uid} 유저의 데이터가 이미 등록되어 있습니다.')
-        else:
-            print(f'{uid} 유저의 데이터를 등록하는 중 오류가 발생했습니다.')
+        sql_con, sql_cur = __connectDB__()
+        __createUnRegisterDB__(sql_con,sql_cur)
+        print('테이블 생성이 완료되었습니다.')
     elif arg == 6:
         uid = int(input('계산할 유저의 uid를 입력해주세요. : '))
         sql_con, sql_cur = __connectDB__()
