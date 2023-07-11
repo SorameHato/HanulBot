@@ -21,9 +21,6 @@ class expFrontEnd(commands.Cog):
             try:
                 f_arg, d_arg = chatCallCalc(message.author.id, dt.now(tz(td(hours=9))))
             except Exception as e:
-                if unRegisterInform(message.author.id):
-                    channel = self.bot.get_channel(1126790937448820879)
-                    await channel.send(f'<@{message.author.id}> {message.author}님은 하늘봇에 회원가입이 되어있지 않으신 것 같아요! 원활한 레벨 집계를 위해 에루봇의 /회원가입 명령어를 입력해 회원가입을 부탁드릴게요!')
                 raise e
             else:
                 match d_arg:
