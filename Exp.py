@@ -250,8 +250,8 @@ def __calcFriendlyRate__(sql_con, sql_cur, uid:int):
     chat_count = __getData__(sql_cur, uid, 'chat_count')
     day_count = __getData__(sql_cur, uid, 'day_count')
     friendly_rate = chat_count * chatPoint + day_count * dayPoint
-    __logWrite__(uid, '경험치 계산', f'friendly_rate = {friendly_rate}')
-    __setData__(sql_con, sql_cur, uid, 'friendly_rate', friendly_rate)
+    __logWrite__(uid, '경험치 계산', f'exp = {friendly_rate}')
+    __setData__(sql_con, sql_cur, uid, 'exp', friendly_rate)
     return friendly_rate
 
 def chatCallCalc(uid:int, date:dt):
@@ -268,7 +268,7 @@ def chatCallCalc(uid:int, date:dt):
     __logWrite__(uid,'chatCallCalc','해당 유저의 chatCallCalc 요청 접수')
     sql_con, sql_cur = __connectDB__()
     lastCallArg = __updateLastCallDate__(sql_con, sql_cur, uid, date)
-    if lastCallArg = -1:
+    if lastCallArg == -1:
         return '처리 중 오류 발생', lastCallArg
     friendlyRateArg = __calcFriendlyRate__(sql_con, sql_cur, uid)
     __commit__(sql_con,True)
