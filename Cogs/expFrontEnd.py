@@ -38,10 +38,11 @@ class expFrontEnd(commands.Cog):
                     case _:
                         e_title = f'{message.author}님, 오랫만이네요.'
                         e_desc = f'스카이방을 {d_arg}일만에 찾아주셨어요! 자주자주 오셨으면 좋겠는데... 그래도 가끔씩이라도 얼굴 비춰주셔서 감사해요. 자동으로 출석이 완료되었어요!'
-                channel = self.bot.get_channel(1126822172468449325)
-                embed = discord.Embed(title=e_title,description=e_desc,color=self.bot.hanul_color)
-                embed.add_field(name='현재 경험치',value=f_arg,inline=False)
-                await channel.send(f'<@{message.author.id}>',embed=embed)
+                if d_arg:
+                    channel = self.bot.get_channel(1126822172468449325)
+                    embed = discord.Embed(title=e_title,description=e_desc,color=self.bot.hanul_color)
+                    embed.add_field(name='현재 경험치',value=f_arg,inline=False)
+                    await channel.send(f'<@{message.author.id}>',embed=embed)
     
     @commands.slash_command(name='경험치',guild_ids=guild_ids,description='자신의 경험치 현황을 볼 수 있어요!')
     async def exp_FrontEnd(self, ctx):
