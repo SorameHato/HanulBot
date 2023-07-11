@@ -34,7 +34,7 @@ class giveRole(commands.Cog):
                 if 1126793481151598663 in roles or 1126793415728824372 in roles:
                     # 즐거운 게이머 역할이 없는가?
                     roles2 = [i.id for i in member.roles]
-                    if 1126793565612281926 not in roles:
+                    if 1126793565612281926 not in roles2:
                         # 즐거운 게이머 역할 추가
                         # 권한 부족이나 api 문제 등으로 인한 오류를 감지하기 위해
                         # try except 사용
@@ -79,7 +79,7 @@ class giveRole(commands.Cog):
                     embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
                     await channel.send(embed=embed)
                     raise e
-    
+
     @commands.Cog.listener()
     async def on_member_join(self, member):
         if not member.bot:
@@ -87,7 +87,7 @@ class giveRole(commands.Cog):
             embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 환영합니다!',description='인증방에 간단한 자기소개를 남겨주세요!',color=0xccffff)
             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
             await channel.send(f'<@{member.id}>',embed=embed)
-    
+
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         if not member.bot:
@@ -95,6 +95,7 @@ class giveRole(commands.Cog):
             embed = discord.Embed(title=f'{member}, 스카이방 지하에 묻히다.',description=f'{member}님께서 떠나셨어요.',color=0xccffff)
             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
             await channel.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(giveRole(bot))
