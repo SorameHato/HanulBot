@@ -1,11 +1,10 @@
-import sqlite3, csv
+import sqlite3, csv, pathlib
 from datetime import datetime as dt
+from datetime import timezone as tz
 from datetime import timedelta as td
 from datetime import date, time
-from decimal import getcontext, Decimal
 from SkyLib import tui
-getcontext().prec = 3
-commandPoint = 1
+chatPoint = 1
 dayPoint = 29
 
 '''
@@ -16,7 +15,7 @@ dayPoint = 29
 하루 최초 한 번 : 29
 
 뭔가 채팅이 오면 무조건적으로 event를 발생시켜서
-commandCallCalc 함수를 호출
+chatCallCalc 함수를 호출
 '''
 
 def __connectDB__():
@@ -25,7 +24,7 @@ def __connectDB__():
     이 함수를 쓸 때에는 sql_con, sql_cur = __connectDB__() 처럼
     앞에 변수를 2개 줘서 써야 한다!
     '''
-    sql_con = sqlite3.connect("..\EluBot\친밀도.db")
+    sql_con = sqlite3.connect(pathlib.PurePath(__file__).parent.parent.joinpath('EluBot').joinpath('FriendlyRate.db'))
     sql_cur = sql_con.cursor()
     return sql_con, sql_cur
 
@@ -37,9 +36,9 @@ def __logWrite__(uid,task:str,text:str):
     task : 작업명 또는 함수명 (변경, 커밋, 생성, 조회 등)
     text : 상세한 작업 내역 (친밀도 1024.50 (1130,300,0) → 1027.50 (1131,301,0) 변경 처럼 어떤 걸 어떻게 변경했는 지 등을 상세하게 기록)
     '''
-    with open('log.csv','a',encoding='utf-8',newline='') as a:
+    with open(pathlib.PurePath(__file__).with_name('log.csv'),'a',encoding='utf-8',newline='') as a:
         writer = csv.writer(a)
-        writer.writerow([dt.now(),uid,task,text])
+        writer.writerow([dt.now(tz(td(hours=9))),uid,task,text])
 
 def __commit__(sql_con,closeCon=False):
     '''
@@ -79,7 +78,6 @@ def __createDB__(sql_con,sql_cur):
     __logWrite__('-','생성','테이블 생성 완료')
     __commit__(sql_con,True)
 
-    
 
 def __getData__(sql_cur, uid:int, data_name:str, outside=False):
     '''
@@ -126,7 +124,7 @@ def __dataCheck__(uid, data_name, amount, funcInfo):
         # last_call : dt형
         # 그 외(command_count, day_count) : int형
         if data_name == 'last_call':
-            if type(amount) != dt:
+            if type(amount) != dt and type(amount) != str:
                 raise ValueError(f'amount의 타입이 잘못되었습니다. amount는 datetime형이여야 합니다. amount의 타입 : {type(amount)}')
         else:
             if type(amount) != int:
@@ -153,7 +151,8 @@ def __setData__(sql_con, sql_cur, uid:int, data_name:str, amount, sep=False):
         __logWrite__(uid,func,f'{data_name} ─→ {amount}')
         __commit__(sql_con)
         if sep:
-            __calcFriendlyRate__(sql_cur,uid)
+            __calcFriendlyRate__(sql_con,sql_cur,uid)
+            __commit__(sql_con)
 
 def __addData__(sql_con, sql_cur, uid:int, data_name:str, amount, sep=False):
     '''
@@ -174,7 +173,8 @@ def __addData__(sql_con, sql_cur, uid:int, data_name:str, amount, sep=False):
             __logWrite__(uid,func,f'{data_name} - {abs(amount)}')
         __commit__(sql_con)
         if sep:
-            __calcFriendlyRate__(sql_cur, uid)
+            __calcFriendlyRate__(sql_con, sql_cur, uid)
+            __commit__(sql_con)
 
 def __getDataFromOutside__(uid:int, attribute:str):
     '''코드가 비슷한 것 같아서 그냥 4개를 전부 합쳐버림'''
@@ -210,7 +210,7 @@ def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
     #Out[46]: datetime.datetime(2023, 5, 1, 12, 34, 56, 789000)
     __logWrite__(uid,'날짜 계산','해당 유저의 날짜계산 요청 접수')
     last_call = dt.strptime(__getData__(sql_cur, uid, 'last_call'),'%Y-%m-%d %H:%M:%S.%f')
-    now = dt.now()
+    now = dt.now(tz(td(hours=9)))
     __setData__(sql_con, sql_cur,uid,'last_call',now)
     if now.time() >= time(5,15):
         todayStart = dt(now.year, now.month, now.day, 5, 15)
@@ -223,7 +223,6 @@ def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
         #Out[65]: datetime.timedelta(days=-1, seconds=86399)
         __addData__(sql_con, sql_cur, uid, 'day_count', 1)
         restDay = abs((last_call - todayStart).days)
-        __logWrite__(uid,'commandCallCalc',f'오늘 첫 사용, 미접속일 : {restDay}일')
         if restDay > 2 and restDay <= 7:
             gunba = __getData__(sql_cur,uid,'gunba')
             if not gunba:
@@ -232,6 +231,7 @@ def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
                 __logWrite__(uid,'commandCallCalc',f'해당 유저는 gunba가 True이므로 패널티를 부여하지 않았음')
         else:
             __addData__(sql_con, sql_cur,uid,'total_penalty',14+2*(restDay-8))
+        __logWrite__(uid,'날짜 계산',f'오늘 첫 사용, 미접속일 : {restDay}일')
         returnArg = restDay
     else:
         returnArg = 0
@@ -267,7 +267,6 @@ def commandCallCalc(uid:int, date:dt):
     '''
     __logWrite__(uid,'commandCallCalc','해당 유저의 commandCallCalc 요청 접수')
     sql_con, sql_cur = __connectDB__()
-    __addData__(sql_con, sql_cur, uid, 'command_count', 1)
     lastCallArg = __updateLastCallDate__(sql_con, sql_cur, uid, date)
     friendlyRateArg = __calcFriendlyRate__(sql_con, sql_cur, uid)
     __commit__(sql_con,True)
@@ -315,6 +314,12 @@ if __name__ == '__main__':
         data_name = input('설정할 attribute를 입력해주세요. : ')
         amount = input('설정할 값을 입력해주세요. : ')
         sql_con, sql_cur = __connectDB__()
+        if data_name in ['total_penalty','friendly_rate']:
+            amount = float(amount)
+        elif data_name == 'last_call':
+            pass
+        else:
+            amount = int(amount)
         __setData__(sql_con, sql_cur, uid, data_name, amount, True)
         __closeCon__(sql_con)
         print('설정 작업이 완료되었습니다. 데이터가 반영되었는지는 조회 메뉴에서 조회해주세요.')
@@ -322,6 +327,12 @@ if __name__ == '__main__':
         uid = int(input('변경할 유저의 uid를 입력해주세요. : '))
         data_name = input('변경할 attribute를 입력해주세요. : ')
         amount = input('얼만큼 변경할 지 값을 입력해주세요. (값을 늘리려면 양수, 값을 줄이려면 음수) : ')
+        if data_name in ['total_penalty','friendly_rate']:
+            amount = float(amount)
+        elif data_name == 'last_call':
+            pass
+        else:
+            amount = int(amount)
         sql_con, sql_cur = __connectDB__()
         __setData__(sql_con, sql_cur, uid, data_name, amount, True)
         __closeCon__(sql_con)
