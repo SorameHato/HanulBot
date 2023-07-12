@@ -213,7 +213,9 @@ def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
     try:
         last_call = dt.strptime(__getData__(sql_cur, uid, 'last_call'),'%Y-%m-%d %H:%M:%S.%f%z')
     except IndexError as e:
-        sql_cur.execute('INSERT INTO hanul_lv(uid, first_call, last_call) VALUES(:uid, :dt, :dt);',{'uid':uid,'dt':now})
+        sql_cur.execute('INSERT INTO hanul_exp(uid, first_call, last_call) VALUES(:uid, :dt, :dt);',{'uid':uid,'dt':now})
+        last_call = now
+        __commit__(sql_con)
     except Exception as e:
         raise e
         return -1
