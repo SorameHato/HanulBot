@@ -9,13 +9,31 @@ import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
 from Exp import getChatCount, getDayCount, getRegisterDate, getExp, chatCallCalc, getAllData
-from SkyLib.tui import fixedWidth
+from SkyLib.tui import fixedWidth, fixedWidthAlt
 
 class expFrontEnd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.bot.hanul_color=0x28d3d8
     
+    def __showRanking__(self,ctx,since,until=None):
+        data = getAllData()
+        a = 0
+        result=''
+        if until == None:
+            until = len(data)
+        if since > until:
+            since = until
+        for i in range(since-1, until):
+            row = data[i]
+            user = ctx.guild.get_member(row[0]).nick
+            if user == None:
+                user = ctx.guild.get_member(row[0]).display_name
+            if i <= 2:
+                result += '\n**' + fixedWidth(i+1,3,2) + '등 ' + fixedWidthAlt(user,20) + fixedWidthAlt('('+str(row[1])+')',10,1) + '**'
+            else:
+                result += '\n' + fixedWidth(i+1,3,2) + '등 ' + fixedWidthAlt(user,20) + fixedWidthAlt('('+str(row[1])+')',10,1)
+        return result
     @commands.Cog.listener()
     async def on_message(self, message):
         if not message.author.bot:
@@ -54,16 +72,12 @@ class expFrontEnd(commands.Cog):
         await ctx.respond(embed=embed)
     
     @commands.slash_command(name='랭킹',guild_ids=guild_ids,description='전체 랭킹을 볼 수 있어요!')
-    async def rank(self,ctx):
-        data = getAllData()
-        a = 0
-        result=''
-        for row in data:
-            a += 1
-            result += f'\n{fixedWidth(a,3,2)}등 '
-            user = self.bot.get_user(row[0])
-            result += f'{fixedWidth(user,17)} {fixedWidth(row[1],9,2)}'
-        await ctx.respond(f'랭킹 현황이에요!{result}')
+    async def rank(self,ctx,arg:discord.Option(str,'몇 등까지 표시할 지 입력해주세요!', name='등수', choices=['10등','전체'])='전체'):
+        if arg=='10등':
+            await ctx.respond(f'랭킹 현황이에요!{self.__showRanking__(ctx,1,10)}')
+        else:
+            await ctx.respond(f'랭킹 현황이에요!{self.__showRanking__(ctx,1)}')
+
 
 def setup(bot):
     bot.add_cog(expFrontEnd(bot))
