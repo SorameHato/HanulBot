@@ -8,7 +8,8 @@ global guild_ids
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
-from Exp import getChatCount, getDayCount, getRegisterDate, getExp, chatCallCalc
+from Exp import getChatCount, getDayCount, getRegisterDate, getExp, chatCallCalc, getAllData
+from SkyLib.tui import fixedWidth
 
 class expFrontEnd(commands.Cog):
     def __init__(self, bot):
@@ -51,6 +52,18 @@ class expFrontEnd(commands.Cog):
         embed.add_field(name='스카이방과 함께한 날',value=f'{getDayCount(ctx.author.id)}일',inline=True)
         embed.add_field(name='채팅 집계 횟수',value=f'{getChatCount(ctx.author.id)}회',inline=True)
         await ctx.respond(embed=embed)
+    
+    @commands.slash_command(name='랭킹',guild_ids=guild_ids,description='전체 랭킹을 볼 수 있어요!')
+    async def rank(self,ctx):
+        data = getAllData()
+        a = 0
+        result=''
+        for row in data:
+            a += 1
+            result += f'\n{fixedWidth(a,3,2)}등 '
+            user = self.bot.get_user(row[0])
+            result += f'{fixedWidth(user,17)} {fixedWidth(row[1],9,2)}'
+        await ctx.respond(f'랭킹 현황이에요!{result}')
 
 def setup(bot):
     bot.add_cog(expFrontEnd(bot))
