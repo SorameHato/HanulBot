@@ -1,9 +1,10 @@
 # coding: utf-8
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from datetime import datetime as dt
 from datetime import timedelta as td
 from datetime import timezone as tz
+from datetime import time
 global guild_ids
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
@@ -34,6 +35,13 @@ class expFrontEnd(commands.Cog):
             else:
                 result += '\n' + fixedWidth(i+1,3,2) + '등 ' + fixedWidthAlt(user,20) + fixedWidthAlt('('+str(row[1])+')',10,1)
         return result
+    
+    @tasks.loop(time=time(hour=9,second=5,tzinfo=tz(td(hours=9))))
+    async def morning_inform(self):
+        now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
+        channel = self.bot.get_channel(1126792316003307670)
+        await channel.send(f'{now} 오전 9시 기준 랭킹 현황이에요! 더욱 많은 활동 부탁드릴게요!{self.__showRanking__(ctx,1,5)}')
+    
     @commands.Cog.listener()
     async def on_message(self, message):
         if not message.author.bot:
