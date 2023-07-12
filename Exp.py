@@ -254,6 +254,15 @@ def __calcFriendlyRate__(sql_con, sql_cur, uid:int):
     __setData__(sql_con, sql_cur, uid, 'exp', friendly_rate)
     return friendly_rate
 
+def getAllData():
+    sql_con, sql_cur = __connectDB__()
+    __logWrite__('-', '랭크 계산', f'랭크 계산 요청 접수')
+    sql_cur.execute('SELECT uid, exp FROM hanul_exp ORDER BY exp DESC, uid ASC;')
+    data = sql_cur.fetchall()
+    __closeCon__(sql_con)
+    __logWrite__('-', '랭크 계산', f'랭크 계산 데이터 제공 완료')
+    return data
+
 def chatCallCalc(uid:int, date:dt):
     '''
     먼저 sql_con과 sql_cur을 얻고
