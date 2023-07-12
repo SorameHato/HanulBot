@@ -89,10 +89,10 @@ class giveRole(commands.Cog):
             await channel.send(f'<@{member.id}>',embed=embed)
 
     @commands.Cog.listener()
-    async def on_member_remove(self, member):
-        if not member.bot:
+    async def on_raw_member_remove(self, payload):
+        if not payload.user.bot:
             channel = self.bot.get_channel(1126790937448820878)
-            embed = discord.Embed(title=f'{member}, 스카이방 지하에 묻히다.',description=f'{member}님께서 떠나셨어요.',color=bot.hanul_color)
+            embed = discord.Embed(title=f'{payload.user}, 스카이방 지하에 묻히다.',description=f'{payload.user}님께서 떠나셨어요.',color=bot.hanul_color)
             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
             await channel.send(embed=embed)
     
