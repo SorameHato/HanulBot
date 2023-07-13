@@ -86,6 +86,24 @@ class expFrontEnd(commands.Cog):
             await ctx.respond(f'랭킹 현황이에요!{self.__showRanking__(ctx,1,10)}')
         else:
             await ctx.respond(f'랭킹 현황이에요!{self.__showRanking__(ctx,1)}')
+    
+    # @commands.slash_command(name='유저테스트',guild_ids=guild_ids,description='유저 테스트용 명령어')
+    # async def userTest(self,ctx,user:discord.Option(discord.SlashCommandOptionType.user,'소지금을 설정할 사용자를 입력해주세요.',name='사용자')):
+        # result = 'get_member\n'
+        # a = ctx.guild.get_member(user.id)
+        # for att in dir(a):
+            # result += att + ' : ' + str(getattr(a, att)) + '\n'
+        # b = await ctx.guild.fetch_member(user.id)
+        # result += 'fetch_member\n'
+        # for att in dir(b):
+            # result += att + ' : ' + str(getattr(b, att)) + '\n'
+        # c = self.bot.get_user(user.id)
+        # result += 'get_user\n'
+        # for att in dir(c):
+            # result += att + ' : ' + str(getattr(c, att)) + '\n'
+        # with open('/workspace/HanulBot/output.txt', 'wt', encoding='utf-8') as a:
+            # a.write(result)
+        # await ctx.respond('파일을 /workspace/HanulBot/output.txt 에 저장했어요!')
 
 
 def setup(bot):
