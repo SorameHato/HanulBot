@@ -16,6 +16,7 @@ class expFrontEnd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.bot.hanul_color=0x28d3d8
+        self.morning_inform.start()
     
     def __showRanking__(self,ctx,since,until=None):
         data = getAllData()
