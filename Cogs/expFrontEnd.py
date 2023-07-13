@@ -80,7 +80,7 @@ class expFrontEnd(commands.Cog):
         embed.add_field(name='채팅 집계 횟수',value=f'{getChatCount(ctx.author.id)}회',inline=True)
         await ctx.respond(embed=embed)
     
-    @commands.slash_command(name='랭킹',guild_ids=guild_ids,description='전체 랭킹을 볼 수 있어요!')
+    @commands.slash_command(name='랭킹',guild_ids=guild_ids,description='경험치 랭킹을 볼 수 있어요!')
     async def rank(self,ctx,arg:discord.Option(str,'몇 등까지 표시할 지 입력해주세요!', name='등수', choices=['10등','전체'])='전체'):
         if arg=='10등':
             await ctx.respond(f'랭킹 현황이에요!{self.__showRanking__(ctx,1,10)}')
