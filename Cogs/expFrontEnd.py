@@ -9,7 +9,7 @@ global guild_ids
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
-from Exp import getChatCount, getDayCount, getRegisterDate, getExp, chatCallCalc, getAllData, getYesterdayData
+from Exp import getChatCount, getDayCount, getRegisterDate, getExp, chatCallCalc, getAllData, getYesterdayData, dailyDBInit
 from SkyLib.tui import fixedWidth, fixedWidthAlt
 
 class expFrontEnd(commands.Cog):
@@ -17,6 +17,7 @@ class expFrontEnd(commands.Cog):
         self.bot = bot
         self.bot.hanul_color=0x28d3d8
         self.morning_inform.start()
+        self.daily_init.start()
     
     def __showRanking__(self,guild,since,until=None,yesterday=False,modern=False):
         if yesterday:
@@ -45,7 +46,7 @@ class expFrontEnd(commands.Cog):
                     if user == None:
                         user = guild.get_member(row[0]).display_name
             if modern:
-                result += fixedWidth(i+1,3,2) + '등 ' + fixedWidth(user,20) + fixedWidth(str(row[1])+' (▲'+str(row[2])+', '+str(row[3])+'일차)',25,1)
+                result += '\n' + fixedWidth(i+1,3,2) + '등 ' + fixedWidth(user,20) + fixedWidth(str(row[1])+' (▲'+str(row[2])+', '+str(row[3])+'일차)',25,1)
             else:
                 if i <= 2:
                     result += '\n**' + fixedWidth(i+1,3,2) + '등 ' + user + ' (' +str(row[1])+' ▲'+str(row[2])+', '+str(row[3])+'일차)**'
@@ -58,6 +59,13 @@ class expFrontEnd(commands.Cog):
         now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
         channel = self.bot.get_channel(1126792316003307670)
         await channel.send(f'{now} 오전 5시 15분 기준 랭킹 현황이에요! 더욱 많은 활동 부탁드릴게요!{self.__showRanking__(channel.guild,1,5,yesterday=True)}')
+    
+    @tasks.loop(time=time(hour=5,minute=15,second=1,tzinfo=tz(td(hours=9))))
+    async def daily_init(self):
+        dailyDBInit()
+        now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
+        channel = self.bot.get_channel(1126792316003307670)
+        await channel.send(f'{now} 일일 DB 초기화 완료! 어제의 랭킹이에요!```{self.__showRanking__(channel.guild,1,5,yesterday=True,modern=True,todayOrder=True)}```')
     
     @commands.Cog.listener()
     async def on_message(self, message):
