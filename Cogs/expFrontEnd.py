@@ -46,7 +46,7 @@ class expFrontEnd(commands.Cog):
                     if user == None:
                         user = guild.get_member(row[0]).display_name
             if modern:
-                result += '\n' + fixedWidth(i+1,3,2) + '등 ' + fixedWidth(user,20) + fixedWidth(str(row[1])+' (▲'+str(row[2])+', '+str(row[3])+'일차)',25,1)
+                result += '\n' + fixedWidth(i+1,3,2) + '등 ' + fixedWidth(user,20) + fixedWidth(str(row[1])+' (▲'+str(row[2])+', '+str(row[3])+'일차)',25,2)
             else:
                 if i <= 2:
                     result += '\n**' + fixedWidth(i+1,3,2) + '등 ' + user + ' (' +str(row[1])+' ▲'+str(row[2])+', '+str(row[3])+'일차)**'
