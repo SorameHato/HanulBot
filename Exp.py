@@ -259,11 +259,27 @@ def __calcFriendlyRate__(sql_con, sql_cur, uid:int):
 def getAllData():
     sql_con, sql_cur = __connectDB__()
     __logWrite__('-', '랭크 계산', f'랭크 계산 요청 접수')
-    sql_cur.execute('SELECT uid, exp FROM hanul_exp ORDER BY exp DESC, uid ASC;')
+    sql_cur.execute('SELECT uid, exp, (exp-exp_ashita), day_count FROM hanul_exp ORDER BY exp DESC, uid ASC;')
     data = sql_cur.fetchall()
     __closeCon__(sql_con)
     __logWrite__('-', '랭크 계산', f'랭크 계산 데이터 제공 완료')
     return data
+
+def getYesterdayData():
+    sql_con, sql_cur = __connectDB__()
+    __logWrite__('-', '랭크 계산', f'작일 랭크 계산 요청 접수')
+    sql_cur.execute('SELECT hanul_exp.uid, hanul_exp_final.exp_final, hanul_exp_final.increase, hanul_exp.day_count FROM hanul_exp JOIN hanul_exp_final ON hanul_exp.uid=hanul_exp_final.uid ORDER BY hanul_exp_final.exp_final DESC, hanul_exp.uid ASC;')
+    data = sql_cur.fetchall()
+    __closeCon__(sql_con)
+    __logWrite__('-', '랭크 계산', f'작일 랭크 계산 데이터 제공 완료')
+    return data
+
+def dailyDBInit():
+    sql_con, sql_cur = __connectDB__()
+    __logWrite__('-', '일일 초기화', f'일일 초기화 루틴 시작')
+    sql_cur.execute('DELETE FROM hanul_exp_final;')
+    sql_cur.execute('INSERT INTO hanul_exp_final(uid, exp_final, increase) SELECT uid, exp, (exp-exp_ashita) FROM hanul_exp;')
+    
 
 def chatCallCalc(uid:int, date:dt):
     '''

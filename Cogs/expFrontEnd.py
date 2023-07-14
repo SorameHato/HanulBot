@@ -9,7 +9,7 @@ global guild_ids
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
-from Exp import getChatCount, getDayCount, getRegisterDate, getExp, chatCallCalc, getAllData
+from Exp import getChatCount, getDayCount, getRegisterDate, getExp, chatCallCalc, getAllData, getYesterdayData
 from SkyLib.tui import fixedWidth, fixedWidthAlt
 
 class expFrontEnd(commands.Cog):
@@ -18,8 +18,11 @@ class expFrontEnd(commands.Cog):
         self.bot.hanul_color=0x28d3d8
         self.morning_inform.start()
     
-    def __showRanking__(self,guild,since,until=None):
-        data = getAllData()
+    def __showRanking__(self,guild,since,until=None,yesterday=False,modern=False):
+        if yesterday:
+            data = getYesterdayData()
+        else:
+            data = getAllData()
         a = 0
         result=''
         if until == None:
@@ -41,17 +44,19 @@ class expFrontEnd(commands.Cog):
                 finally:
                     if user == None:
                         user = guild.get_member(row[0]).display_name
-            if i <= 2:
-                result += '\n**' + fixedWidth(i+1,3,2) + '등 ' + fixedWidthAlt(user,20) + fixedWidthAlt('('+str(row[1])+')',10,1) + '**'
+            if modern:
             else:
-                result += '\n' + fixedWidth(i+1,3,2) + '등 ' + fixedWidthAlt(user,20) + fixedWidthAlt('('+str(row[1])+')',10,1)
+                if i <= 2:
+                    result += '\n**' + fixedWidth(i+1,3,2) + '등 ' + fixedWidthAlt(user,20) + fixedWidthAlt('('+str(row[1])+' ▲'+str(row[2])+', '+str(row[3])+'일차)',25,1) + '**'
+                else:
+                    result += '\n' + fixedWidth(i+1,3,2) + '등 ' + fixedWidthAlt(user,20) + fixedWidthAlt('('+str(row[1])+' ▲'+str(row[2])+', '+str(row[3])+'일차)',25,1)
         return result
     
     @tasks.loop(time=time(hour=9,second=5,tzinfo=tz(td(hours=9))))
     async def morning_inform(self):
         now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
         channel = self.bot.get_channel(1126792316003307670)
-        await channel.send(f'{now} 오전 9시 기준 랭킹 현황이에요! 더욱 많은 활동 부탁드릴게요!{self.__showRanking__(channel.guild,1,5)}')
+        await channel.send(f'{now} 오전 5시 15분 기준 랭킹 현황이에요! 더욱 많은 활동 부탁드릴게요!{self.__showRanking__(channel.guild,1,5,yesterday=True)}')
     
     @commands.Cog.listener()
     async def on_message(self, message):
