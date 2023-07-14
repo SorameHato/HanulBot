@@ -18,7 +18,7 @@ class expFrontEnd(commands.Cog):
         self.bot.hanul_color=0x28d3d8
         self.morning_inform.start()
     
-    def __showRanking__(self,ctx,since,until=None):
+    def __showRanking__(self,guild,since,until=None):
         data = getAllData()
         a = 0
         result=''
@@ -28,7 +28,7 @@ class expFrontEnd(commands.Cog):
             since = until
         for i in range(since-1, until):
             row = data[i]
-            user = ctx.guild.get_member(row[0]).nick
+            user = guild.get_member(row[0]).nick
             if user == None:
                 user = ctx.guild.get_member(row[0]).display_name
             if i <= 2:
@@ -41,7 +41,7 @@ class expFrontEnd(commands.Cog):
     async def morning_inform(self):
         now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
         channel = self.bot.get_channel(1126792316003307670)
-        await channel.send(f'{now} 오전 9시 기준 랭킹 현황이에요! 더욱 많은 활동 부탁드릴게요!{self.__showRanking__(ctx,1,5)}')
+        await channel.send(f'{now} 오전 9시 기준 랭킹 현황이에요! 더욱 많은 활동 부탁드릴게요!{self.__showRanking__(channel.guild,1,5)}')
     
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -83,9 +83,9 @@ class expFrontEnd(commands.Cog):
     @commands.slash_command(name='랭킹',guild_ids=guild_ids,description='경험치 랭킹을 볼 수 있어요!')
     async def rank(self,ctx,arg:discord.Option(str,'몇 등까지 표시할 지 입력해주세요!', name='등수', choices=['10등','전체'])='전체'):
         if arg=='10등':
-            await ctx.respond(f'랭킹 현황이에요!{self.__showRanking__(ctx,1,10)}')
+            await ctx.respond(f'랭킹 현황이에요!{self.__showRanking__(ctx.guild,1,10)}')
         else:
-            await ctx.respond(f'랭킹 현황이에요!{self.__showRanking__(ctx,1)}')
+            await ctx.respond(f'랭킹 현황이에요!{self.__showRanking__(ctx.guild,1)}')
     
     # @commands.slash_command(name='유저테스트',guild_ids=guild_ids,description='유저 테스트용 명령어')
     # async def userTest(self,ctx,user:discord.Option(discord.SlashCommandOptionType.user,'소지금을 설정할 사용자를 입력해주세요.',name='사용자')):
