@@ -75,7 +75,7 @@ class fishingPlace(commands.Cog):
         await informChannel.send(f'낚시터 정리에 성공했어요! 정리되지 않은 낚시터 : {fishingList}')
             
     
-    @commands.slash_command(name='낚시터',guild_ids = guild_ids, description='낚시터를 만들거나 낚시터 안에서 사용하면 낚시터를 없애요!')
+    @commands.slash_command(name='산정호수',guild_ids = guild_ids, description='낚시터를 만들거나 낚시터 안에서 사용하면 낚시터를 없애요!')
     async def prob(self, ctx):
         with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'rb') as f:
             fishingList = pickle.load(f)
