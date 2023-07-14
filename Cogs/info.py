@@ -23,7 +23,7 @@ class info(commands.Cog):
     
     @commands.Cog.listener()
     async def on_application_command_error(self, ctx, error):
-        embed = discord.Embed(title='자세한 내용',description=error,color=0xfae5fa)
+        embed = discord.Embed(title='자세한 내용',description=error,color=self.bot.hanul_color)
         embed.add_field(name="보낸 분",value=ctx.author,inline=False)
         embed.add_field(name="보낸 내용",value=ctx.message,inline=False)
         embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
