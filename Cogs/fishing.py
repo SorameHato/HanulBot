@@ -57,21 +57,22 @@ class fishingPlace(commands.Cog):
         channelList = list()
         for item in fishingList:
             channelList.append(item[0])
-        for i in range(len(channelList)):
-            channel = self.bot.get_channel(channelList[i])
-            last_message = await channel.fetch_message(channel.last_message_id)
-            if last_message.edited_at == None:
-                lastWorkTime = last_message.created_at
-            else:
-                lastWorkTime = last_message.edited_at
-            if dt.now(tz(td(hours=9))) - lastWorkTime >= td(hours=1):
-                if channel.name.startswith('낚시터-'):
-                    fishingList = self.popList(fishingList, channel.id)
-                    with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'wb') as f:
-                        pickle.dump(fishingList, f)
-                    await channel.delete(reason=f'하늘봇 낚시터 자동제거(일일 초기화)')
+        if channelList != []:
+            for i in range(len(channelList)):
+                channel = self.bot.get_channel(channelList[i])
+                last_message = await channel.fetch_message(channel.last_message_id)
+                if last_message.edited_at == None:
+                    lastWorkTime = last_message.created_at
                 else:
-                    await informChannel.send(f'{channel.id} 채널을 지우는 중 오류가 발생했어요! 해당 채널은 낚시터가 아닌 것 같아요. 하토를 불러주세요!')
+                    lastWorkTime = last_message.edited_at
+                if dt.now(tz(td(hours=9))) - lastWorkTime >= td(hours=1):
+                    if channel.name.startswith('낚시터-'):
+                        fishingList = self.popList(fishingList, channel.id)
+                        with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'wb') as f:
+                            pickle.dump(fishingList, f)
+                        await channel.delete(reason=f'하늘봇 낚시터 자동제거(일일 초기화)')
+                    else:
+                        await informChannel.send(f'{channel.id} 채널을 지우는 중 오류가 발생했어요! 해당 채널은 낚시터가 아닌 것 같아요. 하토를 불러주세요!')
         await informChannel.send(f'낚시터 정리에 성공했어요! 정리되지 않은 낚시터 : {fishingList}')
             
     
