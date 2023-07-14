@@ -162,7 +162,7 @@ def __addData__(sql_con, sql_cur, uid:int, data_name:str, amount, sep=False):
     기존 add~ 함수 어짜피 내부에서만 쓰이니까 전부 합쳐버림
     '''
     if __dataCheck__(uid, data_name, amount, 'add'):
-        sql_cur.execute(f'UPDATE hanul_exp SET {data_name}=(SELECT {data_name} FROM hanul_exp WHERE uid=:uid)+:amount WHERE uid=:uid;',{'uid':uid,'amount':amount})
+        sql_cur.execute(f'UPDATE hanul_exp SET {data_name}={data_name}+:amount WHERE uid=:uid;',{'uid':uid,'amount':amount})
         if sep:
             func = 'Add(내부 수동)'
         else:
