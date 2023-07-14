@@ -154,3 +154,4 @@ token.txt
 log.csv
 Exp.db
 *.db-journal
+*.pickle
