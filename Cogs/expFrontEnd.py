@@ -32,26 +32,27 @@ class expFrontEnd(commands.Cog):
             since = until
         for i in range(since-1, until):
             row = data[i]
-            user = guild.get_member(row[0]).nick
-            if user == None:
+            user = guild.get_member(row[0])
+            nick = user.nick
+            if nick == None:
                 try:
                     # 2.5버전 업데이트 전 임시 코드
-                    user = guild.get_member(row[0]).global_name
+                    nick = user.global_name
                 except AttributeError:
                     pass
                 except Exception as e:
                     raise e
                     return
                 finally:
-                    if user == None:
-                        user = guild.get_member(row[0]).display_name
+                    if nick == None:
+                        nick = user.display_name
             if modern:
-                result += '\n' + fixedWidth(i+1,3,2) + '등 ' + fixedWidth(user,20) + fixedWidth(str(row[1])+' (▲'+str(row[2])+', '+str(row[3])+'일차)',25,2)
+                result += '\n' + fixedWidth(i+1,3,2) + '등 ' + fixedWidth(nick,20) + fixedWidth(str(row[1])+' (▲'+str(row[2])+', '+str(row[3])+'일차)',25,2)
             else:
                 if i <= 2:
-                    result += '\n**' + fixedWidth(i+1,3,2) + '등 ' + user + ' (' +str(row[1])+' ▲'+str(row[2])+', '+str(row[3])+'일차)**'
+                    result += '\n**' + fixedWidth(i+1,3,2) + '등 ' + nick + ' (' +str(row[1])+' ▲'+str(row[2])+', '+str(row[3])+'일차)**'
                 else:
-                    result += '\n' + fixedWidth(i+1,3,2) + '등 ' + user + ' (' +str(row[1])+' ▲'+str(row[2])+', '+str(row[3])+'일차)'
+                    result += '\n' + fixedWidth(i+1,3,2) + '등 ' + nick + ' (' +str(row[1])+' ▲'+str(row[2])+', '+str(row[3])+'일차)'
         return result
     
     @tasks.loop(time=time(hour=9,second=5,tzinfo=tz(td(hours=9))))
