@@ -30,7 +30,17 @@ class expFrontEnd(commands.Cog):
             row = data[i]
             user = guild.get_member(row[0]).nick
             if user == None:
-                user = ctx.guild.get_member(row[0]).display_name
+                try:
+                    # 2.5버전 업데이트 전 임시 코드
+                    user = guild.get_member(row[0]).global_name
+                except AttributeError:
+                    pass
+                except Exception as e:
+                    raise e
+                    return
+                finally:
+                    if user == None:
+                        user = guild.get_member(row[0]).display_name
             if i <= 2:
                 result += '\n**' + fixedWidth(i+1,3,2) + '등 ' + fixedWidthAlt(user,20) + fixedWidthAlt('('+str(row[1])+')',10,1) + '**'
             else:
