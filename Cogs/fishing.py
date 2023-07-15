@@ -83,7 +83,7 @@ class fishingPlace(commands.Cog):
     @commands.slash_command(name='산정호수',guild_ids = guild_ids, description='낚시터를 만들거나 낚시터 안에서 사용하면 낚시터를 없애요!')
     async def prob(self, ctx, arg:discord.Option(bool,'정기 정리까지 남은 시간을 표시할까요?',name='정리시간',default=False)):
         if arg:
-            await ctx.respond(f'다음 정기 정리 시간은 다음과 같아요! {self.daily_init.next_iteration}\ncurrent_loop 값은 다음과 같아요!{self.daily_init.current_loop}\n작동 여부는 다음과 같아요! {self.daily_init.is_running()}\n실패 여부는 다음과 같아요!{self.daily_init.failed()}')
+            await ctx.respond(f'다음 정기 정리 시간 : {self.daily_init.next_iteration.astimezone(tz=tz(td(hours=9)))}\ncurrent_loop : {self.daily_init.current_loop}\n작동 여부 : {self.daily_init.is_running()}\n실패 여부 : {self.daily_init.failed()}')
             return
         else:
             with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'rb') as f:
