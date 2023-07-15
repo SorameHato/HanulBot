@@ -49,7 +49,7 @@ class fishingPlace(commands.Cog):
             fishingList.remove(item)
         return fishingList
     
-    @tasks.loop(time=time(hour=5,minute=15,tzinfo=tz(td(hours=9))))
+    @tasks.loop(hours=2)
     async def daily_init(self):
         with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'rb') as f:
             fishingList = pickle.load(f)
@@ -100,9 +100,9 @@ class fishingPlace(commands.Cog):
                     ctx.guild.get_member(1129095389459529880) : discord.PermissionOverwrite(read_messages=True, send_messages=True),
                     ctx.author : discord.PermissionOverwrite(read_messages=True, send_messages=True)}
             cname = '낚시터-'+str(random.randint(0,9999)).zfill(4)
-            channel = await ctx.guild.create_text_channel(cname,reason='하늘봇 낚시터 자동생성',position=len(ctx.guild.channels)-len(ctx.guild.categories),topic='자동으로 생성된 낚시터에요! 새벽 5시 15분 기준으로 채팅이 1시간 이상 없는 경우 자동으로 삭제될 예정이에요!',overwrites=perm)
+            channel = await ctx.guild.create_text_channel(cname,reason='하늘봇 낚시터 자동생성',position=len(ctx.guild.channels)-len(ctx.guild.categories),topic='자동으로 생성된 낚시터에요! 정기적으로 채팅이 1시간 이상 없는 경우 자동으로 삭제될 예정이에요!',overwrites=perm)
             fishingList.append([channel.id, ctx.author.id])
-            await channel.send(f'<@{ctx.author.id}> 낚시터가 만들어졌어요! 여기서 이프봇을 자유롭게 사용하시면 돼요!\n낚시터는 새벽 5시 15분 기준으로 채팅이 1시간 이상 없는 경우 자동으로 삭제돼요! 그 전에 지우고 싶으시면 이 채널 안에서 /산정호수 명령어를 다시 한 번 사용해주세요!')
+            await channel.send(f'<@{ctx.author.id}> 낚시터가 만들어졌어요! 여기서 이프봇을 자유롭게 사용하시면 돼요!\n낚시터는 채팅이 1시간 이상 없는 경우 자동으로 삭제돼요! 그 전에 지우고 싶으시면 이 채널 안에서 /산정호수 명령어를 다시 한 번 사용해주세요!')
             await ctx.respond(f'낚시터가 생성되었어요! 채널 맨 아래쪽을 확인해주세요! <#{channel.id}>',ephemeral=True)
             with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'wb') as f:
                 pickle.dump(fishingList, f)
