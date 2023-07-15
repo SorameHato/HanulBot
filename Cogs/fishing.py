@@ -78,34 +78,38 @@ class fishingPlace(commands.Cog):
             await informChannel.send(f'생성된 낚시터가 없어서 정기 낚시터 정리를 하지 않았어요!')
     
     @commands.slash_command(name='산정호수',guild_ids = guild_ids, description='낚시터를 만들거나 낚시터 안에서 사용하면 낚시터를 없애요!')
-    async def prob(self, ctx):
-        with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'rb') as f:
-            fishingList = pickle.load(f)
-        a = self.listCheck(fishingList, ctx.channel.id)
-        b = self.userCheck(fishingList, ctx.author.id)
-        if a:
-            if ctx.channel.name.startswith('낚시터-'):
-                fishingList = self.popList(fishingList, ctx.channel.id)
+    async def prob(self, ctx, arg:discord.Option(bool,'정기 정리까지 남은 시간을 표시할까요?',name='정리시간',default=False)):
+        if arg:
+            await ctx.respond(f'다음 정기 정리 시간은 다음과 같아요! {self.daily_init.next_iteration}\ncurrent_loop 값은 다음과 같아요!{self.daily_init.current_loop}\n작동 여부는 다음과 같아요! {self.daily_init.is_running()}\n실패 여부는 다음과 같아요!{self.daily_init.failed()}')
+            return
+        else:
+            with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'rb') as f:
+                fishingList = pickle.load(f)
+            a = self.listCheck(fishingList, ctx.channel.id)
+            b = self.userCheck(fishingList, ctx.author.id)
+            if a:
+                if ctx.channel.name.startswith('낚시터-'):
+                    fishingList = self.popList(fishingList, ctx.channel.id)
+                    with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'wb') as f:
+                        pickle.dump(fishingList, f)
+                    await ctx.channel.delete(reason=f'하늘봇 낚시터 자동제거({ctx.author} 사용자의 요청)')
+                else:
+                    ctx.respond('낚시터가 아닌 일반 채널을 지우려고 시도하시는 것 같아요! 만약 낚시터가 맞다면 어드민을 불러서 지워주세요!')
+            elif b != None:
+                await ctx.respond(f'이미 생성된 낚시터가 있어요! 채널 맨 아래쪽을 확인해주세요! <#{b}>',ephemeral=True)
+            else:
+                perm = {ctx.guild.default_role : discord.PermissionOverwrite(read_messages=False),
+                        ctx.guild.get_member(693818502657867878) : discord.PermissionOverwrite(read_messages=True, send_messages=True),
+                        ctx.guild.get_member(1126891143968346214) : discord.PermissionOverwrite(read_messages=True, send_messages=True),
+                        ctx.guild.get_member(1129095389459529880) : discord.PermissionOverwrite(read_messages=True, send_messages=True),
+                        ctx.author : discord.PermissionOverwrite(read_messages=True, send_messages=True)}
+                cname = '낚시터-'+str(random.randint(0,9999)).zfill(4)
+                channel = await ctx.guild.create_text_channel(cname,reason='하늘봇 낚시터 자동생성',position=len(ctx.guild.channels)-len(ctx.guild.categories),topic='자동으로 생성된 낚시터에요! 정기적으로 채팅이 1시간 이상 없는 경우 자동으로 삭제될 예정이에요!',overwrites=perm)
+                fishingList.append([channel.id, ctx.author.id])
+                await channel.send(f'<@{ctx.author.id}> 낚시터가 만들어졌어요! 여기서 이프봇을 자유롭게 사용하시면 돼요!\n낚시터는 채팅이 1시간 이상 없는 경우 자동으로 삭제돼요! 그 전에 지우고 싶으시면 이 채널 안에서 /산정호수 명령어를 다시 한 번 사용해주세요!')
+                await ctx.respond(f'낚시터가 생성되었어요! 채널 맨 아래쪽을 확인해주세요! <#{channel.id}>',ephemeral=True)
                 with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'wb') as f:
                     pickle.dump(fishingList, f)
-                await ctx.channel.delete(reason=f'하늘봇 낚시터 자동제거({ctx.author} 사용자의 요청)')
-            else:
-                ctx.respond('낚시터가 아닌 일반 채널을 지우려고 시도하시는 것 같아요! 만약 낚시터가 맞다면 어드민을 불러서 지워주세요!')
-        elif b != None:
-            await ctx.respond(f'이미 생성된 낚시터가 있어요! 채널 맨 아래쪽을 확인해주세요! <#{b}>',ephemeral=True)
-        else:
-            perm = {ctx.guild.default_role : discord.PermissionOverwrite(read_messages=False),
-                    ctx.guild.get_member(693818502657867878) : discord.PermissionOverwrite(read_messages=True, send_messages=True),
-                    ctx.guild.get_member(1126891143968346214) : discord.PermissionOverwrite(read_messages=True, send_messages=True),
-                    ctx.guild.get_member(1129095389459529880) : discord.PermissionOverwrite(read_messages=True, send_messages=True),
-                    ctx.author : discord.PermissionOverwrite(read_messages=True, send_messages=True)}
-            cname = '낚시터-'+str(random.randint(0,9999)).zfill(4)
-            channel = await ctx.guild.create_text_channel(cname,reason='하늘봇 낚시터 자동생성',position=len(ctx.guild.channels)-len(ctx.guild.categories),topic='자동으로 생성된 낚시터에요! 정기적으로 채팅이 1시간 이상 없는 경우 자동으로 삭제될 예정이에요!',overwrites=perm)
-            fishingList.append([channel.id, ctx.author.id])
-            await channel.send(f'<@{ctx.author.id}> 낚시터가 만들어졌어요! 여기서 이프봇을 자유롭게 사용하시면 돼요!\n낚시터는 채팅이 1시간 이상 없는 경우 자동으로 삭제돼요! 그 전에 지우고 싶으시면 이 채널 안에서 /산정호수 명령어를 다시 한 번 사용해주세요!')
-            await ctx.respond(f'낚시터가 생성되었어요! 채널 맨 아래쪽을 확인해주세요! <#{channel.id}>',ephemeral=True)
-            with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'wb') as f:
-                pickle.dump(fishingList, f)
 
 
 def setup(bot):
