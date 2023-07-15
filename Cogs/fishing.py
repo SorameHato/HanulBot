@@ -13,6 +13,9 @@ from main import guild_ids
 class fishingPlace(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
+    
+    @commands.Cog.listener()
+    async def on_ready(self):
         self.daily_init.start()
     
     def listCheck(self, fishingList, channelID):
