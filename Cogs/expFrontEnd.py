@@ -57,16 +57,22 @@ class expFrontEnd(commands.Cog):
     
     @tasks.loop(time=time(hour=9,second=5,tzinfo=tz(td(hours=9))))
     async def morning_inform(self):
-        now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
-        channel = self.bot.get_channel(1126792316003307670)
-        await channel.send(f'{now} 오전 5시 15분 기준 랭킹 현황이에요! 더욱 많은 활동 부탁드릴게요!{self.__showRanking__(channel.guild,1,5,yesterday=True)}')
+        now = dt.now(tz(td(hours=9)))
+        tcode = __time__(now.hour, now.minute, now.second)
+        if tcode >= __time__(8, 59) and tcode < __time__(9, 2):
+            now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
+            channel = self.bot.get_channel(1126792316003307670)
+            await channel.send(f'{now} 오전 5시 15분 기준 랭킹 현황이에요! 더욱 많은 활동 부탁드릴게요!{self.__showRanking__(channel.guild,1,5,yesterday=True)}')
     
     @tasks.loop(time=time(hour=5,minute=15,second=1,tzinfo=tz(td(hours=9))))
     async def daily_init(self):
-        dailyDBInit()
-        now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
-        channel = self.bot.get_channel(1126792316003307670)
-        await channel.send(f'{now} 일일 DB 초기화 완료! 어제의 랭킹이에요!```{self.__showRanking__(channel.guild,1,5,yesterday=True,modern=True,todayOrder=True)}```')
+        now = dt.now(tz(td(hours=9)))
+        tcode = __time__(now.hour, now.minute, now.second)
+        if tcode >= __time__(5, 14) and tcode < __time__(5, 17):
+            dailyDBInit()
+            now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
+            channel = self.bot.get_channel(1126792316003307670)
+            await channel.send(f'{now} 일일 DB 초기화 완료! 어제의 랭킹이에요!```{self.__showRanking__(channel.guild,1,5,yesterday=True,modern=True,todayOrder=True)}```')
     
     @commands.Cog.listener()
     async def on_message(self, message):
