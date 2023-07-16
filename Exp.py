@@ -5,14 +5,14 @@ from datetime import timedelta as td
 from datetime import date, time
 from SkyLib import tui
 chatPoint = 1
-dayPoint = 29
+dayPoint = 19
 
 '''
 자세한 주석은 에루봇의 파일을 참고할 것
 
 테이블 구조 : uid INTEGER, first_call TEXT, last_call TEXT, chat_count INTEGER, day_count INTEGER, exp INTEGER
 명령어 사용 한 번 : 1 (1분당 한 번)
-하루 최초 한 번 : 29
+하루 최초 한 번 : 19
 
 뭔가 채팅이 오면 무조건적으로 event를 발생시켜서
 chatCallCalc 함수를 호출
