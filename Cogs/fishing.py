@@ -52,7 +52,7 @@ class fishingPlace(commands.Cog):
             fishingList.remove(item)
         return fishingList
     
-    @tasks.loop(hours=2)
+    @tasks.loop(time=time(hour=5,minute=15,tzinfo=tz(td(hours=9))),count=100,reconnect=False)
     async def daily_init(self):
         with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'rb') as f:
             fishingList = pickle.load(f)
