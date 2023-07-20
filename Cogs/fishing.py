@@ -58,8 +58,8 @@ class fishingPlace(commands.Cog):
     @tasks.loop(time=time(hour=5,minute=15,tzinfo=tz(td(hours=9))),count=31,reconnect=False)
     async def daily_init(self):
         now = dt.now(tz(td(hours=9)))
-        tcode = __time__(now.hour, now.minute, now.second)
-        if tcode >= __time__(5, 14) and tcode < __time__(5, 17):
+        tcode = self.__time__(now.hour, now.minute, now.second)
+        if tcode >= self.__time__(5, 14) and tcode < self.__time__(5, 15, 2):
             with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'rb') as f:
                 fishingList = pickle.load(f)
             informChannel = self.bot.get_channel(1126893408892502028)
@@ -69,9 +69,9 @@ class fishingPlace(commands.Cog):
             if channelList != []:
                 for i in range(len(channelList)):
                     channel = self.bot.get_channel(channelList[i])
-                    if channel != None:
+                    if channel is not None:
                         last_message = await channel.fetch_message(channel.last_message_id)
-                        if last_message.edited_at == None:
+                        if last_message.edited_at is None:
                             lastWorkTime = last_message.created_at
                         else:
                             lastWorkTime = last_message.edited_at
