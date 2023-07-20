@@ -286,6 +286,8 @@ def dailyDBInit():
     sql_cur.execute('DELETE FROM hanul_exp_final;')
     __commit__(sql_con)
     sql_cur.execute('INSERT INTO hanul_exp_final(uid, exp_final, increase) SELECT uid, exp, (exp-exp_ashita) FROM hanul_exp;')
+    __commit__(sql_con)
+    sql_cur.execute('UPDATE hanul_exp SET exp_ashita=exp;')
     __commit__(sql_con, True)
     __logWrite__('-', '일일 초기화', f'일일 초기화 루틴 완료')
     
