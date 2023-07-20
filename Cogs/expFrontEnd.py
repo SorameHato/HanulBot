@@ -76,6 +76,9 @@ class expFrontEnd(commands.Cog):
             now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
             channel = self.bot.get_channel(1126792316003307670)
             await channel.send(f'{now} 일일 DB 초기화 완료! 어제의 랭킹이에요!```{self.__showRanking__(channel.guild,1,5,yesterday=True,modern=True,todayOrder=True)}```')
+            return
+        else:
+            return
     
     @commands.Cog.listener()
     async def on_message(self, message):
