@@ -9,10 +9,12 @@ global guild_ids
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
+from SkyLib.taskDateCheck import *
 
 class fishingPlace(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
+        self.bot.fishing_init_date = initDateSet()
     
     @commands.Cog.listener()
     async def on_ready(self):
@@ -55,11 +57,12 @@ class fishingPlace(commands.Cog):
     def __time__(self, hour, minute=0, second=0):
         return time(hour=hour,minute=minute,second=second,tzinfo=tz(td(hours=9)))
     
-    @tasks.loop(time=time(hour=5,minute=15,tzinfo=tz(td(hours=9))),count=31,reconnect=False)
+    @tasks.loop(time=time(hour=5,minute=15,tzinfo=tz(td(hours=9))),reconnect=False)
     async def daily_init(self):
         now = dt.now(tz(td(hours=9)))
         tcode = self.__time__(now.hour, now.minute, now.second)
-        if tcode >= self.__time__(5, 14) and tcode < self.__time__(5, 15, 2):
+        if tcode >= self.__time__(5, 14) and tcode < self.__time__(5, 15, 2) and initDateCheck(self.bot.fishing_init_date):
+            self.bot.fishing_init_date = initDateSet()
             with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'rb') as f:
                 fishingList = pickle.load(f)
             informChannel = self.bot.get_channel(1126893408892502028)
