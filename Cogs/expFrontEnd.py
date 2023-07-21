@@ -11,11 +11,13 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
 from Exp import getChatCount, getDayCount, getRegisterDate, getExp, chatCallCalc, getAllData, getYesterdayData, dailyDBInit
 from SkyLib.tui import fixedWidth, fixedWidthAlt
+from SkyLib.taskDateCheck import *
 
 class expFrontEnd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.bot.hanul_color=0x28d3d8
+        self.bot.exp_init_date = initDateSet()
         self.morning_inform.start()
         self.daily_init_exp.start()
     
@@ -71,8 +73,9 @@ class expFrontEnd(commands.Cog):
     async def daily_init_exp(self):
         now = dt.now(tz(td(hours=9)))
         tcode = self.__time__(now.hour, now.minute, now.second)
-        if tcode >= self.__time__(5, 14) and tcode < self.__time__(5, 15, 2):
+        if tcode >= self.__time__(5, 14) and tcode < self.__time__(5, 15, 2) and initDateCheck(self.bot.exp_init_date):
             dailyDBInit()
+            self.bot.exp_init_date = initDateSet()
             now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
             channel = self.bot.get_channel(1126792316003307670)
             await channel.send(f'{now} 일일 DB 초기화 완료! 어제의 랭킹이에요!```{self.__showRanking__(channel.guild,1,5,yesterday=True,modern=True,todayOrder=True)}```')
