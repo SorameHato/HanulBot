@@ -15,10 +15,10 @@ class fishingPlace(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
         self.bot.fishing_init_date = initDateSet()
-    
-    @commands.Cog.listener()
-    async def on_ready(self):
-        self.daily_init.start()
+        if self.daily_init.is_running:
+            pass
+        else:
+            self.daily_init.start()
     
     def listCheck(self, fishingList, channelID):
         '''

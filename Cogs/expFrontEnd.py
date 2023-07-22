@@ -18,8 +18,10 @@ class expFrontEnd(commands.Cog):
         self.bot = bot
         self.bot.hanul_color=0x28d3d8
         self.bot.exp_init_date = initDateSet()
-        self.morning_inform.start()
-        self.daily_init_exp.start()
+        if not self.morning_inform.is_running:
+            self.morning_inform.start()
+        if not self.daily_init_exp.is_running:
+            self.daily_init_exp.start()
     
     def __time__(self, hour, minute=0, second=0):
         return time(hour=hour, minute=minute, second=second, tzinfo=tz(td(hours=9)))
