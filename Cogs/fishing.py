@@ -94,7 +94,7 @@ class fishingPlace(commands.Cog):
             return
     
     @commands.slash_command(name='산정호수긴급정지',guild_ids = guild_ids, description='낚시터 정리 프로세스가 오작동하는 경우, 긴급 정지할 수 있어요!')
-    async def initStop(self, ctx, arg:discord.Option(int,'수행할 작업을 선택해주세요!(기본값 : 정지)',name='작업',select=[discord.OptionChoice('정지',value=0),discord.OptionChoice('재시작',value=1),discord.OptionChoice('시작',value=2),discord.OptionChoice('강제 실행',value=3)],default=0)):
+    async def initStop(self, ctx, arg:discord.Option(int,'수행할 작업을 선택해주세요!(기본값 : 정지)',name='작업',choices=[discord.OptionChoice('정지',value=0),discord.OptionChoice('재시작',value=1),discord.OptionChoice('시작',value=2),discord.OptionChoice('강제 실행',value=3),discord.OptionChoice('강제 중지',value=4)],default=0)):
         match arg:
             case 0:
                 self.daily_init.stop()
@@ -104,6 +104,8 @@ class fishingPlace(commands.Cog):
                 self.daily_init.start()
             case 3:
                 self.daily_init()
+            case 4:
+                self.daily_init.cancel()
             case _:
                 pass
         await ctx.respond(f'요청하신 작업(case {arg})이 완료되었어요!')
