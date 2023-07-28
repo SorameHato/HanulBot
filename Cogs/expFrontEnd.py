@@ -19,8 +19,7 @@ class expFrontEnd(commands.Cog):
         self.morning_inform.start()
         self.daily_init_exp.start()
     
-    
-    def __showRanking__(self,guild,since,until=None,yesterday=False,modern=False,todayOrder=False):
+    async def __showRanking__(self,guild,since,until=None,yesterday=False,modern=False,todayOrder=False):
         if yesterday:
             data = getYesterdayData(todayOrder)
         else:
@@ -33,7 +32,7 @@ class expFrontEnd(commands.Cog):
             since = until
         for i in range(since-1, until):
             row = data[i]
-            user = guild.get_member(row[0])
+            user = await guild.fetch_member(row[0])
             nick = user.nick
             if nick == None:
                 try:
@@ -116,32 +115,14 @@ class expFrontEnd(commands.Cog):
     async def rank(self,ctx,todayOrder:discord.Option(int,'누적 순위를 표시할지 오늘 올린 경험치 순위만 표시할 지 선택해주세요!',name='정렬',choices=[discord.OptionChoice(name='누적 순위',value=0),discord.OptionChoice(name='오늘 순위',value=1),discord.OptionChoice(name='어제 순위',value=2)],default=0),arg:discord.Option(int,'몇 등까지 표시할 지 입력해주세요!', name='등수', choices=[discord.OptionChoice('5등',5),discord.OptionChoice('10등',10),discord.OptionChoice('전체',value=0)],default=0),isModern:discord.Option(int,'출력 스타일을 선택해주세요!',name='스타일',choices=[discord.OptionChoice(name='모던',value=1),discord.OptionChoice(name='텍스트',value=0)],default=1)):
         if todayOrder==2:
             if isModern:
-                await ctx.respond(f'랭킹 현황이에요!```{self.__showRanking__(ctx.guild,1,arg,modern=True,todayOrder=True,yesterday=True)}```')
+                await ctx.respond(f'랭킹 현황이에요!```{await self.__showRanking__(ctx.guild,1,arg,modern=True,todayOrder=True,yesterday=True)}```')
             else:
-                await ctx.respond(f'랭킹 현황이에요!{self.__showRanking__(ctx.guild,1,arg,todayOrder=True,yesterday=True)}')
+                await ctx.respond(f'랭킹 현황이에요!{await self.__showRanking__(ctx.guild,1,arg,todayOrder=True,yesterday=True)}')
         else:
             if isModern:
-                await ctx.respond(f'랭킹 현황이에요!```{self.__showRanking__(ctx.guild,1,arg,modern=True,todayOrder=todayOrder)}```')
+                await ctx.respond(f'랭킹 현황이에요!```{await self.__showRanking__(ctx.guild,1,arg,modern=True,todayOrder=todayOrder)}```')
             else:
-                await ctx.respond(f'랭킹 현황이에요!{self.__showRanking__(ctx.guild,1,arg,todayOrder=todayOrder)}')
-    
-    # @commands.slash_command(name='유저테스트',guild_ids=guild_ids,description='유저 테스트용 명령어')
-    # async def userTest(self,ctx,user:discord.Option(discord.SlashCommandOptionType.user,'소지금을 설정할 사용자를 입력해주세요.',name='사용자')):
-        # result = 'get_member\n'
-        # a = ctx.guild.get_member(user.id)
-        # for att in dir(a):
-            # result += att + ' : ' + str(getattr(a, att)) + '\n'
-        # b = await ctx.guild.fetch_member(user.id)
-        # result += 'fetch_member\n'
-        # for att in dir(b):
-            # result += att + ' : ' + str(getattr(b, att)) + '\n'
-        # c = self.bot.get_user(user.id)
-        # result += 'get_user\n'
-        # for att in dir(c):
-            # result += att + ' : ' + str(getattr(c, att)) + '\n'
-        # with open('/workspace/HanulBot/output.txt', 'wt', encoding='utf-8') as a:
-            # a.write(result)
-        # await ctx.respond('파일을 /workspace/HanulBot/output.txt 에 저장했어요!')
+                await ctx.respond(f'랭킹 현황이에요!{await self.__showRanking__(ctx.guild,1,arg,todayOrder=todayOrder)}')
 
 
 def setup(bot):
