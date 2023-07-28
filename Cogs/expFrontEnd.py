@@ -100,7 +100,7 @@ class expFrontEnd(commands.Cog):
                 if d_arg:
                     channel = self.bot.get_channel(1126822172468449325)
                     embed = discord.Embed(title=e_title,description=e_desc,color=self.bot.hanul_color)
-                    embed.add_field(name='스카이방과 함께한 날',value=f'{getDayCount(ctx.author.id)}일',inline=False)
+                    embed.add_field(name='스카이방과 함께한 날',value=f'{getDayCount(message.author.id)}일',inline=False)
                     embed.add_field(name='현재 경험치',value=f_arg,inline=False)
                     await channel.send(f'<@{message.author.id}>',embed=embed)
     

@@ -54,7 +54,7 @@ class fishingPlace(commands.Cog):
         with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'rb') as f:
             fishingList = pickle.load(f)
         dbgChannel = self.bot.get_channel(1132210917556359178)
-        mainChannel = self.bot.get_channel(1132210917556359178)
+        mainChannel = self.bot.get_channel(1126877960574619648)
         channelList = list()
         for item in fishingList:
             channelList.append(item[0])
