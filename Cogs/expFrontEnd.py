@@ -101,12 +101,12 @@ class expFrontEnd(commands.Cog):
                     channel = self.bot.get_channel(1126822172468449325)
                     embed = discord.Embed(title=e_title,description=e_desc,color=self.bot.hanul_color)
                     embed.add_field(name='스카이방과 함께한 날',value=f'{getDayCount(message.author.id)}일',inline=False)
-                    embed.add_field(name='현재 경험치',value=f_arg,inline=False)
+                    embed.add_field(name='활동점수',value=f_arg,inline=False)
                     await channel.send(f'<@{message.author.id}>',embed=embed)
     
-    @commands.slash_command(name='경험치',guild_ids=guild_ids,description='자신의 경험치 현황을 볼 수 있어요!')
+    @commands.slash_command(name='활동점수',guild_ids=guild_ids,description='자신의 활동점수 현황을 볼 수 있어요!')
     async def exp_FrontEnd(self, ctx):
-        embed = discord.Embed(title=f'현재 {ctx.author}님의 경험치는 {getExp(ctx.author.id)}(이)에요!',color=self.bot.hanul_color)
+        embed = discord.Embed(title=f'현재 {ctx.author}님의 활동점수는 {getExp(ctx.author.id)}(이)에요!',color=self.bot.hanul_color)
         embed.add_field(name='하늘봇과 함께 하기 시작한 날짜',value=getRegisterDate(ctx.author.id),inline=False)
         embed.add_field(name='스카이방과 함께한 날',value=f'{getDayCount(ctx.author.id)}일',inline=True)
         embed.add_field(name='채팅 집계 횟수',value=f'{getChatCount(ctx.author.id)}회',inline=True)
