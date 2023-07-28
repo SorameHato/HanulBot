@@ -11,20 +11,14 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
 from Exp import getChatCount, getDayCount, getRegisterDate, getExp, chatCallCalc, getAllData, getYesterdayData, dailyDBInit
 from SkyLib.tui import fixedWidth, fixedWidthAlt
-from SkyLib.taskDateCheck import *
 
 class expFrontEnd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.bot.hanul_color=0x28d3d8
-        self.bot.exp_init_date = initDateSet()
-        if not self.morning_inform.is_running:
-            self.morning_inform.start()
-        if not self.daily_init_exp.is_running:
-            self.daily_init_exp.start()
+        self.morning_inform.start()
+        self.daily_init_exp.start()
     
-    def __time__(self, hour, minute=0, second=0):
-        return time(hour=hour, minute=minute, second=second, tzinfo=tz(td(hours=9)))
     
     def __showRanking__(self,guild,since,until=None,yesterday=False,modern=False,todayOrder=False):
         if yesterday:
@@ -62,28 +56,24 @@ class expFrontEnd(commands.Cog):
                     result += '\n' + fixedWidth(i+1,3,2) + '등 ' + nick + ' (' +str(row[1])+' ▲'+str(row[2])+', '+str(row[3])+'일차)'
         return result
     
-    @tasks.loop(time=time(hour=9,second=5,tzinfo=tz(td(hours=9))))
+    @tasks.loop(time=time(second=1,tzinfo=tz(td(hours=0))))
     async def morning_inform(self):
-        now = dt.now(tz(td(hours=9)))
-        tcode = self.__time__(now.hour, now.minute, now.second)
-        if tcode >= self.__time__(8, 59) and tcode < self.__time__(9, 2):
-            now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
-            channel = self.bot.get_channel(1126792316003307670)
-            await channel.send(f'{now} 오전 5시 15분 기준 랭킹 현황이에요! 더욱 많은 활동 부탁드릴게요!{self.__showRanking__(channel.guild,1,5,yesterday=True)}')
+        now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
+        dbgChannel = await self.bot.fetch_channel(1132210917556359178)
+        mainChannel = await self.bot.fetch_channel(1126792316003307670)
+        guild = self.bot.get_guild(1126790936723210290)
+        await mainChannel.send(f'{now} 오전 5시 15분 기준 랭킹 현황이에요! 더욱 많은 활동 부탁드릴게요!{await self.__showRanking__(guild,1,5,yesterday=True)}')
+        await dgbChannel.send(f'exp morning_inform 다음 정기 정리 시간 : {self.morning_inform.next_iteration.astimezone(tz=tz(td(hours=9))) if self.morning_inform.next_iteration is not None else self.morning_inform.next_iteration}\ncurrent_loop : {self.morning_inform.current_loop}\n작동 여부 : {self.morning_inform.is_running()}\n실패 여부 : {self.morning_inform.failed()}')
     
-    @tasks.loop(time=time(hour=5,minute=15,second=1,tzinfo=tz(td(hours=9))),reconnect=False)
+    @tasks.loop(time=time(hour=20,minute=15,second=1,tzinfo=tz(td(seconds=0))),reconnect=False)
     async def daily_init_exp(self):
-        now = dt.now(tz(td(hours=9)))
-        tcode = self.__time__(now.hour, now.minute, now.second)
-        if tcode >= self.__time__(5, 14) and tcode < self.__time__(5, 15, 2) and initDateCheck(self.bot.exp_init_date):
-            dailyDBInit()
-            self.bot.exp_init_date = initDateSet()
-            now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
-            channel = self.bot.get_channel(1126792316003307670)
-            await channel.send(f'{now} 일일 DB 초기화 완료! 어제의 랭킹이에요!```{self.__showRanking__(channel.guild,1,5,yesterday=True,modern=True,todayOrder=True)}```')
-            return
-        else:
-            return
+        now = dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일")
+        dbgChannel = await self.bot.fetch_channel(1132210917556359178)
+        mainChannel = await self.bot.fetch_channel(1126792316003307670)
+        guild = self.bot.get_guild(1126790936723210290)
+        dailyDBInit()
+        await mainChannel.send(f'{now} 일일 DB 초기화 완료! 어제의 랭킹이에요!```{await self.__showRanking__(guild,1,5,yesterday=True,modern=True,todayOrder=True)}```')
+        await dbgChannel.send(f'exp daily_init_exp0515 다음 정기 정리 시간 : {self.daily_init_exp.next_iteration.astimezone(tz=tz(td(hours=9))) if self.daily_init_exp.next_iteration is not None else self.daily_init_exp.next_iteration}\ncurrent_loop : {self.daily_init_exp.current_loop}\n작동 여부 : {self.daily_init_exp.is_running()}\n실패 여부 : {self.daily_init_exp.failed()}')
     
     @commands.Cog.listener()
     async def on_message(self, message):

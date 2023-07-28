@@ -9,16 +9,11 @@ global guild_ids
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
-from SkyLib.taskDateCheck import *
 
 class fishingPlace(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
-        self.bot.fishing_init_date = initDateSet()
-        if self.daily_init.is_running:
-            pass
-        else:
-            self.daily_init.start()
+        self.daily_init.start()
     
     def listCheck(self, fishingList, channelID):
         '''
@@ -54,44 +49,36 @@ class fishingPlace(commands.Cog):
             fishingList.remove(item)
         return fishingList
     
-    def __time__(self, hour, minute=0, second=0):
-        return time(hour=hour,minute=minute,second=second,tzinfo=tz(td(hours=9)))
-    
-    @tasks.loop(time=time(hour=5,minute=15,tzinfo=tz(td(hours=9))),reconnect=False)
+    @tasks.loop(time=time(hour=20,minute=15,tzinfo=tz(td(seconds=0))),reconnect=False)
     async def daily_init(self):
-        now = dt.now(tz(td(hours=9)))
-        tcode = self.__time__(now.hour, now.minute, now.second)
-        if tcode >= self.__time__(5, 14) and tcode < self.__time__(5, 15, 2) and initDateCheck(self.bot.fishing_init_date):
-            self.bot.fishing_init_date = initDateSet()
-            with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'rb') as f:
-                fishingList = pickle.load(f)
-            informChannel = self.bot.get_channel(1126893408892502028)
-            channelList = list()
-            for item in fishingList:
-                channelList.append(item[0])
-            if channelList != []:
-                for i in range(len(channelList)):
-                    channel = self.bot.get_channel(channelList[i])
-                    if channel is not None:
-                        last_message = await channel.fetch_message(channel.last_message_id)
-                        if last_message.edited_at is None:
-                            lastWorkTime = last_message.created_at
+        with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'rb') as f:
+            fishingList = pickle.load(f)
+        dbgChannel = self.bot.get_channel(1132210917556359178)
+        mainChannel = self.bot.get_channel(1132210917556359178)
+        channelList = list()
+        for item in fishingList:
+            channelList.append(item[0])
+        if channelList != []:
+            for i in range(len(channelList)):
+                channel = self.bot.get_channel(channelList[i])
+                if channel is not None:
+                    last_message = await channel.fetch_message(channel.last_message_id)
+                    if last_message.edited_at is None:
+                        lastWorkTime = last_message.created_at
+                    else:
+                        lastWorkTime = last_message.edited_at
+                    if dt.now(tz(td(hours=9))) - lastWorkTime >= td(hours=1):
+                        if channel.name.startswith('낚시터-'):
+                            fishingList = self.popList(fishingList, channel.id)
+                            with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'wb') as f:
+                                pickle.dump(fishingList, f)
+                            await channel.delete(reason=f'하늘봇 낚시터 자동제거(일일 초기화)')
                         else:
-                            lastWorkTime = last_message.edited_at
-                        if dt.now(tz(td(hours=9))) - lastWorkTime >= td(hours=1):
-                            if channel.name.startswith('낚시터-'):
-                                fishingList = self.popList(fishingList, channel.id)
-                                with open(pathlib.PurePath(__file__).parent.with_name('fishingList.pickle'),'wb') as f:
-                                    pickle.dump(fishingList, f)
-                                await channel.delete(reason=f'하늘봇 낚시터 자동제거(일일 초기화)')
-                            else:
-                                await informChannel.send(f'{channel.id} 채널을 지우는 중 오류가 발생했어요! 해당 채널은 낚시터가 아닌 것 같아요. 하토를 불러주세요!')
-                await informChannel.send(f'정기 낚시터 정리에 성공했어요! 정리되지 않은 낚시터 : {fishingList}')
-            else:
-                await informChannel.send(f'생성된 낚시터가 없어서 정기 낚시터 정리를 하지 않았어요!')
-            return
+                            await informChannel.send(f'{channel.id} 채널을 지우는 중 오류가 발생했어요! 해당 채널은 낚시터가 아닌 것 같아요. 하토를 불러주세요!')
+            await informChannel.send(f'정기 낚시터 정리에 성공했어요! 정리되지 않은 낚시터 : {fishingList}')
         else:
-            return
+            await informChannel.send(f'생성된 낚시터가 없어서 정기 낚시터 정리를 하지 않았어요!')
+        await dbgchannel.send(f'fishing daily_init 다음 정기 정리 시간 : {self.daily_init.next_iteration.astimezone(tz=tz(td(hours=9))) if self.daily_init.next_iteration is not None else self.daily_init.next_iteration}\ncurrent_loop : {self.daily_init.current_loop}\n작동 여부 : {self.daily_init.is_running()}\n실패 여부 : {self.daily_init.failed()}')
     
     @commands.slash_command(name='산정호수긴급정지',guild_ids = guild_ids, description='낚시터 정리 프로세스가 오작동하는 경우, 긴급 정지할 수 있어요!')
     async def initStop(self, ctx, arg:discord.Option(int,'수행할 작업을 선택해주세요!(기본값 : 정지)',name='작업',choices=[discord.OptionChoice('정지',value=0),discord.OptionChoice('재시작',value=1),discord.OptionChoice('시작',value=2),discord.OptionChoice('강제 실행',value=3),discord.OptionChoice('강제 중지',value=4)],default=0)):
