@@ -41,7 +41,7 @@ class info(commands.Cog):
     async def send_message(self, ctx, channel:discord.Option(discord.abc.GuildChannel,'채널을 선택해주세요',name='채널'),fileName:discord.Option(str,'파일명을 입력해주세요',name='파일명')='message.txt'):
         isowner = await self.bot.is_owner(ctx.author)
         if isowner:
-            with open(pathlib.PurePath(__file__).parent.parent.with_name('message').with_name(fileName),'r') as f:
+            with open(pathlib.PurePath(__file__).parent.parent.parent.joinpath('msg',fileName),'r') as f:
                 await channel.send(f.read())
             await ctx.respond('전송 완료!')
         else:
@@ -62,7 +62,7 @@ class info(commands.Cog):
                 raise e
             if 'msg' in dir() and msg is not None:
                 if msg.author.id == self.bot.user.id:
-                    with open(pathlib.PurePath(__file__).parent.parent.with_name('message').with_name(fileName),'r') as f:
+                    with open(pathlib.PurePath(__file__).parent.parent.parent.joinpath('msg',fileName),'r') as f:
                         await msg.edit(f.read())
                     await ctx.respond('수정 완료!')
                 else:
