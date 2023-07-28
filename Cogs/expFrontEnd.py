@@ -95,7 +95,7 @@ class expFrontEnd(commands.Cog):
                         e_title = f'{message.author}님, 요즘 바쁘신건가요?'
                         e_desc = f'스카이방을 {d_arg}일만에 찾아주셨어요! 조금 더 자주 오셨으면 좋겠는데... 그래도 이렇게라도 찾아주셔서 감사해요. 자동으로 출석이 완료되었어요!'
                     case _:
-                        e_title = f'{message.author}님, 오랫만이네요.'
+                        e_title = f'{message.author}님, 오랜만이네요.'
                         e_desc = f'스카이방을 {d_arg}일만에 찾아주셨어요! 자주자주 오셨으면 좋겠는데... 그래도 가끔씩이라도 얼굴 비춰주셔서 감사해요. 자동으로 출석이 완료되었어요!'
                 if d_arg:
                     channel = self.bot.get_channel(1126822172468449325)
