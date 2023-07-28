@@ -1,5 +1,5 @@
 # coding: utf-8
-import discord
+import discord, pathlib
 from discord.ext import commands, tasks
 from datetime import datetime as dt
 from datetime import timedelta as td
@@ -37,39 +37,38 @@ class info(commands.Cog):
     async def checkIfRun(self, ctx):
         await ctx.respond(f'정상적으로 작동 중이에요! 마지막으로 다시 시작된 시간 : {self.bot.LoadedTime}')
     
+    @commands.slash_command(name="전송", guild_ids=guild_ids, description='하토용 명령어 / 특정 채널에 메세지 전송')
+    async def send_message(self, ctx, channel:discord.Option(discord.abc.GuildChannel,'채널을 선택해주세요',name='채널'),fileName:discord.Option(str,'파일명을 입력해주세요',name='파일명')='message.txt'):
+        isowner = await self.bot.is_owner(ctx.author)
+        if isowner:
+            with open(pathlib.PurePath(__file__).parent.parent.with_name('message').with_name(fileName),'r') as f:
+                await channel.send(f.read())
+            await ctx.respond('전송 완료!')
+        else:
+            await ctx.respond('이 기능은 하토만 이용할 수 있어요!')
     
-    @commands.slash_command(name='버전확인',guild_ids=guild_ids,description='리로드 확인용 임시 명령어')
-    async def checkVer(self, ctx):
-        await ctx.respond(f'package version : {self.bot.repack_no}, version no : 2')
-    
-    # @commands.slash_command(name='역할목록',guild_ids=guild_ids)
-    # async def test1(self, ctx):
-        # await ctx.respond(ctx.guild.roles)
-    
-    # @commands.slash_command(name='권한목록',guild_ids=guild_ids)
-    # async def test2(self, ctx, role_id:discord.Option(str,'역할번호',name='역할번호')):
-        # role_id = int(role_id)
-        # role = discord.utils.get(ctx.guild.roles, id=role_id)
-        # await ctx.respond(role.permissions.value)
-    
-    # @commands.slash_command(name='변경',guild_ids=guild_ids)
-    # async def test3(self,ctx):
-        # role_id =  1126790936723210290
-        # role = discord.utils.get(ctx.guild.roles, id=role_id)
-        # await role.edit(permissions=discord.Permissions(permissions=111022861306433))
-        # await ctx.respond(role.permissions)
-        
-    # @commands.slash_command(name='변경',guild_ids=guild_ids)
-    # async def test4(self,ctx):
-        # role_id =  1126790936723210290
-        # role = discord.utils.get(ctx.guild.roles, id=role_id)
-        # channel = self.bot.get_channel(1126790937448820878)
-        # overwrite = discord.PermissionOverwrite()
-        # overwrite.read_messages = True
-        # overwrite.send_messages = False
-        # await channel.set_permissions(role, overwrite=overwrite)
-        # await ctx.respond(channel.overwrites[0][1].pair())
-        
+    @commands.slash_command(name='수정', guild_ids=guild_ids, description='하토용 명령어 / 메세지 수정')
+    async def edit_message(self, ctx, msg_id:discord.Option(str,'메세지 ID를 입력해주세요',name='메세지id'),channel:discord.Option(discord.abc.GuildChannel,'채널을 선택해주세요',name='채널')=None,fileName:discord.Option(str,'파일명을 입력해주세요',name='파일명')='message.txt'):
+        isowner = await self.bot.is_owner(ctx.author)
+        if isowner:
+            try:
+                msg = await ctx.fetch_message(msg_id)
+            except discord.NotFound:
+                if channel is None:
+                    await ctx.respond('이 채널의 메세지가 아니거나 Fetch할 수 없는 메세지에요! 채널 ID를 입력해주세요!')
+                else:
+                    msg = await channel.fetch_message(msg_id)
+            except Exception as e:
+                raise e
+            if 'msg' in dir() and msg is not None:
+                if msg.author.id == self.bot.user.id:
+                    with open(pathlib.PurePath(__file__).parent.parent.with_name('message').with_name(fileName),'r') as f:
+                        await msg.edit(f.read())
+                    await ctx.respond('수정 완료!')
+                else:
+                    await ctx.respond('하늘봇이 쓴 메세지가 아니에요!')
+        else:
+            await ctx.respond('이 기능은 하토만 이용할 수 있어요!')
 
 def setup(bot):
     bot.add_cog(info(bot))
