@@ -106,14 +106,14 @@ class expFrontEnd(commands.Cog):
     
     @commands.slash_command(name='활동점수',guild_ids=guild_ids,description='자신의 활동점수 현황을 볼 수 있어요!')
     async def exp_FrontEnd(self, ctx):
-        embed = discord.Embed(title=f'현재 {ctx.author}님의 활동점수는 {getExp(ctx.author.id)}(이)에요!',color=self.bot.hanul_color)
+        embed = discord.Embed(title=f'{ctx.author}님의 활동점수는 {getExp(ctx.author.id)}(이)에요!',color=self.bot.hanul_color)
         embed.add_field(name='하늘봇과 함께 하기 시작한 날짜',value=getRegisterDate(ctx.author.id),inline=False)
         embed.add_field(name='스카이방과 함께한 날',value=f'{getDayCount(ctx.author.id)}일',inline=True)
         embed.add_field(name='채팅 집계 횟수',value=f'{getChatCount(ctx.author.id)}회',inline=True)
         await ctx.respond(embed=embed)
     
-    @commands.slash_command(name='랭킹',guild_ids=guild_ids,description='경험치 랭킹을 볼 수 있어요!')
-    async def rank(self,ctx,todayOrder:discord.Option(int,'누적 순위를 표시할지 오늘 올린 경험치 순위만 표시할 지 선택해주세요!',name='정렬',choices=[discord.OptionChoice(name='누적 순위',value=0),discord.OptionChoice(name='오늘 순위',value=1),discord.OptionChoice(name='어제 순위',value=2)],default=0),arg:discord.Option(int,'몇 등까지 표시할 지 입력해주세요!', name='등수', choices=[discord.OptionChoice('5등',5),discord.OptionChoice('10등',10),discord.OptionChoice('전체',value=0)],default=0),isModern:discord.Option(int,'출력 스타일을 선택해주세요!',name='스타일',choices=[discord.OptionChoice(name='모던',value=1),discord.OptionChoice(name='텍스트',value=0)],default=1)):
+    @commands.slash_command(name='랭킹',guild_ids=guild_ids,description='활동점수 랭킹을 볼 수 있어요!')
+    async def rank(self,ctx,todayOrder:discord.Option(int,'누적 순위를 표시할지 오늘 올린 점수 순위만 표시할 지 선택해주세요!',name='정렬',choices=[discord.OptionChoice(name='누적 순위',value=0),discord.OptionChoice(name='오늘 순위',value=1),discord.OptionChoice(name='어제 순위',value=2)],default=0),arg:discord.Option(int,'몇 등까지 표시할 지 입력해주세요!', name='등수', choices=[discord.OptionChoice('5등',5),discord.OptionChoice('10등',10),discord.OptionChoice('전체',value=0)],default=0),isModern:discord.Option(int,'출력 스타일을 선택해주세요!',name='스타일',choices=[discord.OptionChoice(name='모던',value=1),discord.OptionChoice(name='텍스트',value=0)],default=1)):
         if todayOrder==2:
             yesterday = True
         else:
