@@ -74,10 +74,10 @@ class fishingPlace(commands.Cog):
                                 pickle.dump(fishingList, f)
                             await channel.delete(reason=f'하늘봇 낚시터 자동제거(일일 초기화)')
                         else:
-                            await informChannel.send(f'{channel.id} 채널을 지우는 중 오류가 발생했어요! 해당 채널은 낚시터가 아닌 것 같아요. 하토를 불러주세요!')
-            await informChannel.send(f'정기 낚시터 정리에 성공했어요! 정리되지 않은 낚시터 : {fishingList}')
+                            await mainChannel.send(f'{channel.id} 채널을 지우는 중 오류가 발생했어요! 해당 채널은 낚시터가 아닌 것 같아요. 하토를 불러주세요!')
+            await mainChannel.send(f'정기 낚시터 정리에 성공했어요! 정리되지 않은 낚시터 : {fishingList}')
         else:
-            await informChannel.send(f'생성된 낚시터가 없어서 정기 낚시터 정리를 하지 않았어요!')
+            await mainChannel.send(f'생성된 낚시터가 없어서 정기 낚시터 정리를 하지 않았어요!')
         await dbgchannel.send(f'fishing daily_init 다음 정기 정리 시간 : {self.daily_init.next_iteration.astimezone(tz=tz(td(hours=9))) if self.daily_init.next_iteration is not None else self.daily_init.next_iteration}\ncurrent_loop : {self.daily_init.current_loop}\n작동 여부 : {self.daily_init.is_running()}\n실패 여부 : {self.daily_init.failed()}')
     
     @commands.slash_command(name='산정호수긴급정지',guild_ids = guild_ids, description='낚시터 정리 프로세스가 오작동하는 경우, 긴급 정지할 수 있어요!')
