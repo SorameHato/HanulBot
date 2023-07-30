@@ -18,6 +18,11 @@ class expFrontEnd(commands.Cog):
         self.bot.hanul_color=0x28d3d8
         self.morning_inform.start()
         self.daily_init_exp.start()
+        self.bot.morning_inform_count = self.morning_inform.current_loop
+        self.bot.morning_inform_next = self.morning_inform.next_iteration.astimezone(tz=tz(td(hours=9))) if self.morning_inform.next_iteration is not None else self.morning_inform.next_iteration
+        self.bot.daily_init_exp_count = self.daily_init_exp.current_loop
+        self.bot.daily_init_exp_next = self.daily_init_exp.next_iteration.astimezone(tz=tz(td(hours=9))) if self.daily_init_exp.next_iteration is not None else self.daily_init_exp.next_iteration
+        
     
     async def __showRanking__(self,guild,since,until=None,yesterday=False,modern=False,todayOrder=False):
         if yesterday:
@@ -61,8 +66,10 @@ class expFrontEnd(commands.Cog):
         dbgChannel = await self.bot.fetch_channel(1132210917556359178)
         mainChannel = await self.bot.fetch_channel(1126792316003307670)
         guild = self.bot.get_guild(1126790936723210290)
+        self.bot.morning_inform_count = self.morning_inform.current_loop
+        self.bot.morning_inform_next = self.morning_inform.next_iteration.astimezone(tz=tz(td(hours=9))) if self.morning_inform.next_iteration is not None else self.morning_inform.next_iteration
         await mainChannel.send(f'{now} 오전 5시 15분 기준 랭킹 현황이에요! 더욱 많은 활동 부탁드릴게요!{await self.__showRanking__(guild,1,5,yesterday=True)}')
-        await dbgChannel.send(f'exp morning_inform 다음 정기 정리 시간 : {self.morning_inform.next_iteration.astimezone(tz=tz(td(hours=9))) if self.morning_inform.next_iteration is not None else self.morning_inform.next_iteration}\ncurrent_loop : {self.morning_inform.current_loop}\n작동 여부 : {self.morning_inform.is_running()}\n실패 여부 : {self.morning_inform.failed()}')
+        await dbgChannel.send(f'exp morning_inform 다음 정기 정리 시간 : {self.bot.morning_inform_next}\n작동 횟수 : {self.bot.morning_inform_count}\n작동 여부 : {self.morning_inform.is_running()}\n실패 여부 : {self.morning_inform.failed()}')
     
     @tasks.loop(time=time(hour=20,minute=15,second=1,tzinfo=tz(td(seconds=0))),reconnect=False)
     async def daily_init_exp(self):
@@ -71,8 +78,10 @@ class expFrontEnd(commands.Cog):
         mainChannel = await self.bot.fetch_channel(1126792316003307670)
         guild = self.bot.get_guild(1126790936723210290)
         dailyDBInit()
+        self.bot.daily_init_exp_count = self.daily_init_exp.current_loop
+        self.bot.daily_init_exp_next = self.daily_init_exp.next_iteration.astimezone(tz=tz(td(hours=9))) if self.daily_init_exp.next_iteration is not None else self.daily_init_exp.next_iteration
         await mainChannel.send(f'{now} 일일 DB 초기화 완료! 어제의 랭킹이에요!```{await self.__showRanking__(guild,1,5,yesterday=True,modern=True,todayOrder=True)}```')
-        await dbgChannel.send(f'exp daily_init_exp0515 다음 정기 정리 시간 : {self.daily_init_exp.next_iteration.astimezone(tz=tz(td(hours=9))) if self.daily_init_exp.next_iteration is not None else self.daily_init_exp.next_iteration}\ncurrent_loop : {self.daily_init_exp.current_loop}\n작동 여부 : {self.daily_init_exp.is_running()}\n실패 여부 : {self.daily_init_exp.failed()}')
+        await dbgChannel.send(f'exp daily_init_exp0515 다음 정기 정리 시간 : {self.bot.daily_init_exp_next}\n작동 횟수 : {self.bot.daily_init_exp_count}\n작동 여부 : {self.daily_init_exp.is_running()}\n실패 여부 : {self.daily_init_exp.failed()}')
     
     @commands.Cog.listener()
     async def on_message(self, message):
