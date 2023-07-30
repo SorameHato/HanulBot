@@ -18,6 +18,9 @@ class expFrontEnd(commands.Cog):
         self.bot.hanul_color=0x28d3d8
         self.morning_inform.start()
         self.daily_init_exp.start()
+    
+    @commands.Cog.listener()
+    async def on_ready(self):
         self.bot.morning_inform_count = self.morning_inform.current_loop
         self.bot.morning_inform_next = self.morning_inform.next_iteration.astimezone(tz=tz(td(hours=9))) if self.morning_inform.next_iteration is not None else self.morning_inform.next_iteration
         self.bot.daily_init_exp_count = self.daily_init_exp.current_loop

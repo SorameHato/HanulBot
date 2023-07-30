@@ -14,6 +14,9 @@ class fishingPlace(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
         self.daily_init.start()
+    
+    @commands.Cog.listener()
+    async def on_ready(self):
         self.bot.daily_init_count = self.daily_init.current_loop
         self.bot.daily_init_next = self.daily_init.next_iteration.astimezone(tz=tz(td(hours=9))) if self.daily_init.next_iteration is not None else self.daily_init.next_iteration
     
