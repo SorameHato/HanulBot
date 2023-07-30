@@ -276,6 +276,15 @@ def getAllData(todayOrder=False):
     __logWrite__('-', '랭크 계산', f'랭크 계산 데이터 제공 완료')
     return data
 
+def getAllUser():
+    sql_con, sql_cur = __connectDB__()
+    __logWrite__('-', '정보', f'모든 유저 uid 요청 접수')
+    sql_cur.execute('SELECT uid FROM hanul_exp ORDER BY uid ASC;')
+    data = sql_cur.fetchall()
+    __closeCon__(sql_con)
+    __logWrite__('-', '정보', f'모든 유저 uid 제공 완료')
+    return data
+
 def getYesterdayData(todayOrder=False):
     sql_con, sql_cur = __connectDB__()
     __logWrite__('-', '랭크 계산', f'작일 랭크 계산 요청 접수')
