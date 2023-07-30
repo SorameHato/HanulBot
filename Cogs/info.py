@@ -9,7 +9,7 @@ global guild_ids
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
-from Exp import getUserCount, getAllUser
+from Exp import getAllUser
 
 class info(commands.Cog):
     def __init__(self,bot):
@@ -46,17 +46,17 @@ class info(commands.Cog):
         guild = self.bot.get_guild(1126790936723210290)
         memberList = guild.members
         notJoin = []
-        for member in memberList
-            if member.id not in memberList or member.id in day1UserList:
+        for member in memberList:
+            if (member.id not in expUserList or member.id in day1UserList) and not member.bot:
                 notJoin.append(str(member))
         now = dt.now(tz(td(hours=9)))
-        compareDate = dt(2023,7,9,0,0,0,0)
+        compareDate = dt(2023,7,9,0,0,0,0,tzinfo=tz(td(hours=9)))
         await ctx.respond(f'''* 봇 정보\n> 버전 : {self.bot.hanul_ver}
         > 마지막으로 다시 시작된 시간 : {self.bot.LoadedTime}
         > 제작자 : 하토(ghwls030306@s-r.ze.am)
         > Base : 설레봇 버전 PJU 3.2 2023060403 rev 61 build 258
         * 경험치\n> 하늘봇 가동 일수 : {(now-compareDate).days+1}일
-        > 등록된 유저 수 : {len(expUserList)}명 (서버에 있는 유저 {len(member)}명)
+        > 등록된 유저 수 : {len(expUserList)}명 (서버에 있는 유저 {len(memberList)}명)
         > 채팅 집계 횟수 : {chatCountSum}회
         > * 하늘봇 가동 후 한 번도 채팅을 전송하지 않은 유저 목록
         > {", ".join(notJoin)}

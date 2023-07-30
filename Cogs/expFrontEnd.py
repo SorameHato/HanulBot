@@ -111,7 +111,7 @@ class expFrontEnd(commands.Cog):
                         e_desc = f'스카이방을 {d_arg}일만에 찾아주셨어요! 자주자주 오셨으면 좋겠는데... 그래도 가끔씩이라도 얼굴 비춰주셔서 감사해요. 자동으로 출석이 완료되었어요!'
                 if d_arg:
                     channel = self.bot.get_channel(1126822172468449325)
-                    if message.channel = channel:
+                    if message.channel == channel:
                         e_desc += '\n오늘 첫 채팅이 출석체크방에서 전송된 것 같아요. 하늘봇은 멤버 분들과 대화하다 보면 자동으로 출석을 체크해요! 스카이방에 자주 찾아와서 많이 대화해주시는 분들께 많은 이득을 드리기 위한 체계라서, 꼭 출석 명령어를 전송하지 않아도 아무 채널에서 채팅을 한 번이라도 보내면 자동으로 출석되니까 참고해주세요!'
                     embed = discord.Embed(title=e_title,description=e_desc,color=self.bot.hanul_color)
                     embed.add_field(name='스카이방과 함께한 날',value=f'{getDayCount(message.author.id)}일',inline=False)

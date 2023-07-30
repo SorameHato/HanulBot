@@ -275,13 +275,13 @@ def getAllUser():
     data = sql_cur.fetchall()
     sql_cur.execute('SELECT SUM(chat_count) FROM hanul_exp;')
     chat_count = sql_cur.fetchall()[0][0]
-    __closeCon__(sql_con)
     uidData = []
     day1UserList = []
     for item in data:
         uidData.append(item[0])
         if item[1] <= 1:
             day1UserList.append(item[0])
+    __closeCon__(sql_con)
     __logWrite__('-', '정보', f'모든 유저 uid 제공 완료')
     return uidData, day1UserList, chat_count
 
