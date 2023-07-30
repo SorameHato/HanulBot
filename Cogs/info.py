@@ -54,7 +54,8 @@ class info(commands.Cog):
         await ctx.respond(f'''* 봇 정보\n> 버전 : {self.bot.hanul_ver}
         > 마지막으로 다시 시작된 시간 : {self.bot.LoadedTime}
         > 제작자 : 하토(ghwls030306@s-r.ze.am)
-        > Base : 설레봇 버전 PJU 3.2 2023060403 rev 61 build 258
+        > 깃허브 리포지터리 : https://github.com/SorameHato/HanulBot
+        > 기반 : 설레봇 버전 PJU 3.2 2023060403 rev 61 build 258
         * 경험치\n> 하늘봇 가동 일수 : {(now-compareDate).days+1}일
         > 등록된 유저 수 : {len(expUserList)}명 (서버에 있는 유저 {len(memberList)}명)
         > 채팅 집계 횟수 : {chatCountSum}회
