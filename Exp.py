@@ -279,7 +279,9 @@ def getAllUser():
     day1UserList = []
     for item in data:
         uidData.append(item[0])
-        if item[1] <= 1:
+        now = dt.now(tz(td(hours=9)))
+        firstCall = dt.strptime(__getData__(sql_cur, int(item[0]), 'first_call'),'%Y-%m-%d %H:%M:%S.%f%z')
+        if item[1] <= 1 and now - firstCall >= td(days=1) :
             day1UserList.append(item[0])
     __closeCon__(sql_con)
     __logWrite__('-', '정보', f'모든 유저 uid 제공 완료')
