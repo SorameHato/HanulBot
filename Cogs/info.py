@@ -9,6 +9,7 @@ global guild_ids
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
+from Exp import getUserCount, getAllUser
 
 class info(commands.Cog):
     def __init__(self,bot):
@@ -39,9 +40,33 @@ class info(commands.Cog):
         raise error
     
     
-    @commands.slash_command(name='상태확인',guild_ids=guild_ids,description='수면 모드가 작동하는 동안 하늘봇이 제대로 작동하는 지 알기 위한 명령어에요!')
+    @commands.slash_command(name='정보',guild_ids=guild_ids,description='하늘봇의 정보에요!')
     async def checkIfRun(self, ctx):
-        await ctx.respond(f'정상적으로 작동 중이에요! 마지막으로 다시 시작된 시간 : {self.bot.LoadedTime}')
+        expUserList, day1UserList, chatCountSum = getAllUser()
+        guild = self.bot.get_guild(1126790936723210290)
+        memberList = guild.members
+        notJoin = []
+        for member in memberList
+            if member.id not in memberList or member.id in day1UserList:
+                notJoin.append(str(member))
+        now = dt.now(tz(td(hours=9)))
+        compareDate = dt(2023,7,9,0,0,0,0)
+        await ctx.respond(f'''* 봇 정보\n> 버전 : {self.bot.hanul_ver}
+        > 마지막으로 다시 시작된 시간 : {self.bot.LoadedTime}
+        > 제작자 : 하토(ghwls030306@s-r.ze.am)
+        > Base : 설레봇 버전 PJU 3.2 2023060403 rev 61 build 258
+        * 경험치\n> 하늘봇 가동 일수 : {(now-compareDate).days+1}일
+        > 등록된 유저 수 : {len(expUserList)}명 (서버에 있는 유저 {len(member)}명)
+        > 채팅 집계 횟수 : {chatCountSum}회
+        > * 하늘봇 가동 후 한 번도 채팅을 전송하지 않은 유저 목록
+        > {", ".join(notJoin)}
+        * 작업(discord.ext.tasks)\n> * info.py
+        > morning_greeting : 작동 횟수 {self.morning_greeting.current_loop}회, 다음 작동 시간 : {self.morning_greeting.next_iteration.astimezone(tz=tz(td(hours=9))) if self.morning_greeting.next_iteration is not None else self.morning_greeting.next_iteration}
+        > * expFrontEnd.py
+        > daily_init_exp : 작동 횟수 {self.bot.daily_init_exp_count}회, 다음 작동 시간 : {self.bot.daily_init_exp_next}
+        > morning_inform : 작동 횟수 {self.bot.morning_inform_count}회, 다음 작동 시간 : {self.bot.morning_inform_next}
+        > * fishing.py
+        > daily_init : 작동 횟수 {self.bot.daily_init_count}회, 다음 작동 시간 : {self.bot.daily_init_next}''')
     
     @commands.slash_command(name="전송", guild_ids=guild_ids, description='하토용 명령어 / 특정 채널에 메세지 전송')
     async def send_message(self, ctx, channel:discord.Option(discord.abc.GuildChannel,'채널을 선택해주세요',name='채널'),fileName:discord.Option(str,'파일명을 입력해주세요',name='파일명')='message.txt'):
