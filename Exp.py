@@ -199,14 +199,6 @@ def getRegisterDate(uid:int):
 def getExp(uid:int):
     return __getDataFromOutside__(uid, 'exp')
 
-def getUserCount():
-    sql_con, sql_cur = __connectDB__()
-    sql_cur.execute('SELECT * FROM hanul_exp;')
-    sql_data = sql_cur.fetchall()
-    result = len(sql_data)
-    __closeCon__(sql_con)
-    return result
-
 def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
     '''
     마지막으로 부른 날짜를 현재 시간으로 바꾸고 마지막 호출 시간이 오늘이 아니면 day_count를 1 올리고 접속을 며칠만에 했는지에 따라 그에 따른 처리를 하는 함수
@@ -279,11 +271,19 @@ def getAllData(todayOrder=False):
 def getAllUser():
     sql_con, sql_cur = __connectDB__()
     __logWrite__('-', '정보', f'모든 유저 uid 요청 접수')
-    sql_cur.execute('SELECT uid FROM hanul_exp ORDER BY uid ASC;')
+    sql_cur.execute('SELECT uid, day_count FROM hanul_exp ORDER BY uid ASC;')
     data = sql_cur.fetchall()
+    sql_cur.execute('SELECT SUM(chat_count) FROM hanul_exp;')
+    chat_count = sql_cur.fetchall()[0][0]
     __closeCon__(sql_con)
+    uidData = []
+    day1UserList = []
+    for item in data:
+        uidData.append(item[0])
+        if item[1] <= 1:
+            day1UserList.append(item[0])
     __logWrite__('-', '정보', f'모든 유저 uid 제공 완료')
-    return data
+    return uidData, day1UserList, chat_count
 
 def getYesterdayData(todayOrder=False):
     sql_con, sql_cur = __connectDB__()
