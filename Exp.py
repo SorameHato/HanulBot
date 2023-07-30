@@ -199,6 +199,14 @@ def getRegisterDate(uid:int):
 def getExp(uid:int):
     return __getDataFromOutside__(uid, 'exp')
 
+def getUserCount():
+    sql_con, sql_cur = __connectDB__()
+    sql_cur.execute('SELECT * FROM hanul_exp;')
+    sql_data = sql_cur.fetchall()
+    result = len(sql_data)
+    __closeCon__(sql_con)
+    return result
+
 def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
     '''
     마지막으로 부른 날짜를 현재 시간으로 바꾸고 마지막 호출 시간이 오늘이 아니면 day_count를 1 올리고 접속을 며칠만에 했는지에 따라 그에 따른 처리를 하는 함수
