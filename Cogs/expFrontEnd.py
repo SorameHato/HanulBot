@@ -94,6 +94,9 @@ class expFrontEnd(commands.Cog):
                 match d_arg:
                     case 0:
                         pass # 날짜가 변하지 않은 경우이므로 아무것도 하지 않음
+                    case -1:
+                        e_title = f'{message.author}님, 환영합니다!'
+                        e_desc = f'출석 체크하던 도중에 오류가 발생했어요. 아마 출석 체크 자체는 되었을텐데 혹시라도 계속 멘션된다면 하토를 불러주세요.\n<@1030044541547454476> Exp.db에서 SELECT * FROM hanul_exp WHERE uid={message.author.id} 실행해서 last_call 변경되었는지, day_count 올라갔는지 확인할 것!'
                     case 1:
                         e_title = f'{message.author}님, 오늘도 오셨네요!'
                         e_desc = '자동으로 출석이 완료되었어요! 앞으로도 매일매일 스카이방을 찾아주세요!'
