@@ -1,5 +1,5 @@
 # coding: utf-8
-import discord, pathlib
+import discord, pathlib, platform
 from discord.ext import commands, tasks
 from datetime import datetime as dt
 from datetime import timedelta as td
@@ -51,11 +51,26 @@ class info(commands.Cog):
                 notJoin.append(str(member))
         now = dt.now(tz(td(hours=9)))
         compareDate = dt(2023,7,9,0,0,0,0,tzinfo=tz(td(hours=9)))
+        if platform.system() == 'Linux' and platform.node() == 'goorm':
+            pf_docker = 'Live(HanulMain)'
+            pf_ver = platform.freedesktop_os_release()['NAME'] + ' ' + platform.freedesktop_os_release()['VERSION']
+        elif platform.system() == 'Windows':
+            pf_docker = 'Dev(AmeMizu)'
+            pf_ver = platform.system() + ' ' + platform.win32_ver()[0] + ' 버전 ' + platform.win32_ver()[1] + ' ' + platform.win32_ver()[2]
+        else:
+            pf_docker = '인식할 수 없음'
+            pf_ver = platform.system() + ' ' + platform.release() + ' ' + platform.version()
         await ctx.respond(f'''* 봇 정보\n> 버전 : {self.bot.hanul_ver}
         > 마지막으로 다시 시작된 시간 : {self.bot.LoadedTime}
         > 제작자 : 하토(ghwls030306@s-r.ze.am)
-        > 깃허브 리포지터리 : https://github.com/SorameHato/HanulBot
+        > 깃허브 리포지터리 : SorameHato/HanulBot
         > 기반 : 설레봇 버전 PJU 3.2 2023060403 rev 61 build 258
+        * 시스템\n> 활성 Dev 도커 : AmeMizu
+        > 활성 Live 도커 : HanulMain@utwiki.run.goorm.site
+        > 현재 하늘봇이 실행되고 있는 환경 : {pf_docker}
+        > 운영체제 버전 : {pf_ver}
+        > Python 버전 : {sys.version}
+        > Pycord 버전 : {discord.__version__}-{discord.version_info[3]}
         * 경험치\n> 하늘봇 가동 일수 : {(now-compareDate).days+1}일
         > 등록된 유저 수 : {len(expUserList)}명 (서버에 있는 유저 {len(memberList)}명)
         > 채팅 집계 횟수 : {chatCountSum}회
