@@ -10,7 +10,7 @@ import pathlib
 from SkyLib import tui
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
-hanul_ver = "0.0 rev 130 (2023-08-05 15:53)"
+hanul_ver = "0.0 rev 131 (2023-08-05 15:56)"
 guild_ids = [
     1030056186915082262, #테스트용 서버
     1126790936723210290 #스카이형 서버
@@ -30,28 +30,28 @@ async def on_ready():
     await bot.change_presence(status=discord.Status.online, activity=discord.Game(name='구름IDE에서 동작'))
 
 
-@bot.slash_command(name="리로드", guild_ids=guild_ids, description='봇의 모든 기능을 재시작하는 기능이에요!')
-async def reload_extension(ctx):
-    isowner = await bot.is_owner(ctx.author)
-    if isowner:
-        for filename in os.listdir(pathlib.PurePath(__file__).parent.joinpath('Cogs')):
-            if filename.endswith(".py"):
-                try:
-                    bot.reload_extension(f"Cogs.{filename[:-3]}")
-                except discord.ExtensionNotFound:
-                    channel = self.bot.get_channel(1126877960574619648)
-                    await channel.send(f":x: '{filename[:-3]}' 파일을 찾을 수 없습니다.")
-                except discord.ExtensionNotLoaded:
-                    channel = self.bot.get_channel(1126877960574619648)
-                    await channel.send(f":x: '{filename[:-3]}' 파일이 제대로 로드되지 않았습니다.")
-                except (discord.NoEntryPointError, discord.ExtensionFailed):
-                    channel = self.bot.get_channel(1126877960574619648)
-                    await channel.send(f":x: '{filename[:-3]}' 파일을 불러오는 도중 에러가 발생했습니다.")
-                else:
-                    print(f'{filename[:-3]} 파일 리로드 완료')
-        await ctx.respond(f"하늘봇의 리로드가 완료되었습니다. 새로운 패키지 번호는 {bot.repack_no}입니다.")
-    else:
-        await ctx.respond('이 명령어는 하토만 사용할 수 있습니다.')
+# @bot.slash_command(name="리로드", guild_ids=guild_ids, description='봇의 모든 기능을 재시작하는 기능이에요!')
+# async def reload_extension(ctx):
+    # isowner = await bot.is_owner(ctx.author)
+    # if isowner:
+        # for filename in os.listdir(pathlib.PurePath(__file__).parent.joinpath('Cogs')):
+            # if filename.endswith(".py"):
+                # try:
+                    # bot.reload_extension(f"Cogs.{filename[:-3]}")
+                # except discord.ExtensionNotFound:
+                    # channel = self.bot.get_channel(1126877960574619648)
+                    # await channel.send(f":x: '{filename[:-3]}' 파일을 찾을 수 없습니다.")
+                # except discord.ExtensionNotLoaded:
+                    # channel = self.bot.get_channel(1126877960574619648)
+                    # await channel.send(f":x: '{filename[:-3]}' 파일이 제대로 로드되지 않았습니다.")
+                # except (discord.NoEntryPointError, discord.ExtensionFailed):
+                    # channel = self.bot.get_channel(1126877960574619648)
+                    # await channel.send(f":x: '{filename[:-3]}' 파일을 불러오는 도중 에러가 발생했습니다.")
+                # else:
+                    # print(f'{filename[:-3]} 파일 리로드 완료')
+        # await ctx.respond(f"하늘봇의 리로드가 완료되었습니다. 새로운 패키지 번호는 {bot.repack_no}입니다.")
+    # else:
+        # await ctx.respond('이 명령어는 하토만 사용할 수 있습니다.')
         
 
 def load_extensions():
