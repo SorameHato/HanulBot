@@ -39,6 +39,36 @@ class info(commands.Cog):
             raise e
         raise error
     
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if not message.author.bot:
+            keywords = ['안녕','좋은아침','좋은 아침','좋은점심','좋은 점심','좋은저녁','좋은 저녁','좋은하루','좋은 하루', '쫀아', '좋은 밤', '좋은밤']
+            responseList = ['좋은 하루에요!','쫀아에요!','좋은 점심이에요!','좋은 저녁이에요! 오늘 하루도 수고하셨어요!']
+            response = [0,1,1,2,2,3,3,0,0,1,3,3]
+            reply = None
+            notProper = False
+            for i in range(len(keywords)):
+                if f'하늘봇 {keywords[i]}' in message.content:
+                    reply = i
+                elif '하늘봇' in message.content and keywords[i] in message.content:
+                    match message.content.find(keywords[i]) - message.content.find('하늘봇'):
+                        case 3 | 4 | 5:
+                            reply = i
+                        case _:
+                            match message.content.find('하늘봇') - message.content.find(keywords[i]) - len(keywords[i]):
+                                case 0 | 1 | 2:
+                                    reply = i
+                                case _:
+                                    pass
+                                    #reply = i
+                                    #notProper = True
+            if reply is not None:
+                replyText = '안녕하세요! ' + responseList[response[reply]]
+                if notProper:
+                    replyText += ('\n이 기능은 2020년 7월 초기 개발 단계에서 개발이 중단된 AI 유설레봇(PJU - 2.6버전)의 코드를 활용해서 만들었어요. 맥락을 파악하는 기능을 구현하는 데 실패해서 '+
+                                 f'각 봇 별 이름(설레봇, 유설레봇, 아로나봇, 에루봇, 하늘봇) + \'{responseList[response[reply]]}\'이라는 말이 들어가 있으면 무조건 반응하도록 설정되어 있으니까 혹시라도 하늘봇에게 인사하려던 게 아니었으면 죄송해요!')
+                await message.reply(replyText)
+    
     
     @commands.slash_command(name='정보',guild_ids=guild_ids,description='하늘봇의 정보에요!')
     async def checkIfRun(self, ctx):
