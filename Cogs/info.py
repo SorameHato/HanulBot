@@ -116,6 +116,28 @@ class info(commands.Cog):
                     await ctx.respond('하늘봇이 쓴 메세지가 아니에요!')
         else:
             await ctx.respond('이 기능은 하토만 이용할 수 있어요!')
+    
+    @commands.slash_command(name='삭제', guild_ids=guild_ids, description='하토용 명령어 / 메세지 삭제')
+    async def delete_message(self, ctx, msg_id:discord.Option(str,'메세지 ID를 입력해주세요',name='메세지id'),channel:discord.Option(discord.abc.GuildChannel,'채널을 선택해주세요',name='채널')=None,fileName:discord.Option(str,'파일명을 입력해주세요',name='파일명')='message.txt'):
+        isowner = await self.bot.is_owner(ctx.author)
+        if isowner:
+            try:
+                msg = await ctx.fetch_message(msg_id)
+            except discord.NotFound:
+                if channel is None:
+                    await ctx.respond('이 채널의 메세지가 아니거나 Fetch할 수 없는 메세지에요! 채널 ID를 입력해주세요!')
+                else:
+                    msg = await channel.fetch_message(msg_id)
+            except Exception as e:
+                raise e
+            if 'msg' in dir() and msg is not None:
+                if msg.author.id == self.bot.user.id:
+                    await msg.delete(reason='하늘봇의 버그나 수정 오류 등으로 인해 잘못된 메세지를 지우는 작업')
+                    await ctx.respond('삭제 완료!')
+                else:
+                    await ctx.respond('하늘봇이 쓴 메세지가 아니에요!')
+        else:
+            await ctx.respond('이 기능은 하토만 이용할 수 있어요!')
 
 def setup(bot):
     bot.add_cog(info(bot))
