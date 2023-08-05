@@ -34,7 +34,7 @@ class info(commands.Cog):
             await ctx.respond('아무래도 바보토끼가 또 바보토끼 한 것 같아요. 하토를 불러주세요!',embed=embed)
         except discord.NotFound:
             channel = await self.bot.fetch_channel(1126893408892502028)
-            channel.send('아무래도 바보토끼가 또 바보토끼 한 것 같아요. 하토를 불러주세요!',embed=embed)
+            await channel.send('아무래도 바보토끼가 또 바보토끼 한 것 같아요. 하토를 불러주세요!',embed=embed)
         except Exception as e:
             raise e
         raise error
