@@ -75,7 +75,8 @@ class giveRole(commands.Cog):
                     case _:
                         return
                 try:
-                    await payload.member.add_roles(discord.utils.get(guild.roles, id=role_id), reason=f'하늘봇 {role_name} 자동부여')
+                    role = guild.get_role(role_id)
+                    await payload.member.add_roles(role, reason=f'하늘봇 {role_name} 자동부여')
                 except Exception as e:
                     channel = self.bot.get_channel(1126877960574619648)
                     embed = discord.Embed(title=f'{payload.member}님께 {role_name} 역할을 부여하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=self.bot.hanul_color)
@@ -113,7 +114,8 @@ class giveRole(commands.Cog):
             case _:
                 return
         try:
-            await ctx.author.remove_roles(discord.utils.get(ctx.guild.roles, id=role_id), reason=f'하늘봇 {role_name} 자동제거')
+            role = guild.get_role(role_id)
+            await ctx.author.remove_roles(role, reason=f'하늘봇 {role_name} 자동제거')
         except Exception as e:
             channel = self.bot.get_channel(1126877960574619648)
             embed = discord.Embed(title=f'{ctx.author}님께 {role_name} 역할을 제거하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=self.bot.hanul_color)
