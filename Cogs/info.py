@@ -71,7 +71,7 @@ class info(commands.Cog):
     
     
     @commands.slash_command(name='정보',guild_ids=guild_ids,description='하늘봇의 정보에요!')
-    async def checkIfRun(self, ctx):
+    async def hanul_info(self, ctx):
         expUserList, day1UserList, chatCountSum = getAllUser()
         guild = self.bot.get_guild(1126790936723210290)
         memberList = guild.members
