@@ -137,7 +137,7 @@ class expFrontEnd(commands.Cog):
         await ctx.respond(embed=embed)
     
     @exp_commands.command(name='랭킹',guild_ids=guild_ids,description='활동점수 랭킹을 볼 수 있어요!')
-    async def rank(self,ctx,todayOrder:discord.Option(int,'누적 순위를 표시할지 오늘 올린 점수 순위만 표시할 지 선택해주세요!',name='정렬',choices=[discord.OptionChoice(name='누적 순위',value=0),discord.OptionChoice(name='오늘 순위',value=1),discord.OptionChoice(name='어제 순위',value=2)],default=0),arg:discord.Option(int,'몇 등까지 표시할 지 입력해주세요!', name='등수', choices=[discord.OptionChoice('5등',5),discord.OptionChoice('10등',10),discord.OptionChoice('전체',value=0)],default=0),isModern:discord.Option(int,'출력 스타일을 선택해주세요!',name='스타일',choices=[discord.OptionChoice(name='모던',value=1),discord.OptionChoice(name='텍스트',value=0)],default=1)):
+    async def exp_rank(self,ctx,todayOrder:discord.Option(int,'누적 순위를 표시할지 오늘 올린 점수 순위만 표시할 지 선택해주세요!',name='정렬',choices=[discord.OptionChoice(name='누적 순위',value=0),discord.OptionChoice(name='오늘 순위',value=1),discord.OptionChoice(name='어제 순위',value=2)],default=0),arg:discord.Option(int,'몇 등까지 표시할 지 입력해주세요!', name='등수', choices=[discord.OptionChoice('5등',5),discord.OptionChoice('10등',10),discord.OptionChoice('전체',value=0)],default=0),isModern:discord.Option(int,'출력 스타일을 선택해주세요!',name='스타일',choices=[discord.OptionChoice(name='모던',value=1),discord.OptionChoice(name='텍스트',value=0)],default=1)):
         respondMessage = ctx.respond('> ⌛ 지금 랭킹을 집계하는 중이에요! 시간이 걸릴 수 있으니까 잠시만 기다려주세요!')
         if todayOrder==2:
             yesterday = True
