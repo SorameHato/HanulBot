@@ -135,7 +135,7 @@ def __dataCheck__(uid, data_name, amount, funcInfo):
     else:
         return True
 
-def __setData__(sql_con, sql_cur, uid:int, data_name:str, amount, sep=False):
+def __setData__(sql_con, sql_cur, uid:int, data_name:str, amount, sep=False, close=False):
     '''
     데이터 수동 수정 용으로 만든 함수임!
     군바나 last_call, friendly_rate 설정하는 경우가 아니라면 절대로 함수 안에서 사용하지 말 것!
@@ -152,9 +152,9 @@ def __setData__(sql_con, sql_cur, uid:int, data_name:str, amount, sep=False):
         __commit__(sql_con)
         if sep:
             __calcFriendlyRate__(sql_con,sql_cur,uid)
-            __commit__(sql_con)
+            __commit__(sql_con, close)
 
-def __addData__(sql_con, sql_cur, uid:int, data_name:str, amount, sep=False):
+def __addData__(sql_con, sql_cur, uid:int, data_name:str, amount, sep=False, close=False):
     '''
     friendly_rate 테이블에서 uid에 대한 data_name의 값을
     amount만큼 바꾸는 함수
@@ -174,7 +174,7 @@ def __addData__(sql_con, sql_cur, uid:int, data_name:str, amount, sep=False):
         __commit__(sql_con)
         if sep:
             __calcFriendlyRate__(sql_con, sql_cur, uid)
-            __commit__(sql_con)
+            __commit__(sql_con, close)
 
 def __getDataFromOutside__(uid:int, attribute:str):
     '''코드가 비슷한 것 같아서 그냥 4개를 전부 합쳐버림'''
