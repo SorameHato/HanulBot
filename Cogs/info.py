@@ -115,6 +115,9 @@ class info(commands.Cog):
         > daily_init : 작동 횟수 {self.bot.daily_init_count}회, 다음 작동 시간 : {self.bot.daily_init_next}''')
     
     @commands.slash_command(name="전송", guild_ids=guild_ids, description='하토용 명령어 / 특정 채널에 메세지 전송')
+    dbg_commands = discord.SlashCommandGroup(name="디버그",description="도박과 관련된 명령어에요!",guild_ids=guild_ids)
+    
+    @dbg_commands.command(name="전송", guild_ids=guild_ids, description='하토용 명령어 / 특정 채널에 메세지 전송')
     async def send_message(self, ctx, channel:discord.Option(discord.abc.GuildChannel,'채널을 선택해주세요',name='채널'),fileName:discord.Option(str,'파일명을 입력해주세요',name='파일명')='message.txt'):
         isowner = await self.bot.is_owner(ctx.author)
         if isowner:
@@ -124,7 +127,7 @@ class info(commands.Cog):
         else:
             await ctx.respond('이 기능은 하토만 이용할 수 있어요!')
     
-    @commands.slash_command(name='수정', guild_ids=guild_ids, description='하토용 명령어 / 메세지 수정')
+    @dbg_commands.command(name='수정', guild_ids=guild_ids, description='하토용 명령어 / 메세지 수정')
     async def edit_message(self, ctx, msg_id:discord.Option(str,'메세지 ID를 입력해주세요',name='메세지id'),channel:discord.Option(discord.abc.GuildChannel,'채널을 선택해주세요',name='채널')=None,fileName:discord.Option(str,'파일명을 입력해주세요',name='파일명')='message.txt'):
         isowner = await self.bot.is_owner(ctx.author)
         if isowner:
@@ -147,7 +150,7 @@ class info(commands.Cog):
         else:
             await ctx.respond('이 기능은 하토만 이용할 수 있어요!')
     
-    @commands.slash_command(name='삭제', guild_ids=guild_ids, description='하토용 명령어 / 메세지 삭제')
+    @dbg_commands.command(name='삭제', guild_ids=guild_ids, description='하토용 명령어 / 메세지 삭제')
     async def delete_message(self, ctx, msg_id:discord.Option(str,'메세지 ID를 입력해주세요',name='메세지id'),channel:discord.Option(discord.abc.GuildChannel,'채널을 선택해주세요',name='채널')=None,fileName:discord.Option(str,'파일명을 입력해주세요',name='파일명')='message.txt'):
         isowner = await self.bot.is_owner(ctx.author)
         if isowner:
