@@ -9,7 +9,7 @@ global guild_ids
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
-from Exp import getChatCount, getDayCount, getRegisterDate, getExp, chatCallCalc, getAllData, getYesterdayData, dailyDBInit
+from Exp import *
 from SkyLib.tui import fixedWidth, fixedWidthAlt
 
 class expFrontEnd(commands.Cog):
