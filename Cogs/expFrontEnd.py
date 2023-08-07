@@ -170,7 +170,7 @@ class expFrontEnd(commands.Cog):
                 respond = '오류가 발생했어요! (arg == None인 경우)'
             case _:
                 respond = f'오류가 발생했어요! (알 수 없는 오류, result : {result})'
-        ctx.respond(respond)
+        await ctx.respond(respond)
 
 
 def setup(bot):
