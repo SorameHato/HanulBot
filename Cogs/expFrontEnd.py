@@ -149,7 +149,9 @@ class expFrontEnd(commands.Cog):
         else:
             respond = f'활동점수 랭킹 현황이에요!{await self.__showRanking__(1,arg,todayOrder=todayOrder,yesterday=yesterday)}'
         try:
-            await respondMessage.edit_original_response(respond)
+            #a = await respondMessage.original_response()
+            #b = await a.edit(respond)
+            await respondMessage.edit_original_response(content=respond)
         except discord.errors.NotFound:
             channel = self.bot.get_channel(ctx.channel.id)
             await channel.send(respond + f'\n<@{ctx.author.id}>인터렉션이 중간에 닫히는 문제가 발생해 별도의 채팅으로 전송했어요!')
