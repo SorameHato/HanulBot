@@ -199,7 +199,7 @@ def getRegisterDate(uid:int):
 def getExp(uid:int):
     return __getDataFromOutside__(uid, 'exp')
 
-def getSilentStauts(uid:int):
+def getSilentStatus(uid:int):
     return __getDataFromOutside__(uid, 'silent')
 
 def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
