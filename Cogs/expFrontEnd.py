@@ -155,6 +155,22 @@ class expFrontEnd(commands.Cog):
             await channel.send(respond + f'\n<@{ctx.author.id}>인터렉션이 중간에 닫히는 문제가 발생해 별도의 채팅으로 전송했어요!')
         except Exception as e:
             raise e
+    
+    @exp_commands.command(name='멘션',guild_ids=guild_ids,description='출석 체크 시의 멘션을 켜고 끌 수 있어요!')
+    async def exp_mention(self, ctx):
+        result = changeSilentStatus(ctx.author.id)
+        match result:
+            case 0:
+                respond = '성공적으로 멘션을 켰어요!'
+            case 1:
+                respond = '성공적으로 멘션을 껐어요!'
+            case -1:
+                respond = '오류가 발생했어요! (arg == 부울(bool)형 Method인 경우)'
+            case -2:
+                respond = '오류가 발생했어요! (arg == None인 경우)'
+            case _:
+                respond = f'오류가 발생했어요! (알 수 없는 오류, result : {result})'
+        ctx.respond(respond)
 
 
 def setup(bot):
