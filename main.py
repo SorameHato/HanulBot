@@ -10,7 +10,7 @@ import pathlib
 from SkyLib import tui
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
-hanul_ver = "0.0 rev 140 (2023-08-08 01:01)"
+hanul_ver = "0.0 rev 141 (2023-08-08 01:26)"
 guild_ids = [
     1030056186915082262, #테스트용 서버
     1126790936723210290 #스카이형 서버
