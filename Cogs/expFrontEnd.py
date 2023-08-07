@@ -120,7 +120,11 @@ class expFrontEnd(commands.Cog):
                     embed = discord.Embed(title=e_title,description=e_desc,color=self.bot.hanul_color)
                     embed.add_field(name='스카이방과 함께한 날',value=f'{getDayCount(message.author.id)}일',inline=False)
                     embed.add_field(name='활동점수',value=f_arg,inline=False)
-                    await channel.send(f'<@{message.author.id}>',embed=embed)
+                    silentStatus = getSilentStatus(message.author.id)
+                    if silentStatus:
+                        await channel.send(embed=embed)
+                    else:
+                        await channel.send(f'<@{message.author.id}>',embed=embed)
     
     exp_commands = discord.SlashCommandGroup(name="활동점수",description="활동점수의 현황과 랭킹을 보여주는 명령어에요!",guild_ids=guild_ids)
     
