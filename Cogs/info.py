@@ -114,7 +114,10 @@ class info(commands.Cog):
         > * fishing.py
         > daily_init : 작동 횟수 {self.bot.daily_init_count}회, 다음 작동 시간 : {self.bot.daily_init_next}''')
     
-    @commands.slash_command(name="전송", guild_ids=guild_ids, description='하토용 명령어 / 특정 채널에 메세지 전송')
+    @commands.slash_command(name='건의',guild_ids=guild_ids,description='하늘봇에 건의하실 게 있으시면 이 명령어를 이용해주세요!')
+    async def 건의(self, ctx):
+        await ctx.respond(f'<#1126893408892502028> 이 쪽에서 하토를 멘션해서 편하게 말씀해주세요! 저는 24시간 언제든지 괜찮으니까 편하게 멘션해주세요!')
+    
     dbg_commands = discord.SlashCommandGroup(name="디버그",description="도박과 관련된 명령어에요!",guild_ids=guild_ids)
     
     @dbg_commands.command(name="전송", guild_ids=guild_ids, description='하토용 명령어 / 특정 채널에 메세지 전송')
