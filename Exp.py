@@ -83,7 +83,7 @@ def __getData__(sql_cur, uid:int, data_name:str, outside=False):
     '''
     friendly_rate 테이블에서 uid에 대한 data_name의 값을 가지고 오는 함수
     '''
-    if data_name in ['first_call', 'last_call', 'chat_count', 'day_count', 'exp', 'silent', '*'] and type(uid) is int:
+    if data_name in ['first_call', 'last_call', 'chat_count', 'day_count', 'exp', 'silent', '(exp-exp_ashita) AS increase', '*'] and type(uid) is int:
         sql_cur.execute(f'SELECT {data_name} FROM hanul_exp WHERE uid=:uid;',{'uid':uid})
         sql_data = sql_cur.fetchall()
         result = sql_data[0][0]
@@ -201,6 +201,9 @@ def getExp(uid:int):
 
 def getSilentStatus(uid:int):
     return __getDataFromOutside__(uid, 'silent')
+
+def getIncrease(uid:int):
+    return __getDataFromOutside__(uid, '(exp-exp_ashita) AS increase')
 
 def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
     '''
