@@ -120,35 +120,28 @@ class giveRole(commands.Cog):
         else:
             await ctx.respond(f'{role.name} 역할을 성공적으로 제거했어요!',ephemeral=True)
     
+    thread_list = [discord.OptionChoice('서브컬쳐 (애니, 만화, 라노벨 등)',value='1137785013191049338'),
+                   discord.OptionChoice('밀리터리',value='1137785014675845270'),
+                   discord.OptionChoice('아이돌',value='1137785016756207746'),
+                   discord.OptionChoice('IT/코딩',value='1138510793147695104'),
+                   discord.OptionChoice('게임',value='1137785020241674312'),
+                   discord.OptionChoice('기타',value='1137785024175947856')]
+    
     @commands.slash_command(name='스레드',guild_ids = guild_ids, description="특정 분야를 덕질하는 스레드에 참여할 수 있는 명령어에요!")
-    async def prob(self, ctx, thread_name:discord.Option(str,'어떤 스레드에 참여할 지 선택해주세요!', name='스레드', choices=['서브컬쳐','밀리터리','아이돌','IT/코딩','게임','기타'])):
-        match thread_name:
-            case '게임':
-                thread_id = 1137785020241674312
-            case '아이돌':
-                thread_id = 1137785016756207746
-            case '기타':
-                thread_id = 1137785024175947856
-            case '밀리터리':
-                thread_id = 1137785014675845270
-            case '서브컬쳐':
-                thread_id = 1137785013191049338
-            case 'IT/코딩':
-                thread_id = 1138510793147695104
-            case _:
-                return
+    async def prob(self, ctx, thread_name:discord.Option(str,'어떤 스레드에 참여할 지 선택해주세요!', name='스레드', choices=thread_list)):
+        thread_id = int(thread_name)
         try:
             channel = self.bot.get_channel(1126792316003307670)
             thread = channel.get_thread(thread_id)
             await thread.add_user(ctx.author)
         except Exception as e:
             channel = self.bot.get_channel(1126877960574619648)
-            embed = discord.Embed(title=f'{ctx.author}님을 {thread_name} 채널에 추가하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=self.bot.hanul_color)
+            embed = discord.Embed(title=f'{ctx.author}님을 {thread.name} 채널에 추가하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=self.bot.hanul_color)
             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
             await channel.send(embed=embed)
             raise e
         else:
-            await ctx.respond(f'{thread_name} 스레드에 참여했어요!',ephemeral=True)
+            await ctx.respond(f'{thread.name[3:]} 스레드에 참여했어요!',ephemeral=True)
 
 
 def setup(bot):
