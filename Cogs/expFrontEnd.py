@@ -42,8 +42,8 @@ class expFrontEnd(commands.Cog):
         for i in range(since-1, until):
             row = data[i]
             user = await guild.fetch_member(row[0])
-            nick = user.nick
-            if nick == None:
+            if user is None:
+                user = await self.bot.get_or_fetch_user(row[0])
                 try:
                     # 2.5버전 업데이트 전 임시 코드
                     nick = user.global_name
@@ -55,8 +55,26 @@ class expFrontEnd(commands.Cog):
                 finally:
                     if nick == None:
                         nick = user.display_name
+                    if nick == None:
+                        nick = user.name
+            else:
+                nick = user.nick
+                if nick == None:
+                    try:
+                        # 2.5버전 업데이트 전 임시 코드
+                        nick = user.global_name
+                    except AttributeError:
+                        pass
+                    except Exception as e:
+                        raise e
+                        return
+                    finally:
+                        if nick == None:
+                            nick = user.display_name
+                        if nick == None:
+                            nick = user.name
             if modern:
-                result += '\n' + fixedWidth(i+1,3,2) + '등 ' + fixedWidth(nick,20) + fixedWidth(str(row[1])+' (▲'+str(row[2])+', '+str(row[3])+'일차)',25,2)
+                result += '\n' + fixedWidth(i+1,3,2) + '등 ' + fixedWidth(nick,20) + fixedWidth(str(row[1])+' (▲ '+str(row[2])+', '+str(row[3])+'일차)',25,2)
             else:
                 if i <= 2:
                     result += '\n**' + fixedWidth(i+1,3,2) + '등 ' + nick + ' (' +str(row[1])+' ▲'+str(row[2])+', '+str(row[3])+'일차)**'
