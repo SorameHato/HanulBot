@@ -106,7 +106,7 @@ class giveRole(commands.Cog):
                  discord.OptionChoice('리듬게임',value='1127588698062585917')]
     
     @commands.slash_command(name='역할제거',guild_ids = guild_ids, description="역할을 제거하는 명령어에요!")
-    async def prob(self, ctx, role_name:discord.Option(str,'어떤 역할을 제거할 지 선택해주세요!', name='역할명', choices=role_list)):
+    async def role_remove(self, ctx, role_name:discord.Option(str,'어떤 역할을 제거할 지 선택해주세요!', name='역할명', choices=role_list)):
         role_id = int(role_name)
         try:
             role = ctx.guild.get_role(role_id)
@@ -128,7 +128,7 @@ class giveRole(commands.Cog):
                    discord.OptionChoice('기타',value='1137785024175947856')]
     
     @commands.slash_command(name='스레드',guild_ids = guild_ids, description="특정 분야를 덕질하는 스레드에 참여할 수 있는 명령어에요!")
-    async def prob(self, ctx, thread_name:discord.Option(str,'어떤 스레드에 참여할 지 선택해주세요!', name='스레드', choices=thread_list)):
+    async def thread_invite(self, ctx, thread_name:discord.Option(str,'어떤 스레드에 참여할 지 선택해주세요!', name='스레드', choices=thread_list)):
         thread_id = int(thread_name)
         try:
             channel = self.bot.get_channel(1126792316003307670)
