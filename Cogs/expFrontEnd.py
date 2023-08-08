@@ -148,7 +148,7 @@ class expFrontEnd(commands.Cog):
     
     @exp_commands.command(name='현황',guild_ids=guild_ids,description='자신의 활동점수 현황을 볼 수 있어요!')
     async def exp_FrontEnd(self, ctx):
-        embed = discord.Embed(title=f'{ctx.author}님의 활동점수는 {getExp(ctx.author.id)}(이)에요!',color=self.bot.hanul_color)
+        embed = discord.Embed(title=f'{ctx.author}님의 활동점수는 {getExp(ctx.author.id)} (▲ {getIncrease(ctx.author.id)})(이)에요!',color=self.bot.hanul_color)
         embed.add_field(name='하늘봇과 함께 하기 시작한 날짜',value=getRegisterDate(ctx.author.id),inline=False)
         embed.add_field(name='스카이방과 함께한 날',value=f'{getDayCount(ctx.author.id)}일',inline=True)
         embed.add_field(name='채팅 집계 횟수',value=f'{getChatCount(ctx.author.id)}회',inline=True)
