@@ -107,7 +107,7 @@ class giveRole(commands.Cog):
     
     @commands.slash_command(name='역할제거',guild_ids = guild_ids, description="역할을 제거하는 명령어에요!")
     async def prob(self, ctx, role_name:discord.Option(str,'어떤 역할을 제거할 지 선택해주세요!', name='역할명', choices=role_list)):
-        role_id = int(role_id)
+        role_id = int(role_name)
         try:
             role = guild.get_role(role_id)
             await ctx.author.remove_roles(role, reason=f'하늘봇 {role.name} 자동제거')
