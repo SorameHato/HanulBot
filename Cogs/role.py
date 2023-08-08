@@ -126,7 +126,7 @@ class giveRole(commands.Cog):
             await ctx.respond(f'{role_name} 역할을 성공적으로 제거했어요!',ephemeral=True)
     
     @commands.slash_command(name='스레드',guild_ids = guild_ids, description="특정 분야를 덕질하는 스레드에 참여할 수 있는 명령어에요!")
-    async def prob(self, ctx, thread_name:discord.Option(str,'어떤 스레드에 참여할 지 선택해주세요!', name='스레드', choices=['서브컬쳐','밀리터리','아이돌','게임','기타'])):
+    async def prob(self, ctx, thread_name:discord.Option(str,'어떤 스레드에 참여할 지 선택해주세요!', name='스레드', choices=['서브컬쳐','밀리터리','아이돌','IT/코딩','게임','기타'])):
         match thread_name:
             case '게임':
                 thread_id = 1137785020241674312
@@ -138,6 +138,8 @@ class giveRole(commands.Cog):
                 thread_id = 1137785014675845270
             case '서브컬쳐':
                 thread_id = 1137785013191049338
+            case 'IT/코딩':
+                thread_id = 1138510793147695104
             case _:
                 return
         try:
