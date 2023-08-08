@@ -109,7 +109,7 @@ class giveRole(commands.Cog):
     async def prob(self, ctx, role_name:discord.Option(str,'어떤 역할을 제거할 지 선택해주세요!', name='역할명', choices=role_list)):
         role_id = int(role_name)
         try:
-            role = guild.get_role(role_id)
+            role = ctx.guild.get_role(role_id)
             await ctx.author.remove_roles(role, reason=f'하늘봇 {role.name} 자동제거')
         except Exception as e:
             channel = self.bot.get_channel(1126877960574619648)
