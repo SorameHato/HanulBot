@@ -100,30 +100,25 @@ class giveRole(commands.Cog):
             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
             await channel.send(embed=embed)
     
+    role_list = [discord.OptionChoice('레식',value='1127588554780987453'),
+                 discord.OptionChoice('글옵발로',value='1127588815679279154'),
+                 discord.OptionChoice('미호요',value='1127588341152485407'),
+                 discord.OptionChoice('리듬게임',value='1127588698062585917')]
+    
     @commands.slash_command(name='역할제거',guild_ids = guild_ids, description="역할을 제거하는 명령어에요!")
-    async def prob(self, ctx, role_name:discord.Option(str,'어떤 역할을 제거할 지 선택해주세요!', name='역할명', choices=['레식','글옵발로','미호요','리듬게임'])):
-        match role_name:
-            case '레식':
-                role_id = 1127588554780987453
-            case '글옵발로':
-                role_id = 1127588815679279154
-            case '미호요':
-                role_id = 1127588341152485407
-            case '리듬게임':
-                role_id = 1127588698062585917
-            case _:
-                return
+    async def prob(self, ctx, role_name:discord.Option(str,'어떤 역할을 제거할 지 선택해주세요!', name='역할명', choices=role_list)):
+        role_id = int(role_id)
         try:
             role = guild.get_role(role_id)
-            await ctx.author.remove_roles(role, reason=f'하늘봇 {role_name} 자동제거')
+            await ctx.author.remove_roles(role, reason=f'하늘봇 {role.name} 자동제거')
         except Exception as e:
             channel = self.bot.get_channel(1126877960574619648)
-            embed = discord.Embed(title=f'{ctx.author}님께 {role_name} 역할을 제거하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=self.bot.hanul_color)
+            embed = discord.Embed(title=f'{ctx.author}님께 {role.name} 역할을 제거하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=self.bot.hanul_color)
             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
             await channel.send(embed=embed)
             raise e
         else:
-            await ctx.respond(f'{role_name} 역할을 성공적으로 제거했어요!',ephemeral=True)
+            await ctx.respond(f'{role.name} 역할을 성공적으로 제거했어요!',ephemeral=True)
     
     @commands.slash_command(name='스레드',guild_ids = guild_ids, description="특정 분야를 덕질하는 스레드에 참여할 수 있는 명령어에요!")
     async def prob(self, ctx, thread_name:discord.Option(str,'어떤 스레드에 참여할 지 선택해주세요!', name='스레드', choices=['서브컬쳐','밀리터리','아이돌','IT/코딩','게임','기타'])):
