@@ -116,7 +116,7 @@ class info(commands.Cog):
     
     @commands.slash_command(name='건의',guild_ids=guild_ids,description='하늘봇에 건의하실 게 있으시면 이 명령어를 이용해주세요!')
     async def 건의(self, ctx):
-        await ctx.respond(f'<#1126893408892502028> 이 쪽에서 하토를 멘션해서 편하게 말씀해주세요! 저는 24시간 언제든지 괜찮으니까 편하게 멘션해주세요!')
+        await ctx.respond(f'<#1126893408892502028> 이 쪽에서 하토를 멘션해서 편하게 말씀해주세요! 저는 24시간 언제든지 괜찮으니까 편하게 멘션해주세요!',ephemeral=True)
     
     dbg_commands = discord.SlashCommandGroup(name="디버그",description="도박과 관련된 명령어에요!",guild_ids=guild_ids)
     
@@ -124,7 +124,7 @@ class info(commands.Cog):
     async def send_message(self, ctx, channel:discord.Option(discord.abc.GuildChannel,'채널을 선택해주세요',name='채널'),fileName:discord.Option(str,'파일명을 입력해주세요',name='파일명')='message.txt'):
         isowner = await self.bot.is_owner(ctx.author)
         if isowner:
-            respondMessage = await ctx.respond('> ⌛ 전송 중이에요! 잠시만 기다려주세요!')
+            respondMessage = await ctx.respond('> ⌛ 전송 중이에요! 잠시만 기다려주세요!',ephemeral=True)
             with open(pathlib.PurePath(__file__).parent.parent.parent.joinpath('msg',fileName),'r') as f:
                 await channel.send(f.read())
             await respondMessage.edit_original_response(content='전송 완료!')
@@ -135,7 +135,7 @@ class info(commands.Cog):
     async def edit_message(self, ctx, msg_id:discord.Option(str,'메세지 ID를 입력해주세요',name='메세지id'),channel:discord.Option(discord.abc.GuildChannel,'채널을 선택해주세요',name='채널')=None,fileName:discord.Option(str,'파일명을 입력해주세요',name='파일명')='message.txt'):
         isowner = await self.bot.is_owner(ctx.author)
         if isowner:
-            respondMessage = await ctx.respond('> ⌛ 수정 중이에요! 잠시만 기다려주세요!')
+            respondMessage = await ctx.respond('> ⌛ 수정 중이에요! 잠시만 기다려주세요!',ephemeral=True)
             try:
                 msg = await ctx.fetch_message(msg_id)
             except discord.NotFound:
@@ -159,7 +159,7 @@ class info(commands.Cog):
     async def delete_message(self, ctx, msg_id:discord.Option(str,'메세지 ID를 입력해주세요',name='메세지id'),channel:discord.Option(discord.abc.GuildChannel,'채널을 선택해주세요',name='채널')=None,fileName:discord.Option(str,'파일명을 입력해주세요',name='파일명')='message.txt'):
         isowner = await self.bot.is_owner(ctx.author)
         if isowner:
-            respondMessage = await ctx.respond('> ⌛ 삭제 중이에요! 잠시만 기다려주세요!')
+            respondMessage = await ctx.respond('> ⌛ 삭제 중이에요! 잠시만 기다려주세요!',ephemeral=True)
             try:
                 msg = await ctx.fetch_message(msg_id)
             except discord.NotFound:
