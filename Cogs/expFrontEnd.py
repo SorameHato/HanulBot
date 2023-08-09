@@ -80,9 +80,9 @@ class expFrontEnd(commands.Cog):
                 result += '\n' + fixedWidth(i+1,3,2) + '등 ' + fixedWidth(nick,20) + fixedWidth(str(row[1])+' (▲ '+str(row[2])+', '+str(row[3])+'일차)',25,2)
             else:
                 if i <= 2:
-                    result += '\n**' + fixedWidth(i+1,3,2) + '등 ' + nick + ' (' +str(row[1])+' ▲'+str(row[2])+', '+str(row[3])+'일차)**'
+                    result += '\n**' + fixedWidth(i+1,3,2) + '등 ' + nick.replace('_','\\_') + ' (' +str(row[1])+' ▲'+str(row[2])+', '+str(row[3])+'일차)**'
                 else:
-                    result += '\n' + fixedWidth(i+1,3,2) + '등 ' + nick + ' (' +str(row[1])+' ▲'+str(row[2])+', '+str(row[3])+'일차)'
+                    result += '\n' + fixedWidth(i+1,3,2) + '등 ' + nick.replace('_','\\_') + ' (' +str(row[1])+' ▲'+str(row[2])+', '+str(row[3])+'일차)'
         return result
     
     @tasks.loop(time=time(second=1,tzinfo=tz(td(hours=0))))
