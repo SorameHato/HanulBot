@@ -179,7 +179,7 @@ class info(commands.Cog):
             await ctx.respond('이 기능은 하토만 이용할 수 있어요!')
     
     @dbg_commands.command(name='삭제', guild_ids=guild_ids, description='하토용 명령어 / 메세지 삭제')
-    async def delete_message(self, ctx, msg_id:discord.Option(str,'메세지 ID를 입력해주세요',name='메세지id'),channel:discord.Option(discord.abc.GuildChannel,'채널을 선택해주세요',name='채널')=None,fileName:discord.Option(str,'파일명을 입력해주세요',name='파일명')='message.txt'):
+    async def delete_message(self, ctx, msg_id:discord.Option(str,'메세지 ID를 입력해주세요',name='메세지id'),channel:discord.Option(discord.abc.GuildChannel,'채널을 선택해주세요',name='채널')=None):
         isowner = await self.bot.is_owner(ctx.author)
         if isowner:
             respondMessage = await ctx.respond('> ⌛ 삭제 중이에요! 잠시만 기다려주세요!',ephemeral=True)
