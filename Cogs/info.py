@@ -80,7 +80,7 @@ class info(commands.Cog):
     
     
     @commands.slash_command(name='정보',guild_ids=guild_ids,description='하늘봇의 정보에요!')
-    async def hanul_info(self, ctx):
+    async def hanul_info(self, ctx, info_select:discord.Option(int,'보고 싶은 정보를 선택해주세요! 선택하지 않으면 기본적으로 전체를 출력해요.',name='목록',choices=info_list,default=0)):
         expUserList, day1UserList, chatCountSum = getAllUser()
         guild = self.bot.get_guild(1126790936723210290)
         memberList = guild.members
@@ -89,7 +89,7 @@ class info(commands.Cog):
             if (member.id not in expUserList or member.id in day1UserList) and not member.bot:
                 notJoin.append(str(member))
         now = dt.now(tz(td(hours=9)))
-        compareDate = dt(2023,7,9,0,0,0,0,tzinfo=tz(td(hours=9)))
+        compareDate = dt(2023,7,9,5,15,0,0,tzinfo=tz(td(hours=9)))
         if platform.system() == 'Linux' and platform.node() == 'goorm':
             pf_docker = 'Live(HanulMain)'
             pf_ver = platform.freedesktop_os_release()['NAME'] + ' ' + platform.freedesktop_os_release()['VERSION']
@@ -99,29 +99,43 @@ class info(commands.Cog):
         else:
             pf_docker = '인식할 수 없음'
             pf_ver = platform.system() + ' ' + platform.release() + ' ' + platform.version()
-        await ctx.respond(f'''* 봇 정보\n> 버전 : {self.bot.hanul_ver}
+        bot_info = f'''* 봇 정보\n> 버전 : {self.bot.hanul_ver}
         > 마지막으로 다시 시작된 시간 : {self.bot.LoadedTime}
         > 제작자 : 하토(ghwls030306@s-r.ze.am)
         > 깃허브 리포지터리 : SorameHato/HanulBot
-        > 기반 : 설레봇 버전 PJU 3.2 2023060403 rev 61 build 258
-        * 시스템\n> 활성 Dev 도커 : AmeMizu
+        > 기반 : 설레봇 버전 PJU 3.2 2023060403 rev 61 build 258'''
+        bot_system = f'''* 시스템\n> 활성 Dev 도커 : AmeMizu
         > 활성 Live 도커 : HanulMain@utwiki.run.goorm.site
         > 현재 하늘봇이 실행되고 있는 환경 : {pf_docker}
         > 운영체제 버전 : {pf_ver}
         > Python 버전 : {sys.version}
-        > Pycord 버전 : {discord.__version__}-{discord.version_info[3]}
-        * 경험치\n> 하늘봇 가동 일수 : {(now-compareDate).days+1}일
+        > Pycord 버전 : {discord.__version__}-{discord.version_info[3]}'''
+        bot_exp = f'''* 활동점수\n> 하늘봇 가동 일수 : {(now-compareDate).days}일
         > 등록된 유저 수 : {len(expUserList)}명 (서버에 있는 유저 {len(memberList)}명)
         > 채팅 집계 횟수 : {chatCountSum}회
         > * 하늘봇 가동 후 한 번도 채팅을 전송하지 않은 유저 목록
-        > {", ".join(notJoin)}
-        * 작업(discord.ext.tasks)\n> * info.py
-        > morning_greeting : 작동 횟수 {self.morning_greeting.current_loop}회, 다음 작동 시간 : {self.morning_greeting.next_iteration.astimezone(tz=tz(td(hours=9))) if self.morning_greeting.next_iteration is not None else self.morning_greeting.next_iteration}
+        > {", ".join(notJoin)}'''
+        bot_task = f'''* 작업(discord.ext.tasks)\n> * info.py
+        > morning_greeting : 작동 횟수 {self.bot.morning_greeting_count}회, 다음 작동 시간 : {self.bot.morning_greeting_next}
         > * expFrontEnd.py
         > daily_init_exp : 작동 횟수 {self.bot.daily_init_exp_count}회, 다음 작동 시간 : {self.bot.daily_init_exp_next}
         > morning_inform : 작동 횟수 {self.bot.morning_inform_count}회, 다음 작동 시간 : {self.bot.morning_inform_next}
         > * fishing.py
-        > daily_init : 작동 횟수 {self.bot.daily_init_count}회, 다음 작동 시간 : {self.bot.daily_init_next}''')
+        > daily_init : 작동 횟수 {self.bot.daily_init_count}회, 다음 작동 시간 : {self.bot.daily_init_next}'''
+        match info_select:
+            case 0:
+                await ctx.respond(f'{bot_info}\n{bot_system}\n{bot_exp}\n{bot_task}')
+            case 1:
+                await ctx.respond(bot_info)
+            case 2:
+                await ctx.respond(bot_system)
+            case 3:
+                await ctx.respond(bot_exp)
+            case 4:
+                await ctx.respond(bot_task)
+            case _:
+                await ctx.respond(f'{bot_info}\n{bot_system}\n{bot_exp}\n{bot_task}')
+        
     
     @commands.slash_command(name='건의',guild_ids=guild_ids,description='하늘봇에 건의하실 게 있으시면 이 명령어를 이용해주세요!')
     async def 건의(self, ctx):
