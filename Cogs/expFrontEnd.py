@@ -41,8 +41,9 @@ class expFrontEnd(commands.Cog):
             since = until
         for i in range(since-1, until):
             row = data[i]
-            user = await guild.fetch_member(row[0])
-            if user is None:
+            try:
+                user = await guild.fetch_member(row[0])
+            except discord.NotFound:
                 user = await self.bot.get_or_fetch_user(row[0])
                 try:
                     # 2.5버전 업데이트 전 임시 코드
@@ -53,10 +54,12 @@ class expFrontEnd(commands.Cog):
                     raise e
                     return
                 finally:
-                    if nick == None:
-                        nick = user.display_name
+                    nick = user.display_name
                     if nick == None:
                         nick = user.name
+                    nick += '(탈퇴)'
+            except Exception as e:
+                raise e
             else:
                 nick = user.nick
                 if nick == None:
