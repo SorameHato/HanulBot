@@ -145,7 +145,7 @@ class expFrontEnd(commands.Cog):
                     if silentStatus:
                         await channel.send(embed=embed)
                     else:
-                        await channel.send(f'<@{message.author.id}> 혹시 멘션이 불편하시다면 /활동점수 멘션 명령어를 이용해주세요! 멘션을 끄고 켤 수 있어요.',embed=embed)
+                        await channel.send(f'<@{message.author.id}>',embed=embed)
     
     exp_commands = discord.SlashCommandGroup(name="활동점수",description="활동점수의 현황과 랭킹을 보여주는 명령어에요!",guild_ids=guild_ids)
     
