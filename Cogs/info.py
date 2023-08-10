@@ -25,10 +25,10 @@ class info(commands.Cog):
     @tasks.loop(time=time(hour=9,tzinfo=tz(td(hours=9))))
     async def morning_greeting(self):
         channel = self.bot.get_channel(1126792316003307670)
+        dbgChannel = await self.bot.fetch_channel(1137764318830665748)
         await channel.send('오전 9시! 좋은 아침이에요! 모두 즐거운 하루 보내시고 힘내시는거에요-!')
         self.bot.morning_greeting_count = self.morning_greeting.current_loop+1
         self.bot.morning_greeting_next = self.morning_greeting.next_iteration.astimezone(tz=tz(td(hours=9))) if self.morning_greeting.next_iteration is not None else self.morning_greeting.next_iteration
-        await mainChannel.send(f'{now} 오전 5시 15분 기준 랭킹 현황이에요! 더욱 많은 활동 부탁드릴게요!{await self.__showRanking__(1,5,yesterday=True)}')
         await dbgChannel.send(f'exp morning_greeting 다음 정기 알림 시간 : {self.bot.morning_greeting_next}\n작동 횟수 : {self.bot.morning_greeting_count}\n작동 여부 : {self.morning_greeting.is_running()}\n실패 여부 : {self.morning_greeting.failed()}')
     
     
