@@ -50,19 +50,21 @@ class tsun(commands.Cog):
                     tsunLevel = getTsunLevel(message.author.id)
                     a1List = ['칭찬해', '나데나데', '치야호야', '호메테', '호메떼', '쓰다듬'] # 칭찬을 기대하는 경우
                     a2List = ['매도해', '경멸해', '혼내'] # 메스가키 같은 반응을 기대하는 경우
+                    a3List = ['나데나데', '쓰다듬'] # 쓰다듬어주세요!
                     tsun1a = ['네에.. 정말 잘하셨네요..','네에.. 정말 잘 하셨어요..','네에.. 정말 대단해요..']
                     tsun1b = ['네에.. 정말 허접이네요','네에.. 정말 바보같네요..','최악..']
-                    tsun3a = ['lv3 칭찬 임시대사 (추후 추가 예정)']
-                    tsun3b = ['lv3 매도 임시대사 (추후 추가 예정)']
+                    tsun3a = ['대단해요..!','정말 잘 하셨어요!','엄청나요.. 특별히 칭찬해드릴게요!', '대단해요.. 수고하셨어요!']
+                    tsun3b = ['바보.. 정말 바보에요..!', '으이구.. 진짜로 바보에요.'] # 진짜로 메스가키처럼 매도하진 말자
+                    tsun3c = ['나데나데! 수고하셨어요..!', '쓰담쓰담! 엄청나요!', '쓰다담쓰다담!']
                     match tsunLevel:
                         case 0 | 2: # 0 : 아무것도 아님 | 2 : level 1 상태에서 5시 15분이 지나서 츤 모드가 다시 잠김
                             replyText = '그... 그런 건 에루봇한테나 시키라고요..!\n(에루봇 호감도 75 이상 기능, 2023년 8월 이내로 업데이트 예정)'
                         case 5: # 5 : level 1 상태에서 하루가 지난 후 처음으로 왔음
                             replyText = '오늘도 오셨네요!? 오... 오늘은 안 해드릴 거니까요..?'
                         case 6: # 6 : 츤 모드를 해금함 (1회차)
-                            replyText = '아.. 알겠어요..! 해 드리면 되잖아요! 그 대신 오늘만이에요?'
+                            replyText = '아.. 알겠어요..! 해 드리면 되잖아요! 그 대신 오늘만이에요? 내일은 안 해 드릴 거니까요!?'
                         case 7: # 7 : 츤 모드를 해금함 (2회차, 영구)
-                            replyText = '우으.. 진짜 끈질기네요.. 알겠어요! 해 드릴게요!'
+                            replyText = '우으.. 진짜 끈질기네요.. 알겠어요! 해 드릴게요! 진짜로 어쩔 수 없는 사람이네요..'
                         case 1: # 1 : 츤 모드 해금상태 (1회차, 오늘만 유지) / 억지로 해주는 느낌이 강한 대사
                             if keywords[reply] in a1List:
                                 replyText = random.choice(tsun1a)
@@ -72,7 +74,10 @@ class tsun(commands.Cog):
                                 replyText = responseList[response[reply]]
                         case 3: # 3 : 츤 모드 해금상태 (2회차, 영구적으로 유지) / 진심으로 해주는 느낌이 강한 대사
                             if keywords[reply] in a1List:
-                                replyText = random.choice(tsun3a)
+                                if keywords[reply] in a3List:
+                                    replyText = random.choice(tsun3c)
+                                else:
+                                    replyText = random.choice(tsun3a)
                             elif keywords[reply] in a2List:
                                 replyText = random.choice(tsun3b)
                             else:
