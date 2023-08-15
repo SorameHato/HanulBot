@@ -156,3 +156,4 @@ Exp.db
 *.db-journal
 *.pickle
 *.sqbpro
+*.db

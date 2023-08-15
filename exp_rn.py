@@ -64,7 +64,7 @@ def __connectDB__():
     이 함수를 쓸 때에는 sql_con, sql_cur = __connectDB__() 처럼
     앞에 변수를 2개 줘서 써야 한다!
     '''
-    sql_con = sqlite3.connect(pathlib.PurePath(__file__).with_name('Exp.db'))
+    sql_con = sqlite3.connect(pathlib.PurePath(__file__).with_name('exp_test2.db'))
     sql_cur = sql_con.cursor()
     return sql_con, sql_cur
 
@@ -118,8 +118,8 @@ def __createDB__():
     "exp"           INTEGER DEFAULT 0,
     "silent"        INTEGER DEFAULT 0,
     "attend_room"   INTEGER DEFAULT 0
-    );
-    CREATE TABLE IF NOT EXISTS "hanul_exp_final" (
+    );''')
+    sql_cur.execute('''CREATE TABLE IF NOT EXISTS "hanul_exp_final" (
     "uid"         INTEGER UNIQUE PRIMARY KEY,
     "exp_final"   INTEGER,
     "increase"    INTEGER,
@@ -146,7 +146,9 @@ def __dataCheck__(func, uid, data_name, amount=None):
         # increase는 exp - hanul_exp_final.exp_final 인 가상의 열
     else:
         raise ValueError(f'dataCheck 함수에서 코드 종류가 잘못 지정되었습니다. add, set, get 중 하나가 지정되어야 하는데 {func}가 지정되었습니다.')
-    
+    # data_name과 amount가 전부 
+    if func != 'get':
+        pass
     try:
         # dataList의 이름 체크
         if data_name not in dataList:
@@ -164,7 +166,7 @@ def __dataCheck__(func, uid, data_name, amount=None):
             else:
                 if data_name == 'last_call':
                     if type(amount) != dt and type(amount) != str:
-                        raise .TypeError(f'amount의 타입이 잘못되었습니다. amount는 datetime형이여야 합니다. amount의 타입 : {type(amount)}')
+                        raise TypeError(f'amount의 타입이 잘못되었습니다. amount는 datetime형이여야 합니다. amount의 타입 : {type(amount)}')
                 else:
                     if type(amount) != int:
                         raise TypeError(f'amount의 타입이 잘못되었습니다. amount는 int형이여야 합니다. amount의 타입 : {type(amount)}')
@@ -193,7 +195,7 @@ def __getData__(uid:int, data_name, outside=False):
             data_name_new = []
             for item in data_name:
                 if item != 'increase':
-                    data_name_new.append(f'hanul_exp.{item}'}
+                    data_name_new.append(f'hanul_exp.{item}')
                 else:
                     data_name_new.append('(hanul_exp.exp-hanul_exp_final.exp_final)')
             data_str = ', '.join(data_name_new)
@@ -205,10 +207,10 @@ def __getData__(uid:int, data_name, outside=False):
             sql_cur.execute(f'SELECT {data_str} FROM {table} ORDER BY hanul_exp.uid ASC;')
             dType = 2
         else:
-            sql_cur.execute(f'SELECT {data_str} FROM {table} WHERE uid=:uid;',{'uid':uid})
+            sql_cur.execute(f'SELECT {data_str} FROM {table} WHERE hanul_exp.uid=:uid;',{'uid':uid})
             dType = 0
         sql_data = sql_cur.fetchall()
-        if data_name == ['*']:
+        if data_name == ['*'] or len(data_name) > 1:
             dType += 1
         match dType:
             case 0:
@@ -217,7 +219,7 @@ def __getData__(uid:int, data_name, outside=False):
                 result = sql_data[0]
             case 2:
                 result = []
-                for item in data:
+                for item in sql_data:
                     result.append(item[0])
             case 3:
                 result = sql_data
@@ -244,6 +246,8 @@ def __setData__(uid:int, data_name, amount, sep=False):
     
     UPDATE hanul_exp SET (chat_count, day_count, exp) = (10000, 1000, day_count*19+chat_count) WHERE uid=1030044541547454476;
     '''
+    if type(data_name) == list and type(amount) == list:
+        pass
     if type(data_name) != list:
         data_name = [data_name]
     if type(amount) != list:
@@ -251,12 +255,13 @@ def __setData__(uid:int, data_name, amount, sep=False):
     if len(data_name) != len(amount):
         raise IndexError(f'data_name과 amount의 length가 일치하지 않습니다. data_name : {data_name}, amount : {amount}')
         return -1
-    for item in data_name:
-        if ';' in item:
+    for i in range(len(data_name)):
+        if ';' in data_name[i]:
             return -2097152
-        result = __dataCheck__('set', uid, item, amount)
+        result = __dataCheck__('set', uid, data_name[i], amount[i])
         if not result:
             break
+    amount_list = []
     for item in amount:
         if type(item) == str:
             if ';' in item:
@@ -264,8 +269,7 @@ def __setData__(uid:int, data_name, amount, sep=False):
     if result:
         sql_con, sql_cur = __connectDB__()
         data_str = ', '.join(data_name)
-        amount_str = ', '.join(amount)
-        sql_cur.execute(f'UPDATE hanul_exp SET ({data_str})=({amount}) WHERE uid=:uid;',{'uid':uid})
+        sql_cur.execute(f'UPDATE hanul_exp SET :data=:amount WHERE uid={uid};',{'data':tuple(data_name), 'amount':tuple(amount)})
         if sep:
             func = 'Set(내부 수동)'
         else:
