@@ -146,6 +146,16 @@ class expFrontEnd(commands.Cog):
                         await channel.send(embed=embed)
                     else:
                         await channel.send(f'<@{message.author.id}>',embed=embed)
+                msg_list = [666,1004,2000]
+                msg_selif = [['활동점수 666을 달성했어요!','크앙~ 악마에요! (?)'],
+                             ['활동점수 1004를 달성했어요!','하늘에서 천사가~ ... 가 아니라 고인물의 반열에 끼셨네요!'],
+                             ['활동점수 2000을 달성했어요!','히익.. 고인물...']
+                            ]
+                if d_arg == 0:
+                    if f_arg in msg_list:
+                        pass
+                else:
+                    pass
     
     exp_commands = discord.SlashCommandGroup(name="활동점수",description="활동점수의 현황과 랭킹을 보여주는 명령어에요!",guild_ids=guild_ids)
     
