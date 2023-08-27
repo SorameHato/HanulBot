@@ -226,7 +226,8 @@ def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
         raise e
         return -1
     else:
-        __setData__(sql_con, sql_cur,uid,'last_call',now)
+        if now - last_call >= td(seconds=60):
+            __setData__(sql_con, sql_cur,uid,'last_call',now)
     finally:
         if now - last_call >= td(seconds=60):
             __addData__(sql_con, sql_cur, uid, 'chat_count', 1)
