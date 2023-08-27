@@ -110,7 +110,7 @@ class expFrontEnd(commands.Cog):
     
     @commands.Cog.listener()
     async def on_message(self, message):
-        if not message.author.bot:
+        if not message.author.bot and message.guild == self.bot.get_guild(1126790936723210290):
             try:
                 f_arg, d_arg = chatCallCalc(message.author.id, dt.now(tz(td(hours=9))))
             except Exception as e:

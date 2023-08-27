@@ -99,7 +99,7 @@ class giveRole(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        if not member.bot:
+        if not member.bot and member.guild == self.bot.get_guild(1126790936723210290):
             channel = self.bot.get_channel(1126871862287274145)
             embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 환영합니다!',description='인증방에 간단한 자기소개를 남겨주세요!',color=self.bot.hanul_color)
             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
@@ -107,7 +107,7 @@ class giveRole(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_member_remove(self, payload):
-        if not payload.user.bot:
+        if not payload.user.bot and payload.guild == self.bot.get_guild(1126790936723210290):
             channel = self.bot.get_channel(1126790937448820878)
             embed = discord.Embed(title=f'{payload.user}, 스카이방 지하에 묻히다.',description=f'{payload.user}님께서 떠나셨어요.',color=self.bot.hanul_color)
             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
