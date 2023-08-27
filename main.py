@@ -2,20 +2,22 @@
 import discord
 import os
 import asyncio
+import pathlib
 from discord.ext import commands
 from datetime import datetime as dt
 from datetime import timezone as tz
 from datetime import timedelta as td
-import pathlib
+import platform
 from SkyLib import tui
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
-hanul_ver = "0.0 rev 171 (2023-08-13 03:19)"
+hanul_ver = "0.0 rev 174 (2023-08-27 22:55)"
 guild_ids = [
     1030056186915082262, #테스트용 서버
     1126790936723210290 #스카이형 서버
     ]
 bot.hanul_ver = hanul_ver
+bot.if_loaded = 0
 
 
 @bot.event
@@ -23,11 +25,23 @@ async def on_ready():
     global LoadedTime
     LoadedTime = str(dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f"))[:-3]+"초"
     bot.LoadedTime = LoadedTime
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game(name='구름IDE에서 동작'))
+    if platform.system() == 'Linux' and platform.node() == 'goorm':
+        pf_docker = '구름IDE HanulMain (Live)'
+    elif platform.system() == 'Windows':
+        pf_docker = 'AmeMizu (Dev)'
+    else:
+        pf_docker = '인식할 수 없음'
+    dbgChannel = await bot.fetch_channel(1137764318830665748)
+    if not bot.if_loaded:
+        await dbgChannel.send(f'하늘봇이 {LoadedTime}에 시작되었습니다. 버전 : {bot.hanul_ver}, 환경 : {pf_docker}')
+        bot.if_loaded = 1
+    else:
+        await dbgChannel.send(f'하늘봇이 Discord 서버와 연결이 끊긴 후 {LoadedTime}에 다시 연결되었습니다. 버전 : {bot.hanul_ver}, 환경 : {pf_docker}')
     print('┌──────────────────────────────────────────────────────────────────────┐')
     print('│'+tui.fixedWidth(f'{bot.user.name}(#{bot.user.id})으로 로그인되었습니다.', 70, 1)+'│')
     print('│'+tui.fixedWidth(f'봇이 시작된 시각 : {LoadedTime}', 70, 1)+'│')
     print('└──────────────────────────────────────────────────────────────────────┘')
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game(name='구름IDE에서 동작'))
 
 
 # @bot.slash_command(name="리로드", guild_ids=guild_ids, description='봇의 모든 기능을 재시작하는 기능이에요!')
