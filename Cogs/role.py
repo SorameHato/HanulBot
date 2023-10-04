@@ -149,7 +149,7 @@ class giveRole(commands.Cog):
             await thread.add_user(ctx.author)
         except Exception as e:
             channel = self.bot.get_channel(1126877960574619648)
-            embed = discord.Embed(title=f'{ctx.author}님을 {thread.name} 채널에 추가하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=self.bot.hanul_color)
+            embed = discord.Embed(title=f'{ctx.author}님을 {thread.name if thread is not None else thread_name} 스레드에 추가하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=self.bot.hanul_color)
             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
             await channel.send(embed=embed)
             raise e
