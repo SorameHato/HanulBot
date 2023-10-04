@@ -146,7 +146,10 @@ class giveRole(commands.Cog):
         try:
             channel = self.bot.get_channel(1126792316003307670)
             thread = channel.get_thread(thread_id)
-            await thread.add_user(ctx.author)
+            if thread is not None:
+                await thread.add_user(ctx.author)
+            else:
+                raise RuntimeError('스레드를 가지고 오는 데 실패했습니다.')
         except Exception as e:
             channel = self.bot.get_channel(1126877960574619648)
             embed = discord.Embed(title=f'{ctx.author}님을 {thread.name if thread is not None else thread_name} 스레드에 추가하는 동안 오류가 발생했어요!',description=f'오류 내용 : {e}',color=self.bot.hanul_color)
