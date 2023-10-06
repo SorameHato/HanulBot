@@ -68,7 +68,7 @@ def __connectDB__():
     sql_cur = sql_con.cursor()
     return sql_con, sql_cur
 
-def __logWrite__(uid,task:str,text:str):
+def __logWrite__(uid,task:str,text:str or list):
     '''
     로그에 데이터를 기록하는 함수
     현재시간(dt형),uid,task,text 와 같은 형식의 csv로 저장된다.
@@ -78,7 +78,10 @@ def __logWrite__(uid,task:str,text:str):
     '''
     with open(pathlib.PurePath(__file__).with_name('log.csv'),'a',encoding='utf-8',newline='') as a:
         writer = csv.writer(a)
-        writer.writerow([dt.now(tz(td(hours=9))),uid,task,text])
+        if isinstance(text,list):
+            writer.writerow([dt.now(tz(td(hours=9))),uid,task].extend(text))
+        else:
+            writer.writerow([dt.now(tz(td(hours=9))),uid,task,text])
 
 def __commit__(sql_con,closeCon=False):
     '''
@@ -146,15 +149,12 @@ def __dataCheck__(func, uid, data_name, amount=None):
         # increase는 exp - hanul_exp_final.exp_final 인 가상의 열
     else:
         raise ValueError(f'dataCheck 함수에서 코드 종류가 잘못 지정되었습니다. add, set, get 중 하나가 지정되어야 하는데 {func}가 지정되었습니다.')
-    # data_name과 amount가 전부 
-    if func != 'get':
-        pass
     try:
         # dataList의 이름 체크
         if data_name not in dataList:
             raise ValueError(f'__addData__에 지정된 attribute 이름이 잘못되었습니다. 지정된 attribute 이름은 {data_name}입니다.')
         # uid가 int인지 체크
-        if type(uid) != int:
+        if not isinstance(uid,int):
             if not (func == 'get' and uid is None):
                 raise TypeError(f'uid의 타입이 잘못되었습니다. uid는 int형이여야 합니다. uid의 타입 : {type(uid)}')
         if func != 'get':
@@ -165,14 +165,13 @@ def __dataCheck__(func, uid, data_name, amount=None):
                 raise TypeError('amount가 없습니다.')
             else:
                 if data_name == 'last_call':
-                    if type(amount) != dt and type(amount) != str:
+                    if not(isinstance(amount,dt) or isinstance(amount,str)):
                         raise TypeError(f'amount의 타입이 잘못되었습니다. amount는 datetime형이여야 합니다. amount의 타입 : {type(amount)}')
                 else:
-                    if type(amount) != int:
+                    if not isinstance(amount,int):
                         raise TypeError(f'amount의 타입이 잘못되었습니다. amount는 int형이여야 합니다. amount의 타입 : {type(amount)}')
     except Exception as e:
         raise e
-        return False
     else:
         return True
 
@@ -181,98 +180,123 @@ def __getData__(uid:int, data_name, outside=False):
     uid : 디스코드 id
     data_name : 행의 이름을 담은 리스트나 str
     '''
-    if type(data_name) != list:
-        data_name = [data_name]
-    for item in data_name:
-        if ';' in item:
-            return -2097152
-        result = __dataCheck__('get', uid, item)
-        if not result:
-            break
-    if result:
-        sql_con, sql_cur = __connectDB__()
-        if 'increase' in data_name:
-            data_name_new = []
-            for item in data_name:
-                if item != 'increase':
-                    data_name_new.append(f'hanul_exp.{item}')
-                else:
-                    data_name_new.append('(hanul_exp.exp-hanul_exp_final.exp_final)')
-            data_str = ', '.join(data_name_new)
-            table = 'hanul_exp JOIN hanul_exp_final ON hanul_exp.uid=hanul_exp_final.uid'
-        else:
-            data_str = ', '.join(data_name)
-            table = 'hanul_exp'
-        if uid is None:
-            sql_cur.execute(f'SELECT {data_str} FROM {table} ORDER BY hanul_exp.uid ASC;')
-            dType = 2
-        else:
-            sql_cur.execute(f'SELECT {data_str} FROM {table} WHERE hanul_exp.uid=:uid;',{'uid':uid})
-            dType = 0
-        sql_data = sql_cur.fetchall()
-        if data_name == ['*'] or len(data_name) > 1:
-            dType += 1
-        match dType:
-            case 0:
-                result = sql_data[0][0]
-            case 1:
-                result = sql_data[0]
-            case 2:
-                result = []
-                for item in sql_data:
-                    result.append(item[0])
-            case 3:
-                result = sql_data
-        if outside:
-            com = '조회(외부)'
-        else:
-            com = '조회(내부)'
-        if dType < 2:
-            __logWrite__(uid,com,f'{data_name}={result}')
-        else:
-            __logWrite__(uid,com,f'{data_name}을 전체 유저에 걸쳐서 조회')
-        __closeCon__(sql_con)
-        return result
-    else:
-        return 0
+    if isinstance(data_name,str):
+        if ';' in data_name or not __dataCheck__('get',uid,data_name):
+            raise ValueError(f'dataCheck를 실행하던 중 {data_name}에서 유효하지 않은 값이 발생했습니다.')
+    elif isinstance(data_name,list):
+        for item in data_name:
+            if isinstance(item, str):
+                if ';' in data_name or not __dataCheck__('get',uid,item):
+                    raise ValueError(f'dataCheck를 실행하던 중 {data_name}에서 유효하지 않은 값이 발생했습니다.')
+            else:
+                raise TypeError('data_name은 str형이거나 int형이여야 합니다.')
 
-def __setData__(uid:int, data_name, amount, sep=False):
-    '''hanul_exp의 데이터를 amount로 설정하는 함수
+    pass # 다시 짜야 함 : modern하게 type은 isinstance로 고치고 data 유효성 체크하는 것도 고치고 등등
+    # if type(data_name) != list:
+    #     data_name = [data_name]
+    # for item in data_name:
+    #     if ';' in item:
+    #         return -2097152
+    #     result = __dataCheck__('get', uid, item)
+    #     if not result:
+    #         break
+    # if result:
+    #     sql_con, sql_cur = __connectDB__()
+    #     if 'increase' in data_name:
+    #         data_name_new = []
+    #         for item in data_name:
+    #             if item != 'increase':
+    #                 data_name_new.append(f'hanul_exp.{item}')
+    #             else:
+    #                 data_name_new.append('(hanul_exp.exp-hanul_exp_final.exp_final)')
+    #         data_str = ', '.join(data_name_new)
+    #         table = 'hanul_exp JOIN hanul_exp_final ON hanul_exp.uid=hanul_exp_final.uid'
+    #     else:
+    #         data_str = ', '.join(data_name)
+    #         table = 'hanul_exp'
+    #     if uid is None:
+    #         sql_cur.execute(f'SELECT {data_str} FROM {table} ORDER BY hanul_exp.uid ASC;')
+    #         dType = 2
+    #     else:
+    #         sql_cur.execute(f'SELECT {data_str} FROM {table} WHERE hanul_exp.uid=:uid;',{'uid':uid})
+    #         dType = 0
+    #     sql_data = sql_cur.fetchall()
+    #     if data_name == ['*'] or len(data_name) > 1:
+    #         dType += 1
+    #     match dType:
+    #         case 0:
+    #             result = sql_data[0][0]
+    #         case 1:
+    #             result = sql_data[0]
+    #         case 2:
+    #             result = []
+    #             for item in sql_data:
+    #                 result.append(item[0])
+    #         case 3:
+    #             result = sql_data
+    #     if outside:
+    #         com = '조회(외부)'
+    #     else:
+    #         com = '조회(내부)'
+    #     if dType < 2:
+    #         __logWrite__(uid,com,f'{data_name}={result}')
+    #     else:
+    #         __logWrite__(uid,com,f'{data_name}을 전체 유저에 걸쳐서 조회')
+    #     __closeCon__(sql_con)
+    #     return result
+    # else:
+    #     return 0
+
+def __updateData__(uid:int, func:str, data_info, sep=False):
+    '''hanul_exp의 데이터를 amount로 설정/amount만큼 변경하는 함수
     uid : 디스코드 id
-    data_name : 행의 이름을 담은 리스트나 str
-    amount : 변경할 값을 담은 리스트나 str
-    (단, 리스트인 경우에는 data_name의 순서와 동일해야 한다)
+    type : add인지 set인지
+    data_info : [행의 이름(data_name), 설정/변경값(amount)]을 담은 리스트
     sep : 수동으로 변경하는 경우
     
     UPDATE hanul_exp SET (chat_count, day_count, exp) = (10000, 1000, day_count*19+chat_count) WHERE uid=1030044541547454476;
     '''
-    if type(data_name) == list and type(amount) == list:
-        pass
-    if type(data_name) != list:
-        data_name = [data_name]
-    if type(amount) != list:
-        amount = [amount]
-    if len(data_name) != len(amount):
-        raise IndexError(f'data_name과 amount의 length가 일치하지 않습니다. data_name : {data_name}, amount : {amount}')
-        return -1
-    for i in range(len(data_name)):
-        if ';' in data_name[i]:
-            return -2097152
-        result = __dataCheck__('set', uid, data_name[i], amount[i])
-        if not result:
-            break
-    amount_list = []
-    for item in amount:
-        if type(item) == str:
-            if ';' in item:
-                return -2097152
-    if result:
-        sql_con, sql_cur = __connectDB__()
-        data_str = ', '.join(data_name)
-        sql_cur.execute(f'UPDATE hanul_exp SET :data=:amount WHERE uid={uid};',{'data':tuple(data_name), 'amount':tuple(amount)})
-        if sep:
-            func = 'Set(내부 수동)'
+    if func in ['add', 'set']:
+        if isinstance(data_info,list):
+            safe = True
+            for item in data_info:
+                if isinstance(item, list):
+                    if (';' in item[0]) or (';' in item[1]) or (not __dataCheck__(func, uid, item[0], item[1])):
+                        safe = False
+                        error_item = item[0]
+                else:
+                    raise TypeError('data_info는 이중 list형이여야 합니다.')
+            if safe:
+                sql_con, sql_cur = __connectDB__()
+                log_data = []
+                for item in data_info:
+                    if func == 'add':
+                        sql_cur.execute(f'UPDATE hanul_exp SET {item[0]}={item[0]}+:amount WHERE uid=:uid',{'amount':item[1],'uid':uid})
+                    else:
+                        sql_cur.execute(f'UPDATE hanul_exp SET {item[0]}=:amount WHERE uid=:uid',{'amount':item[1],'uid':uid})
+                    log_data.append(item[0],item[1])
+                if sep:
+                    func += '(내부 수동)'
+                else:
+                    func += '(내부 자동)'
+                __logWrite__(uid,func,log_data)
+                # 친밀도 계산 함수 추가해야 하는 부분
+                __commit__(sql_con,True)
+            else:
+                raise ValueError(f'dataCheck를 실행하던 중 {error_item}의 값에서 유효하지 않은 값이 발생했습니다.' or 'dataCheck를 실행하던 중 어디에선가 오류가 발생했습니다.')
         else:
-            func = 'Set(내부 자동)'
-        __logWrite__(uid,func,f'{data_name} ─→ {amount}')
-        __commit__(sql_con,True)
+            raise TypeError('data_info는 이중 list형이여야 합니다.')
+    else:
+        raise ValueError(f'func는 {func}이 아닌 add 또는 set이여야 합니다.')
+
+
+    # if result:
+    #     sql_con, sql_cur = __connectDB__()
+    #     data_str = ', '.join(data_name)
+    #     sql_cur.execute(f'UPDATE hanul_exp SET :data=:amount WHERE uid={uid};',{'data':tuple(data_name), 'amount':tuple(amount)})
+    #     if sep:
+    #         func = 'Set(내부 수동)'
+    #     else:
+    #         func = 'Set(내부 자동)'
+    #     __logWrite__(uid,func,f'{data_name} ─→ {amount}')
+    #     __commit__(sql_con,True)
