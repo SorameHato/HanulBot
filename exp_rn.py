@@ -76,10 +76,12 @@ def __logWrite__(uid,task:str,text:str or list):
     task : 작업명 또는 함수명 (변경, 커밋, 생성, 조회 등)
     text : 상세한 작업 내역 (친밀도 1024.50 (1130,300,0) → 1027.50 (1131,301,0) 변경 처럼 어떤 걸 어떻게 변경했는 지 등을 상세하게 기록)
     '''
-    with open(pathlib.PurePath(__file__).with_name('log.csv'),'a',encoding='utf-8',newline='') as a:
+    with open(pathlib.PurePath(__file__).with_name('log_test.csv'),'a',encoding='utf-8',newline='') as a:
         writer = csv.writer(a)
         if isinstance(text,list):
-            writer.writerow([dt.now(tz(td(hours=9))),uid,task].extend(text))
+            tmpList = [dt.now(tz(td(hours=9))),uid,task]
+            tmpList.extend(text)
+            writer.writerow(tmpList)
         else:
             writer.writerow([dt.now(tz(td(hours=9))),uid,task,text])
 
@@ -261,7 +263,7 @@ def __updateData__(uid:int, func:str, data_info, sep=False):
             safe = True
             for item in data_info:
                 if isinstance(item, list):
-                    if (';' in item[0]) or (';' in item[1]) or (not __dataCheck__(func, uid, item[0], item[1])):
+                    if (';' in item[0]) or (';' in str(item[1])) or (not __dataCheck__(func, uid, item[0], item[1])):
                         safe = False
                         error_item = item[0]
                 else:
@@ -274,7 +276,8 @@ def __updateData__(uid:int, func:str, data_info, sep=False):
                         sql_cur.execute(f'UPDATE hanul_exp SET {item[0]}={item[0]}+:amount WHERE uid=:uid',{'amount':item[1],'uid':uid})
                     else:
                         sql_cur.execute(f'UPDATE hanul_exp SET {item[0]}=:amount WHERE uid=:uid',{'amount':item[1],'uid':uid})
-                    log_data.append(item[0],item[1])
+                    log_data.append(item[0])
+                    log_data.append(item[1])
                 if sep:
                     func += '(내부 수동)'
                 else:
