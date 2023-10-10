@@ -157,3 +157,5 @@ Exp.db
 *.pickle
 *.sqbpro
 *.db
+*.csv
+exp_rn_test.py
