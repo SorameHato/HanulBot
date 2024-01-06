@@ -9,13 +9,13 @@ from main import guild_ids
 from Exp import ifUserExist
 
 def role_check(ctx):
-    return ctx.channel == 1126871862287274145
+    return ctx.channel.id == 1126871862287274145
 
 class giveRole(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
     
-    async def add_role(self, guild, member, adminMember, auto=False) -> tuple(int, discord.Embed, str):
+    async def add_role(self, guild, member, adminMember, auto=False) -> [int, discord.Embed, str]:
         '''
         멤버에게 즐거운 게이머 역할을 부여하는 함수 (통합)
         guild, member, 부여한 관리자명(기존 payload.member)을 받음
@@ -158,8 +158,8 @@ class giveRole(commands.Cog):
                 await channel.send(f'<@{member.id}>',embed=embed)
     
     @commands.message_command(name="수동인증")
-    @commands.check(role_check)
-    @commands.has_any_role([1126793481151598663,1126793415728824372,1126878856582807592])
+    # @commands.check(role_check)
+    # @commands.has_any_role([1126793481151598663,1126793415728824372,1126878856582807592])
     async def add_role_manual(self, ctx, message):
         if message.channel == self.bot.get_channel(1126871862287274145):
             # 역할을 불러오는 과정
@@ -195,7 +195,7 @@ class giveRole(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_member_remove(self, payload):
-        if not payload.user.bot and payload.guild == self.bot.get_guild(1126790936723210290):
+        if not payload.user.bot and payload.guild_id == 1126790936723210290:
             channel = self.bot.get_channel(1126790937448820878)
             embed = discord.Embed(title=f'{payload.user}, 스카이방 지하에 묻히다.',description=f'{payload.user}님께서 떠나셨어요.',color=self.bot.hanul_color)
             embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')

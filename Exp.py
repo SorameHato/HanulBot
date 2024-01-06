@@ -228,13 +228,17 @@ def ifUserExist(uid:int) -> bool:
     '''
     해당 유저가 존재하는지 확인하는 코드
     '''
+    sql_con, sql_cur = __connectDB__()
     try:
         __getData__(sql_cur, uid, 'uid')
     except IndexError:
+        __closeCon__(sql_con)
         return False
     except Exception as e:
+        __closeCon__(sql_con)
         raise e
     else:
+        __closeCon__(sql_con)
         return True
 
 def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
@@ -350,7 +354,7 @@ def dailyDBInit():
     __logWrite__('-', '일일 초기화', f'일일 초기화 루틴 완료')
     
 
-def chatCallCalc(uid:int, date:dt) -> tuple(int, int, int):
+def chatCallCalc(uid:int, date:dt) -> [int, int, int]:
     '''
     먼저 sql_con과 sql_cur을 얻고
     __updateLastCallDate__을 호출해서 날짜 관련 계산을 하고
