@@ -205,6 +205,30 @@ def getSilentStatus(uid:int):
 def getIncrease(uid:int):
     return __getDataFromOutside__(uid, '(exp-exp_ashita) AS increase')
 
+def setAttendanceOnly(uid:int, arg:int) -> int:
+    '''
+    채팅이 출석체크방에서만 전송되었는지를 설정하는 것
+    당일 첫 채팅이 출석체크방에서 전송되었으면 1로 설정
+    attendance_only가 1로 설정된 상황에서 다른 방에서 채팅이 전송되었으면 0으로 설정
+    최종적으로 다음날 첫 채팅에서 attendance_only가 1이고 또 출석체크방에서 전송된 경우에 그 채팅 보내기
+    '''
+    sql_con, sql_cur = __connectDB__()
+    __setData__(sql_con, sql_cur, uid, 'attendance_only', arg)
+    __commit__(sql_con, True)
+
+def ifUserExist(uid:int) -> bool:
+    '''
+    해당 유저가 존재하는지 확인하는 코드
+    '''
+    try:
+        __getData__(sql_cur, uid, 'uid')
+    except IndexError:
+        return False
+    except Exception as e:
+        raise e
+    else:
+        return True
+
 def __updateLastCallDate__(sql_con, sql_cur, uid:int, date:dt, sep=False):
     '''
     마지막으로 부른 날짜를 현재 시간으로 바꾸고 마지막 호출 시간이 오늘이 아니면 day_count를 1 올리고 접속을 며칠만에 했는지에 따라 그에 따른 처리를 하는 함수
@@ -318,7 +342,7 @@ def dailyDBInit():
     __logWrite__('-', '일일 초기화', f'일일 초기화 루틴 완료')
     
 
-def chatCallCalc(uid:int, date:dt):
+def chatCallCalc(uid:int, date:dt) -> tuple(int, int, int):
     '''
     먼저 sql_con과 sql_cur을 얻고
     __updateLastCallDate__을 호출해서 날짜 관련 계산을 하고
@@ -331,13 +355,14 @@ def chatCallCalc(uid:int, date:dt):
     '''
     __logWrite__(uid,'chatCallCalc','해당 유저의 chatCallCalc 요청 접수')
     sql_con, sql_cur = __connectDB__()
+    attendanceArg = __getData__(sql_cur, uid, 'attendance_only')
     lastCallArg = __updateLastCallDate__(sql_con, sql_cur, uid, date)
     if lastCallArg == -1:
-        return '처리 중 오류 발생', lastCallArg
+        return '처리 중 오류 발생', lastCallArg, attendanceArg
     friendlyRateArg = __calcFriendlyRate__(sql_con, sql_cur, uid)
     __commit__(sql_con,True)
     __logWrite__(uid,'chatCallCalc',f'해당 유저의 chatCallCalc 요청 처리 완료 | lastCallArg는 {lastCallArg}')
-    return friendlyRateArg, lastCallArg
+    return friendlyRateArg, lastCallArg, attendanceArg
 
 def changeSilentStatus(uid:int,arg=None):
     '''

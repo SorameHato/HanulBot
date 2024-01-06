@@ -112,13 +112,15 @@ class expFrontEnd(commands.Cog):
     async def on_message(self, message):
         if not message.author.bot and message.guild == self.bot.get_guild(1126790936723210290):
             try:
-                f_arg, d_arg = chatCallCalc(message.author.id, dt.now(tz(td(hours=9))))
+                f_arg, d_arg, c_arg = chatCallCalc(message.author.id, dt.now(tz(td(hours=9))))
             except Exception as e:
                 raise e
             else:
                 match d_arg:
-                    case 0:
-                        pass # 날짜가 변하지 않은 경우이므로 아무것도 하지 않음
+                    case 0: # 날짜가 변경되지 않은 경우
+                        if c_arg: # 첫 채팅이 출석채팅방인 경우 > 출석채팅방이 아닌 곳에서 채팅이 전송되면 attendance_only를 0으로 해야 함
+                            if message.channel != self.bot.get_channel(1126822172468449325):
+                                setAttendanceOnly(message.author.id,0)
                     case -1:
                         e_title = f'{message.author}님, 환영합니다!'
                         e_desc = f'출석 체크하던 도중에 오류가 발생했어요. 아마 출석 체크 자체는 되었을텐데 혹시라도 계속 멘션된다면 하토를 불러주세요.\n<@1030044541547454476> Exp.db에서 SELECT * FROM hanul_exp WHERE uid={message.author.id} 실행해서 last_call 변경되었는지, day_count 올라갔는지 확인할 것!'
@@ -137,7 +139,10 @@ class expFrontEnd(commands.Cog):
                 if d_arg:
                     channel = self.bot.get_channel(1126822172468449325)
                     if message.channel == channel:
-                        e_desc += '\n오늘 첫 채팅이 출석체크방에서 전송된 것 같아요. 하늘봇은 멤버 분들과 대화하다 보면 자동으로 출석을 체크해요! 스카이방에 자주 찾아와서 많이 대화해주시는 분들께 많은 이득을 드리기 위한 체계라서, 꼭 출석 명령어를 전송하지 않아도 아무 채널에서 채팅을 한 번이라도 보내면 자동으로 출석되니까 참고해주세요!'
+                        if c_arg:
+                            e_desc += '\n오늘 첫 채팅이 출석체크방에서 전송된 것 같아요. 하늘봇은 멤버 분들과 대화하다 보면 자동으로 출석을 체크해요! 스카이방에 자주 찾아와서 많이 대화해주시는 분들께 많은 이득을 드리기 위한 체계라서, 꼭 출석 명령어를 전송하지 않아도 아무 채널에서 채팅을 한 번이라도 보내면 자동으로 출석되니까 참고해주세요!'
+                        else:
+                            setAttendanceOnly(message.author.id,1)
                     embed = discord.Embed(title=e_title,description=e_desc,color=self.bot.hanul_color)
                     embed.add_field(name='스카이방과 함께한 날',value=f'{getDayCount(message.author.id)}일',inline=False)
                     embed.add_field(name='활동점수',value=f_arg,inline=False)

@@ -11,7 +11,7 @@ import platform
 from SkyLib import tui
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
-hanul_ver = "0.0 rev 175 (2024-01-06 21:35)"
+hanul_ver = "0.0 rev 176 (2024-01-06 23:32)"
 guild_ids = [
     1030056186915082262, #테스트용 서버
     1126790936723210290 #스카이형 서버
