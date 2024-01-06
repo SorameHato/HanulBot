@@ -74,7 +74,15 @@ def __createDB__(sql_con,sql_cur):
     last_call TEXT,
     chat_count INTEGER DEFAULT 0,
     day_count INTEGER DEFAULT 1,
-    exp INTEGER DEFAULT 0);''')
+    exp INTEGER DEFAULT 0,
+    exp_ashita INTEGER DEFAULT 0,
+    silent INTEGER DEFAULT 0,
+    attendance_only INTEGER DEFAULT 0);''')
+    sql_cur.execute('''CREATE TABLE IF NOT EXISTS hanul_exp_final (
+    uid INTEGER UNIQUE PRIMARY KEY,
+    exp_final INTEGER,
+    increase INTEGER,
+    FOREIGN KEY (uid) REFERENCES hanul_exp(uid) ON DELETE CASCADE)''')
     __logWrite__('-','생성','테이블 생성 완료')
     __commit__(sql_con,True)
 
