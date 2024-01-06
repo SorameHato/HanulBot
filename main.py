@@ -11,7 +11,7 @@ import platform
 from SkyLib import tui
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
-hanul_ver = "0.0 rev 174 (2023-08-27 22:55)"
+hanul_ver = "0.0 rev 175 (2024-01-06 21:35)"
 guild_ids = [
     1030056186915082262, #테스트용 서버
     1126790936723210290 #스카이형 서버
@@ -22,22 +22,22 @@ bot.if_loaded = 0
 
 @bot.event
 async def on_ready():
-    global LoadedTime
-    LoadedTime = str(dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f"))[:-3]+"초"
-    bot.LoadedTime = LoadedTime
     await bot.change_presence(status=discord.Status.online, activity=discord.Game(name='구름IDE에서 동작'))
-    if platform.system() == 'Linux' and platform.node() == 'goorm':
-        pf_docker = '구름IDE HanulMain (Live)'
-    elif platform.system() == 'Windows':
-        pf_docker = 'AmeMizu (Dev)'
-    else:
-        pf_docker = '인식할 수 없음'
-    dbgChannel = await bot.fetch_channel(1137764318830665748)
+    global LoadedTime
     if not bot.if_loaded:
-        await dbgChannel.send(f'하늘봇이 {LoadedTime}에 시작되었습니다. 버전 : {bot.hanul_ver}, 환경 : {pf_docker}')
+        LoadedTime = str(dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f"))[:-3]+"초"
+        bot.LoadedTime = LoadedTime
+        if platform.system() == 'Linux' and platform.node() == 'goorm':
+            bot.pf_docker = '구름IDE HanulMain (Live)'
+        elif platform.system() == 'Windows':
+            bot.pf_docker = 'AmeMizu (Dev)'
+        else:
+            bot.pf_docker = '인식할 수 없음'
+        dbgChannel = await bot.fetch_channel(1137764318830665748)
+        await dbgChannel.send(f'하늘봇이 {LoadedTime}에 시작되었습니다. 버전 : {bot.hanul_ver}, 환경 : {bot.pf_docker}')
         bot.if_loaded = 1
     else:
-        await dbgChannel.send(f'하늘봇이 Discord 서버와 연결이 끊긴 후 {LoadedTime}에 다시 연결되었습니다. 버전 : {bot.hanul_ver}, 환경 : {pf_docker}')
+        await dbgChannel.send(f'하늘봇이 Discord 서버와 연결이 끊긴 후 {LoadedTime}에 다시 연결되었습니다. 버전 : {bot.hanul_ver}, 환경 : {bot.pf_docker}')
     print('┌──────────────────────────────────────────────────────────────────────┐')
     print('│'+tui.fixedWidth(f'{bot.user.name}(#{bot.user.id})으로 로그인되었습니다.', 70, 1)+'│')
     print('│'+tui.fixedWidth(f'봇이 시작된 시각 : {LoadedTime}', 70, 1)+'│')
