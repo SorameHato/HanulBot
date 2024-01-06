@@ -6,15 +6,17 @@ global guild_ids
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
+from Exp import ifUserExist
 
 class giveRole(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
     
-    async def add_role(self, guild, member, adminMember) -> tuple(int, discord.Embed, str):
+    async def add_role(self, guild, member, adminMember, auto=False) -> tuple(int, discord.Embed, str):
         '''
         멤버에게 즐거운 게이머 역할을 부여하는 함수 (통합)
         guild, member, 부여한 관리자명(기존 payload.member)을 받음
+        auto : 자동으로 부여된 건지(서버를 나갔다 다시 들어오는 경우 등)
         return은 stats code, embed, 디버그용 메세지(mainChannel로 보내는 그거) 순으로 나옴
         status code 일람
         -2 : 즐거운 게이머 역할이 존재하지 않음
@@ -46,9 +48,14 @@ class giveRole(commands.Cog):
                 embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
                 return -1, embed, e
             else:
-                embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 다시 한 번 환영합니다!',
-                description='\'즐거운 게이머\' 역할을 부여해드렸고 원활한 활동점수 집계를 위해 하늘봇에도 회원가입 해드렸어요! 활발한 활동 부탁드려요! -★',
-                color=self.bot.hanul_color)
+                if auto:
+                    embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 돌아오신 것을 환영합니다!',
+                    description='이미 한 번 스카이방에 들어오셨던 분은 프리패스에요! \'즐거운 게이머\' 역할을 부여해드렸고 원활한 활동점수 집계를 위해 하늘봇에도 회원가입 해드렸어요! 활발한 활동 부탁드려요! -★',
+                    color=self.bot.hanul_color)
+                else:
+                    embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 다시 한 번 환영합니다!',
+                    description='\'즐거운 게이머\' 역할을 부여해드렸고 원활한 활동점수 집계를 위해 하늘봇에도 회원가입 해드렸어요! 활발한 활동 부탁드려요! -★',
+                    color=self.bot.hanul_color)
                 embed.add_field(name='역할을 부여한 관리자',value=adminMember,inline=False)
                 embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
                 return 0, embed, f'{member}님께 역할 부여 완료, 부여한 관리자 : {adminMember}'
@@ -131,9 +138,21 @@ class giveRole(commands.Cog):
     async def on_member_join(self, member):
         if not member.bot and member.guild == self.bot.get_guild(1126790936723210290):
             channel = self.bot.get_channel(1126871862287274145)
-            embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 환영합니다!',description='인증방에 간단한 자기소개를 남겨주세요!',color=self.bot.hanul_color)
-            embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
-            await channel.send(f'<@{member.id}>',embed=embed)
+            if ifUserExist(member.id):
+                status, embed_r, debug = await self.add_role(member.guild,member,self.bot.user,auto=True)
+                match status:
+                    case -2 | -1:
+                        await channel.send(embed=embed_r)
+                    case 0:
+                        mainChannel = self.bot.get_channel(1126792316003307670)
+                        await mainChannel.send(f'<@{member.id}>',embed=embed_r)
+                        await channel.send(debug)
+                    case 1:
+                        await channel.send(debug)
+            else:
+                embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 환영합니다!',description='인증방에 간단한 자기소개를 남겨주세요!',color=self.bot.hanul_color)
+                embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
+                await channel.send(f'<@{member.id}>',embed=embed)
 
     @commands.Cog.listener()
     async def on_raw_member_remove(self, payload):
