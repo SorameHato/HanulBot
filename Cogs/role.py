@@ -8,6 +8,9 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from main import guild_ids
 from Exp import ifUserExist
 
+def role_check(ctx):
+    return ctx.channel == 1126871862287274145
+
 class giveRole(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
@@ -153,6 +156,42 @@ class giveRole(commands.Cog):
                 embed = discord.Embed(title=f'{member}님, 스카이와 함께하는 즐거운 게임방에 오신 것을 환영합니다!',description='인증방에 간단한 자기소개를 남겨주세요!',color=self.bot.hanul_color)
                 embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
                 await channel.send(f'<@{member.id}>',embed=embed)
+    
+    @commands.message_command(name="수동인증")
+    @commands.check(role_check)
+    @commands.has_any_role([1126793481151598663,1126793415728824372,1126878856582807592])
+    async def add_role_manual(self, ctx, message):
+        if message.channel == self.bot.get_channel(1126871862287274145):
+            # 역할을 불러오는 과정
+            # 역할이 없는 경우를 대비해 try except 사용
+            try:
+                adminRole = ctx.guild.get_role(1126793481151598663)
+                ownerRole = ctx.guild.get_role(1126793415728824372)
+            except Exception as e:
+                embed = discord.Embed(title=f'{message.member}님께 역할을 부여하는 동안 오류가 발생했어요!',description=f'권한 체크를 위해 어드민, 주인장 역할을 불러오던 중 오류가 발생했어요. 두 역할이 전부 존재하는지, 하늘봇이 읽을 수 있는지 확인해주세요!\n오류 내용 : {e}',color=self.bot.hanul_color)
+                embed.add_field(name='역할을 부여한 관리자',value=ctx.member,inline=False)
+                embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
+                await ctx.respond(embed=embed)
+                raise e
+            else:
+                # 반응을 남긴 사람의 role에 서버장이나 어드민이 있는가?
+                # 1126793481151598663 : 어드민
+                # 1126793415728824372 : 주인장
+                # 1126793565612281926 : 즐거운 게이머
+                # 1126878856582807592 : 서버 가이드 & 개발자
+                if adminRole in ctx.member.roles or ownerRole in ctx.member.roles:
+                    status, embed_r, debug = await self.add_role(ctx.guild,message.member,ctx.user)
+                    match status:
+                        case -2 | -1:
+                            await ctx.respond(embed=embed_r)
+                        case 0:
+                            mainChannel = self.bot.get_channel(1126792316003307670)
+                            await mainChannel.send(f'<@{message.member.id}>',embed=embed_r)
+                            await ctx.respond(debug)
+                        case 1:
+                            await ctx.respond(debug)
+                else:
+                    await ctx.respond('권한이 부족합니다.')
 
     @commands.Cog.listener()
     async def on_raw_member_remove(self, payload):
