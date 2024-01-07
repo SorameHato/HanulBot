@@ -169,7 +169,7 @@ class giveRole(commands.Cog):
                 ownerRole = ctx.guild.get_role(1126793415728824372)
             except Exception as e:
                 embed = discord.Embed(title=f'{message.member}님께 역할을 부여하는 동안 오류가 발생했어요!',description=f'권한 체크를 위해 어드민, 주인장 역할을 불러오던 중 오류가 발생했어요. 두 역할이 전부 존재하는지, 하늘봇이 읽을 수 있는지 확인해주세요!\n오류 내용 : {e}',color=self.bot.hanul_color)
-                embed.add_field(name='역할을 부여한 관리자',value=ctx.member,inline=False)
+                embed.add_field(name='역할을 부여한 관리자',value=ctx.user,inline=False)
                 embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
                 await ctx.respond(embed=embed)
                 raise e
@@ -179,7 +179,7 @@ class giveRole(commands.Cog):
                 # 1126793415728824372 : 주인장
                 # 1126793565612281926 : 즐거운 게이머
                 # 1126878856582807592 : 서버 가이드 & 개발자
-                if adminRole in ctx.member.roles or ownerRole in ctx.member.roles:
+                if adminRole in ctx.user.roles or ownerRole in ctx.user.roles:
                     status, embed_r, debug = await self.add_role(ctx.guild,message.member,ctx.user)
                     match status:
                         case -2 | -1:
@@ -192,6 +192,8 @@ class giveRole(commands.Cog):
                             await ctx.respond(debug)
                 else:
                     await ctx.respond('권한이 부족합니다.')
+        else:
+            ctx.respond('수동인증 명령어는 인증방에서만 써 주세요!')
 
     @commands.Cog.listener()
     async def on_raw_member_remove(self, payload):
