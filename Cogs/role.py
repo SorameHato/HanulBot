@@ -157,7 +157,7 @@ class giveRole(commands.Cog):
                 embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
                 await channel.send(f'<@{member.id}>',embed=embed)
     
-    @commands.message_command(name="수동인증")
+    @commands.message_command(name="수동인증",guild_ids = [1126790936723210290])
     # @commands.check(role_check)
     # @commands.has_any_role([1126793481151598663,1126793415728824372,1126878856582807592])
     async def add_role_manual(self, ctx, message):
