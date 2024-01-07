@@ -129,7 +129,7 @@ class info(commands.Cog):
         isowner = await self.bot.is_owner(ctx.author)
         if isowner:
             respondMessage = await ctx.respond('> ⌛ 전송 중이에요! 잠시만 기다려주세요!',ephemeral=True)
-            with open(pathlib.PurePath(__file__).parent.parent.parent.joinpath('msg',fileName),'r') as f:
+            with open(pathlib.PurePath(__file__).parent.parent.joinpath('msg',fileName),'r') as f:
                 await channel.send(f.read())
             await respondMessage.edit_original_response(content='전송 완료!')
         else:
@@ -151,7 +151,7 @@ class info(commands.Cog):
                 raise e
             if 'msg' in dir() and msg is not None:
                 if msg.author.id == self.bot.user.id:
-                    with open(pathlib.PurePath(__file__).parent.joinpath('msg',fileName),'r') as f:
+                    with open(pathlib.PurePath(__file__).parent.parent.joinpath('msg',fileName),'r') as f:
                         await msg.edit(f.read())
                     await respondMessage.edit_original_response(content='수정 완료!')
                 else:
