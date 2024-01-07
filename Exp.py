@@ -367,8 +367,8 @@ def chatCallCalc(uid:int, date:dt) -> [int, int, int]:
     '''
     __logWrite__(uid,'chatCallCalc','해당 유저의 chatCallCalc 요청 접수')
     sql_con, sql_cur = __connectDB__()
-    attendanceArg = __getData__(sql_cur, uid, 'attendance_only')
     lastCallArg = __updateLastCallDate__(sql_con, sql_cur, uid, date)
+    attendanceArg = __getData__(sql_cur, uid, 'attendance_only')
     if lastCallArg == -1:
         return '처리 중 오류 발생', lastCallArg, attendanceArg
     friendlyRateArg = __calcFriendlyRate__(sql_con, sql_cur, uid)
