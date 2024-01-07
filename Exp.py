@@ -91,7 +91,7 @@ def __getData__(sql_cur, uid:int, data_name:str, outside=False):
     '''
     friendly_rate 테이블에서 uid에 대한 data_name의 값을 가지고 오는 함수
     '''
-    if data_name in ['first_call', 'last_call', 'chat_count', 'day_count', 'exp', 'silent', '(exp-exp_ashita) AS increase', '*'] and type(uid) is int:
+    if data_name in ['first_call', 'last_call', 'chat_count', 'day_count', 'exp', 'silent', 'attendance_only', '(exp-exp_ashita) AS increase', '*'] and type(uid) is int:
         sql_cur.execute(f'SELECT {data_name} FROM hanul_exp WHERE uid=:uid;',{'uid':uid})
         sql_data = sql_cur.fetchall()
         result = sql_data[0][0]
@@ -117,7 +117,7 @@ def __dataCheck__(uid, data_name, amount, funcInfo):
     if funcInfo == 'add':
         dataList = ['chat_count', 'day_count', 'exp']
     elif funcInfo == 'set':
-        dataList = ['last_call', 'chat_count', 'day_count', 'exp', 'silent']
+        dataList = ['last_call', 'chat_count', 'day_count', 'exp', 'silent','attendance_only']
     else:
         raise Exception(f'dataCheck 함수에서 코드 종류가 잘못 지정되었습니다. add 또는 set이 지정되어야 하는데 {funcInfo}가 지정되었습니다.')
     
