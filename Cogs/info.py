@@ -79,7 +79,7 @@ class info(commands.Cog):
         > 제작자 : 하토(ghwls030306@s-r.ze.am)
         > 깃허브 리포지터리 : SorameHato/HanulBot
         > 기반 : 설레봇 버전 PJU 3.2 2023060403 rev 61 build 258
-        > 인증키 : {"SKFLOW-KB5MDC-R5B3OS-BSHCM9 (유료(특별계약) 플랜)" if ctx.guild == guild else "DANBII-NYANYA-KAWAII_SUGIRU (유료(개발용) 플랜)"}
+        > 인증키 : {"SKFLOW-KB5MDC-R5B3OS-BSHCM9 (유료(특별계약) 플랜)" if ctx.guild == guild else "DANBII-NYANYA-KAWAII-SUGIRU (유료(개발용) 플랜)"}
         > 유료 기능 계약 조건 : {"제가 서버 개발자로 있는 스카이형 서버는 평생 무료로 제공할 예정입니다." if ctx.guild == guild else"""~~카와이이한 아타시쟝은 평생 무료!~~
         테스트 서버 (DANBII-NYANYA-KAWAII-SUGIRU) : 테스트용 라이센스입니다.
         단비냐아 서버 (AMEAME-NYANYA-KAWAII-SUGIRU) : 하토에게 큰 힘이 되어주었던 아메는 평생 무료
