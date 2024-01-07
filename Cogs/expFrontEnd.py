@@ -110,7 +110,7 @@ class expFrontEnd(commands.Cog):
     
     @commands.Cog.listener()
     async def on_message(self, message):
-        if not message.author.bot and message.guild == self.bot.get_guild(1126790936723210290) and message.guild.get_role(1126793565612281926) in message.author.roles:
+        if not message.author.bot and message.guild == self.bot.get_guild(1126790936723210290) and (message.guild.get_role(1126793565612281926) in message.author.roles or message.guild.get_role(1126793481151598663) in message.author.roles):
             try:
                 f_arg, d_arg, c_arg = chatCallCalc(message.author.id, dt.now(tz(td(hours=9))))
             except Exception as e:
