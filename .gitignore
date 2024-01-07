@@ -159,3 +159,4 @@ Exp.db
 *.db
 *.csv
 exp_rn_test.py
+msg/
