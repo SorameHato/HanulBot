@@ -91,7 +91,7 @@ def __getData__(sql_cur, uid:int, data_name:str, outside=False):
     '''
     friendly_rate 테이블에서 uid에 대한 data_name의 값을 가지고 오는 함수
     '''
-    if data_name in ['first_call', 'last_call', 'chat_count', 'day_count', 'exp', 'silent', 'attendance_only', '(exp-exp_ashita) AS increase', '*'] and type(uid) is int:
+    if data_name in ['uid', 'first_call', 'last_call', 'chat_count', 'day_count', 'exp', 'silent', 'attendance_only', '(exp-exp_ashita) AS increase', '*'] and type(uid) is int:
         sql_cur.execute(f'SELECT {data_name} FROM hanul_exp WHERE uid=:uid;',{'uid':uid})
         sql_data = sql_cur.fetchall()
         result = sql_data[0][0]
@@ -101,7 +101,7 @@ def __getData__(sql_cur, uid:int, data_name:str, outside=False):
             __logWrite__(uid,'조회(내부)',f'{data_name}={result}')
         return result
     else:
-        return 0
+        raise Exception(f'getData에 지정된 attribute 이름이 잘못되었습니다. 지정된 attribute 이름은 {data_name}입니다.')
 
 def __dataCheck__(uid, data_name, amount, funcInfo):
     '''데이터가 잘못된 부분이 없는 지 확인하는 코드
