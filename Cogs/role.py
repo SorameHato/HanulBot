@@ -63,7 +63,7 @@ class giveRole(commands.Cog):
                 embed.set_footer(text=f'하늘봇 버전 {self.bot.hanul_ver}')
                 return 0, embed, f'{member}님께 역할 부여 완료, 부여한 관리자 : {adminMember}'
         else:
-            return 1, None, f'{member}님은 이미 즐거운 게이머 역할을 가지고 계십니다. 부여한 관리자 : {adminMember}'
+            return 1, None, f'{member}님은 이미 즐거운 게이머 역할을 가지고 계십니다. 부여를 시도한 관리자 : {adminMember}'
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -193,7 +193,7 @@ class giveRole(commands.Cog):
                 else:
                     await ctx.respond('권한이 부족합니다.')
         else:
-            ctx.respond('수동인증 명령어는 인증방에서만 써 주세요!')
+            await ctx.respond('수동인증 명령어는 인증방에서만 써 주세요!')
 
     @commands.Cog.listener()
     async def on_raw_member_remove(self, payload):
