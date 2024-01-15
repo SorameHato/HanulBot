@@ -140,7 +140,7 @@ class expFrontEnd(commands.Cog):
                     channel = self.bot.get_channel(1126822172468449325)
                     if message.channel == channel:
                         if c_arg:
-                            e_desc += '\n오늘 첫 채팅이 출석체크방에서 전송된 것 같아요. 하늘봇은 멤버 분들과 대화하다 보면 자동으로 출석을 체크해요! 스카이방에 자주 찾아와서 많이 대화해주시는 분들께 많은 이득을 드리기 위한 체계라서, 꼭 출석 명령어를 전송하지 않아도 아무 채널에서 채팅을 한 번이라도 보내면 자동으로 출석되니까 참고해주세요!'
+                            e_desc += '\n어제 하루 종일 출석체크방을 제외하면 채팅이 없으셨던 것 같아요... 출석해 주시는 것만으로도 정말 감사하지만, 가끔은 대화도 해 주시는 걸 바라는 건 안 되는 걸까요..?'
                         else:
                             setAttendanceOnly(message.author.id,1)
                     embed = discord.Embed(title=e_title,description=e_desc,color=self.bot.hanul_color)
