@@ -11,7 +11,7 @@ import platform
 from SkyLib import tui
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
-hanul_ver = "Final SP1 rev 191 (2024-01-15 10:59)"
+hanul_ver = "SP1 rev 192 (2024-01-21 23:48)"
 guild_ids = [
     1030056186915082262, #테스트용 서버
     1126790936723210290 #스카이형 서버
@@ -22,18 +22,21 @@ bot.if_loaded = 0
 
 @bot.event
 async def on_ready():
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game(name='구름IDE에서 동작'))
     global LoadedTime
     if not bot.if_loaded:
         LoadedTime = str(dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f"))[:-3]+"초"
         bot.LoadedTime = LoadedTime
         if platform.system() == 'Linux' and platform.node() == 'goorm':
             bot.pf_docker = '구름IDE HanulMain (Live)'
-        elif platform.system() == 'Windows':
+            docker = '구름IDE'
+        elif platform.system() == 'Windows' and platform.node() == 'DESKTOP-Q9MO7HL':
             bot.pf_docker = 'AmeMizu (Dev)'
+            docker = 'AmeMizu'
         else:
             bot.pf_docker = '인식할 수 없음'
+            docker = '어딘가'
         dbgChannel = await bot.fetch_channel(1137764318830665748)
+        await bot.change_presence(status=discord.Status.online, activity=discord.Game(name=f'{docker}에서 동작'))
         await dbgChannel.send(f'하늘봇이 {LoadedTime}에 시작되었습니다. 버전 : {bot.hanul_ver}, 환경 : {bot.pf_docker}')
         bot.if_loaded = 1
     else:
