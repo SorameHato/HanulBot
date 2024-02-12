@@ -15,7 +15,7 @@ class giveRole(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
     
-    async def add_role(self, guild, member, adminMember, auto=False) -> [int, discord.Embed, str]:
+    async def add_role(self, guild, member, adminMember, auto=False) -> tuple[int, discord.Embed, str]:
         '''
         멤버에게 즐거운 게이머 역할을 부여하는 함수 (통합)
         guild, member, 부여한 관리자명(기존 payload.member)을 받음
@@ -209,7 +209,7 @@ class giveRole(commands.Cog):
                  discord.OptionChoice('리듬게임',value='1127588698062585917')]
     
     @commands.slash_command(name='역할제거',guild_ids = guild_ids, description="역할을 제거하는 명령어에요!")
-    async def role_remove(self, ctx, role_name:discord.Option(str,'어떤 역할을 제거할 지 선택해주세요!', name='역할명', choices=role_list)):
+    async def role_remove(self, ctx, role_name:discord.Option(str,'어떤 역할을 제거할 지 선택해주세요!', name='역할명', choices=role_list)): # type: ignore
         role_id = int(role_name)
         try:
             role = ctx.guild.get_role(role_id)
