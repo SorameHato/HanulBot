@@ -354,7 +354,7 @@ def dailyDBInit():
     __logWrite__('-', '일일 초기화', f'일일 초기화 루틴 완료')
     
 
-def chatCallCalc(uid:int, date:dt) -> [int, int, int]:
+def chatCallCalc(uid:int, date:dt) -> tuple[int, int, int]:
     '''
     먼저 sql_con과 sql_cur을 얻고
     __updateLastCallDate__을 호출해서 날짜 관련 계산을 하고
