@@ -4,6 +4,7 @@ from datetime import timezone as tz
 from datetime import timedelta as td
 from datetime import date, time
 from SkyLib import tui
+from typing import Union
 chatPoint = 1
 dayPoint = 19
 
@@ -68,7 +69,7 @@ def __connectDB__():
     sql_cur = sql_con.cursor()
     return sql_con, sql_cur
 
-def __logWrite__(uid,task:str,text:str or list):
+def __logWrite__(uid,task:str,text:Union[str,list]):
     '''
     로그에 데이터를 기록하는 함수
     현재시간(dt형),uid,task,text 와 같은 형식의 csv로 저장된다.
