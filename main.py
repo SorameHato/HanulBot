@@ -11,7 +11,7 @@ import platform
 from SkyLib import tui
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
-hanul_ver = "SP1 rev 192 (2024-01-21 23:48)"
+hanul_ver = "SP2-rc1 rev 193 (2024-07-12 10:10)"
 guild_ids = [
     1030056186915082262, #테스트용 서버
     1126790936723210290 #스카이형 서버
@@ -29,6 +29,9 @@ async def on_ready():
         if platform.system() == 'Linux' and platform.node() == 'goorm':
             bot.pf_docker = '구름IDE HanulMain (Live)'
             docker = '구름IDE'
+        elif platform.system() == 'Linux' and platform.node() == 'aohane':
+            bot.pf_docker = 'AoHane/아메네코 (Live)'
+            docker = 'AoHane'
         elif platform.system() == 'Windows' and platform.node() == 'DESKTOP-Q9MO7HL':
             bot.pf_docker = 'AmeMizu (Dev)'
             docker = 'AmeMizu'
