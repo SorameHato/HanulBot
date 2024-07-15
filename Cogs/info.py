@@ -100,9 +100,7 @@ class info(commands.Cog):
         > morning_greeting : 작동 횟수 {self.bot.morning_greeting_count}회, 다음 작동 시간 : {self.bot.morning_greeting_next}
         > * expFrontEnd.py
         > daily_init_exp : 작동 횟수 {self.bot.daily_init_exp_count}회, 다음 작동 시간 : {self.bot.daily_init_exp_next}
-        > morning_inform : 작동 횟수 {self.bot.morning_inform_count}회, 다음 작동 시간 : {self.bot.morning_inform_next}
-        > * fishing.py
-        > daily_init : 작동 횟수 {self.bot.daily_init_count}회, 다음 작동 시간 : {self.bot.daily_init_next}'''
+        > morning_inform : 작동 횟수 {self.bot.morning_inform_count}회, 다음 작동 시간 : {self.bot.morning_inform_next}'''
         match info_select:
             case 0:
                 await ctx.respond(f'{bot_info}\n{bot_system}\n{bot_exp}\n{bot_task}')
