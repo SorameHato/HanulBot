@@ -68,6 +68,9 @@ class info(commands.Cog):
         if platform.system() == 'Linux' and platform.node() == 'goorm':
             pf_docker = 'Live(HanulMain)'
             pf_ver = platform.freedesktop_os_release()['NAME'] + ' ' + platform.freedesktop_os_release()['VERSION']
+        elif platform.system() == 'Linux' and platform.node() == 'aohane':
+            pf_docker = 'Live(AoHane)'
+            pf_ver = platform.freedesktop_os_release()['NAME'] + ' ' + platform.freedesktop_os_release()['VERSION']
         elif platform.system() == 'Windows':
             pf_docker = 'Dev(AmeMizu)'
             pf_ver = platform.system() + ' ' + platform.win32_ver()[0] + ' 버전 ' + platform.win32_ver()[1] + ' ' + platform.win32_ver()[2]
@@ -86,7 +89,7 @@ class info(commands.Cog):
         스카이방 (SKFLOW-KB5MDC-R5B3OS-BSHCM9) : 제가 서버 개발자로 있는 스카이형 서버는 평생 무료로 제공할 예정입니다.
         など / サーバー別に入力"""}'''
         bot_system = f'''* 시스템\n> 활성 Dev 도커 : AmeMizu
-        > 활성 Live 도커 : HanulMain@utwiki.run.goorm.site
+        > 활성 Live 도커 : AoHane@amene.co
         > 현재 하늘봇이 실행되고 있는 환경 : {pf_docker}
         > 운영체제 버전 : {pf_ver}
         > Python 버전 : {sys.version}
