@@ -143,24 +143,14 @@ class expFrontEnd(commands.Cog):
                             e_desc += '\n어제 하루 종일 출석체크방을 제외하면 채팅이 없으셨던 것 같아요... 출석해 주시는 것만으로도 정말 감사하지만, 가끔은 대화도 해 주시는 걸 바라는 건 안 되는 걸까요..?'
                         else:
                             setAttendanceOnly(message.author.id,1)
-                    embed = discord.Embed(title=e_title,description=e_desc,color=self.bot.hanul_color)
+                    embed = discord.Embed(color=self.bot.hanul_color)
                     embed.add_field(name='스카이방과 함께한 날',value=f'{getDayCount(message.author.id)}일',inline=False)
                     embed.add_field(name='활동점수',value=f_arg,inline=False)
                     silentStatus = getSilentStatus(message.author.id)
                     if silentStatus:
-                        await channel.send(embed=embed)
+                        await channel.send('{e_title}\n{e_desc}', embed=embed)
                     else:
-                        await channel.send(f'<@{message.author.id}>',embed=embed)
-                msg_list = [666,1004,2000]
-                msg_selif = [['활동점수 666을 달성했어요!','크앙~ 악마에요! (?)'],
-                             ['활동점수 1004를 달성했어요!','하늘에서 천사가~ ... 가 아니라 고인물의 반열에 끼셨네요!'],
-                             ['활동점수 2000을 달성했어요!','히익.. 고인물...']
-                            ]
-                if d_arg == 0:
-                    if f_arg in msg_list:
-                        pass
-                else:
-                    pass
+                        await channel.send(f'<@{message.author.id}> {e_title}\n{e_desc}',embed=embed)
     
     exp_commands = discord.SlashCommandGroup(name="활동점수",description="활동점수의 현황과 랭킹을 보여주는 명령어에요!",guild_ids=guild_ids)
     
