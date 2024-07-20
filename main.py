@@ -11,7 +11,7 @@ import platform
 from SkyLib import tui
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
-hanul_ver = "SP2-rc3 rev 195 (2024-07-15 09:36)"
+hanul_ver = "SP2-rc4 rev 196 (2024-07-20 19:10)"
 guild_ids = [
     1030056186915082262, #테스트용 서버
     1126790936723210290 #스카이형 서버
@@ -43,6 +43,7 @@ async def on_ready():
         await dbgChannel.send(f'하늘봇이 {LoadedTime}에 시작되었습니다. 버전 : {bot.hanul_ver}, 환경 : {bot.pf_docker}')
         bot.if_loaded = 1
     else:
+        dbgChannel = await bot.fetch_channel(1137764318830665748)
         await dbgChannel.send(f'하늘봇이 Discord 서버와 연결이 끊긴 후 {LoadedTime}에 다시 연결되었습니다. 버전 : {bot.hanul_ver}, 환경 : {bot.pf_docker}')
     print('┌──────────────────────────────────────────────────────────────────────┐')
     print('│'+tui.fixedWidth(f'{bot.user.name}(#{bot.user.id})으로 로그인되었습니다.', 70, 1)+'│')
