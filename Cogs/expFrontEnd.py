@@ -144,8 +144,8 @@ class expFrontEnd(commands.Cog):
                         else:
                             setAttendanceOnly(message.author.id,1)
                     embed = discord.Embed(color=self.bot.hanul_color)
-                    embed.add_field(name='스카이방과 함께한 날',value=f'{getDayCount(message.author.id)}일',inline=False)
-                    embed.add_field(name='활동점수',value=f_arg,inline=False)
+                    embed.add_field(name='스카이방과 함께한 날',value=f'{getDayCount(message.author.id)}일')
+                    embed.add_field(name='활동점수',value=f_arg)
                     silentStatus = getSilentStatus(message.author.id)
                     if silentStatus:
                         await channel.send(f'{e_title}\n{e_desc}', embed=embed)
