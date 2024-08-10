@@ -148,7 +148,7 @@ class expFrontEnd(commands.Cog):
                     embed.add_field(name='활동점수',value=f_arg,inline=False)
                     silentStatus = getSilentStatus(message.author.id)
                     if silentStatus:
-                        await channel.send('{e_title}\n{e_desc}', embed=embed)
+                        await channel.send(f'{e_title}\n{e_desc}', embed=embed)
                     else:
                         await channel.send(f'<@{message.author.id}> {e_title}\n{e_desc}',embed=embed)
     
