@@ -43,8 +43,11 @@ async def on_ready():
         await dbgChannel.send(f'하늘봇이 {LoadedTime}에 시작되었습니다. 버전 : {bot.hanul_ver}, 환경 : {bot.pf_docker}')
         bot.if_loaded = 1
     else:
+        LoadedTime2 = str(dt.now(tz(td(hours=9))).strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f"))[:-3]+"초"
+        LoadedTime += " (재연결 : " + LoadedTime2 + ")"
+        bot.LoadedTime = LoadedTime
         dbgChannel = await bot.fetch_channel(1137764318830665748)
-        await dbgChannel.send(f'하늘봇이 Discord 서버와 연결이 끊긴 후 {LoadedTime}에 다시 연결되었습니다. 버전 : {bot.hanul_ver}, 환경 : {bot.pf_docker}')
+        await dbgChannel.send(f'하늘봇이 Discord 서버와 연결이 끊긴 후 {LoadedTime2}에 다시 연결되었습니다. 버전 : {bot.hanul_ver}, 환경 : {bot.pf_docker}')
     print('┌──────────────────────────────────────────────────────────────────────┐')
     print('│'+tui.fixedWidth(f'{bot.user.name}(#{bot.user.id})으로 로그인되었습니다.', 70, 1)+'│')
     print('│'+tui.fixedWidth(f'봇이 시작된 시각 : {LoadedTime}', 70, 1)+'│')
