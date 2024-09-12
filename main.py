@@ -11,7 +11,7 @@ import platform
 from SkyLib import tui
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
-hanul_ver = "Experience Enhancing Pack 2-ame.6 rev 199 (2024-09-11 16:31)" #ame=알파, butter=비공개 베타, candy=공개 베타, lily=릴리즈
+hanul_ver = "Experience Enhancing Pack 2-ame.6 rev 199 (2024-09-11 16:31)" #ame=알파, berry=비공개 베타, candy=공개 베타, lily=릴리즈
 guild_ids = [
     1030056186915082262, #테스트용 서버
     1126790936723210290 #스카이형 서버
