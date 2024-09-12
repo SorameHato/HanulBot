@@ -11,7 +11,7 @@ import platform
 from SkyLib import tui
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
-hanul_ver = "Experience Enhancing Pack 2-ame.6 rev 199 (2024-09-11 16:31)" #ame=알파, berry=비공개 베타, candy=공개 베타, lily=릴리즈
+hanul_ver = "Experience Enhancing Pack 2-ame.7 rev 200 (2024-09-12 09:25)" #ame=알파, berry=비공개 베타, candy=공개 베타, lily=릴리즈
 guild_ids = [
     1030056186915082262, #테스트용 서버
     1126790936723210290 #스카이형 서버
@@ -48,6 +48,10 @@ async def on_ready():
         bot.LoadedTime = LoadedTime
         dbgChannel = await bot.fetch_channel(1137764318830665748)
         await dbgChannel.send(f'하늘봇이 Discord 서버와 연결이 끊긴 후 {LoadedTime2}에 다시 연결되었습니다. 버전 : {bot.hanul_ver}, 환경 : {bot.pf_docker}')
+        try:
+            await bot.change_presence(status=discord.Status.online, activity=discord.Game(name=f'{docker}에서 동작'))
+        except Exception as e:
+            await dbgChannel.send(f'Status 설정에 오류가 있었습니다. 오류 : {e}')
     print('┌──────────────────────────────────────────────────────────────────────┐')
     print('│'+tui.fixedWidth(f'{bot.user.name}(#{bot.user.id})으로 로그인되었습니다.', 70, 1)+'│')
     print('│'+tui.fixedWidth(f'봇이 시작된 시각 : {LoadedTime}', 70, 1)+'│')
