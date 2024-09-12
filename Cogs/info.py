@@ -29,7 +29,7 @@ class info(commands.Cog):
         await channel.send('오전 9시! 좋은 아침이에요! 모두 즐거운 하루 보내시고 힘내시는거에요-!')
         self.bot.morning_greeting_count = self.morning_greeting.current_loop+1
         self.bot.morning_greeting_next = self.morning_greeting.next_iteration.astimezone(tz=tz(td(hours=9))) if self.morning_greeting.next_iteration is not None else self.morning_greeting.next_iteration
-        await dbgChannel.send(f'exp morning_greeting 다음 정기 알림 시간 : {self.bot.morning_greeting_next}\n작동 횟수 : {self.bot.morning_greeting_count}\n작동 여부 : {self.morning_greeting.is_running()}\n실패 여부 : {self.morning_greeting.failed()}')
+        await dbgChannel.send(f'exp morning_greeting {self.bot.morning_greeting_count}번째 작동, 다음은 {self.bot.morning_greeting_next}')
     
     
     @commands.Cog.listener()
