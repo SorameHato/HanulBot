@@ -31,7 +31,7 @@ async def on_ready():
             docker = '구름IDE'
         elif platform.system() == 'Linux' and platform.node() == 'aohane':
             bot.pf_docker = 'AoHane/아메네코 (Live)'
-            docker = 'AoHane'
+            docker = '아메네코'
         elif platform.system() == 'Windows' and platform.node() == 'DESKTOP-Q9MO7HL':
             bot.pf_docker = 'AmeMizu (Dev)'
             docker = 'AmeMizu'
