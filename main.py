@@ -11,7 +11,7 @@ import platform
 from SkyLib import tui
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
-hanul_ver = "Experience Enhancing Pack 2-ame.7 rev 200 (2024-09-12 09:25)" #ame=알파, berry=비공개 베타, candy=공개 베타, lily=릴리즈
+hanul_ver = "Experience Enhancing Pack 2-ame.8 rev 201 (2024-10-19 15:18)" #ame=알파, blue=비공개 베타, cherry=공개 베타, lily=릴리즈
 guild_ids = [
     1030056186915082262, #테스트용 서버
     1126790936723210290 #스카이형 서버
@@ -28,18 +28,18 @@ async def on_ready():
         bot.LoadedTime = LoadedTime
         if platform.system() == 'Linux' and platform.node() == 'goorm':
             bot.pf_docker = '구름IDE HanulMain (Live)'
-            docker = '구름IDE'
+            bot.at_docker = '구름IDE'
         elif platform.system() == 'Linux' and platform.node() == 'aohane':
             bot.pf_docker = 'AoHane/아메네코 (Live)'
-            docker = '아메네코'
+            bot.at_docker = '아메네코'
         elif platform.system() == 'Windows' and platform.node() == 'DESKTOP-Q9MO7HL':
             bot.pf_docker = 'AmeMizu (Dev)'
-            docker = 'AmeMizu'
+            bot.at_docker = 'AmeMizu'
         else:
             bot.pf_docker = '인식할 수 없음'
-            docker = '어딘가'
+            bot.at_docker = '어딘가'
         dbgChannel = await bot.fetch_channel(1137764318830665748)
-        await bot.change_presence(status=discord.Status.online, activity=discord.Game(name=f'{docker}에서 동작'))
+        await bot.change_presence(status=discord.Status.online, activity=discord.Game(name=f'{bot.at_docker}에서 동작'))
         await dbgChannel.send(f'하늘봇이 {LoadedTime}에 시작되었습니다. 버전 : {bot.hanul_ver}, 환경 : {bot.pf_docker}')
         bot.if_loaded = 1
     else:
@@ -49,7 +49,7 @@ async def on_ready():
         dbgChannel = await bot.fetch_channel(1137764318830665748)
         await dbgChannel.send(f'하늘봇이 Discord 서버와 연결이 끊긴 후 {LoadedTime2}에 다시 연결되었습니다. 버전 : {bot.hanul_ver}, 환경 : {bot.pf_docker}')
         try:
-            await bot.change_presence(status=discord.Status.online, activity=discord.Game(name=f'{docker}에서 동작'))
+            await bot.change_presence(status=discord.Status.online, activity=discord.Game(name=f'{bot.at_docker}에서 동작'))
         except Exception as e:
             await dbgChannel.send(f'Status 설정에 오류가 있었습니다. 오류 : {e}')
     print('┌──────────────────────────────────────────────────────────────────────┐')
