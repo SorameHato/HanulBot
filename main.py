@@ -29,7 +29,7 @@ async def on_ready():
         if platform.system() == 'Linux' and platform.node() == 'goorm':
             bot.pf_docker = '구름IDE HanulMain (Live)'
             bot.at_docker = '구름IDE'
-        elif platform.system() == 'Linux' and platform.node() == 'aohane':
+        elif platform.system() == 'Linux' and platform.node() in ['AmeNeko', 'aohane', 'ameneko']:
             bot.pf_docker = 'AoHane/아메네코 (Live)'
             bot.at_docker = '아메네코'
         elif platform.system() == 'Windows' and platform.node() == 'DESKTOP-Q9MO7HL':
